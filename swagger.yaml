@@ -1,0 +1,343 @@
+swagger: '2.0'
+info:
+  title: Logistics Wizard API
+  description: The main controller app for the Logistics Wizard system, interfacing with the ERP, Recommendations, and UI services.
+  version: "1.0.0"
+# the domain of the service
+host: logistics-wizard.mybluemix.net
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /users:
+    get:
+      summary: Get Users
+      description: |
+        Returns all users who have access to the Logistics Wizard in some capacity.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+      tags:
+        - Users
+      responses:
+        200:
+          description: An array of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create User
+      description: |
+        Creates a new user in the system
+      parameters:
+        - name: user
+          in: body
+          description: User object
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - Users
+      responses:
+        201:
+          description: The new user object
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /users/{user_id}:
+    get:
+      summary: Get User
+      description: |
+        Retrieves the user with the input user ID
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: user_id
+          in: path
+          description: ID of the user to be retrieved
+          required: true
+          type: string
+      tags:
+        - Users
+      responses:
+        200:
+          description: The retrieved User object
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      summary: Update User
+      description: |
+        Updates the user with the input user ID
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: user_id
+          in: path
+          description: ID of the user to be updated
+          required: true
+          type: string
+        - name: user
+          in: body
+          description: User object
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - Users
+      responses:
+        200:
+          description: The updated User object
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /auth:
+    post:
+      summary: Sign In
+      description: |
+        Signs a specific user into the system and returns a bearer token
+      parameters:
+        - name: user
+          in: body
+          description: The User being signed in
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - Users
+      responses:
+        200:
+          description: The bearer token
+          schema:
+            $ref: '#/definitions/Token'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /auth/{token}:
+    get:
+      summary: Retrieve Logged In User
+      description: |
+        Retrieves user info of the currently logged in user
+      parameters:
+        - name: token
+          in: path
+          description: token of the signed in user to be retrieved
+          required: true
+          type: string
+      tags:
+        - Users
+      responses:
+        200:
+          description: The retrieved User object
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: User Logout
+      description: |
+        Logs out the user with the corresponding bearer token
+      parameters:
+        - name: token
+          in: path
+          description: token of the user to be logged out
+          required: true
+          type: string
+      tags:
+        - Users
+      responses:
+        204:
+          description: The retrieved User object
+          schema:
+            type: boolean
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /shipments:
+    get:
+      summary: Retrieves Shipments
+      description: |
+        Retrieves a list of all shipments. Returned items will differ based on the identity and type of user logged in
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+      tags:
+        - Shipments
+      responses:
+        200:
+          description: An array of shipments
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Shipment'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /distribution-centers:
+    get:
+      summary: Retrieves Distribution Centers
+      description: |
+        Retrieves a list of distribution centers. Only accessible to supply chain admins
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+      tags:
+        - DistributionCenters
+      responses:
+        200:
+          description: An array of distribution centers
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DistributionCenter'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /retailers:
+    get:
+      summary: Retrieves Retailers
+      description: |
+        Retrieves a list of all retail locations. Only accessible to supply chain admins
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+      tags:
+        - Retailers
+      responses:
+        200:
+          description: An array of retail locations
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Retailer'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /recommendations:
+    get:
+      summary: Retrieve Recommendations
+      description: |
+        Retrieves all recommendations relevant to the logged in user
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+      tags:
+        - Recommendations
+      responses:
+        200:
+          description: An array of recommendations
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Recommendation'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  User:
+    type: object
+    properties:
+      user_id:
+        type: string
+        description: Unique identifier representing the username of a user in the system
+      email:
+        type: string
+        description: Email of the user
+      password:
+        type: string
+        format: password
+        description: Password of the user
+      role:
+        type: string
+        description: Role of the user - either supply chain admin or a retail manager
+      created:
+        type: string
+        format: date
+        description: Datetime that the user was created
+  Shipment:
+    type: object
+    properties:
+      shipment_id:
+        type: string
+        description: Unique identifier representing a shipment
+  DistributionCenter:
+    type: object
+    properties:
+      shipment_id:
+        type: string
+        description: Unique identifier representing a distribution center
+  Retailer:
+    type: object
+    properties:
+      shipment_id:
+        type: string
+        description: Unique identifier representing a retail location
+  Recommendation:
+    type: object
+    properties:
+      shipment_id:
+        type: string
+        description: Unique identifier representing a recommendation
+  Token:
+    type: object
+    properties:
+      token:
+        type: string
+        description: The bearer token
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
