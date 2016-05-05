@@ -30,9 +30,7 @@ The API methods that this component exposes requires the discovery of dependent 
 The API and data models are defined in [this Swagger 2.0 file](swagger.yaml). You can view this file in the [Swagger Editor](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/IBM-Bluemix/logistics-wizard/master/swagger.yaml).
 
 ## Contribute
-<Note how you would like developers to contribute and/or log issues to your project. Also give steps for making pull requests. If your contribution directions become lengthy, break them out into a file called ‘CONTRIBUTING.md’ and link to this.>
-
-We are not yet accepting open contributions from the public. Please check back soon as we intend to in the near future once the application is stable!
+Please check out our [Contributing Guidelines](https://github.com/IBM-Bluemix/logistics-wizard/blob/master/.github/CONTRIBUTING.md) for detailed information on how you can lend a hand to the Logistics Wizard demo implementation effort.
 
 ## Troubleshooting
 
