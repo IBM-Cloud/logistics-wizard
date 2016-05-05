@@ -40,7 +40,7 @@ The easiest way to lend a hand is to let us know when you've found a bug in the 
 	- Steps to reproduce the problem
 	- Expected behavior
 	- Actual behavior
-3. Apply the proper tags, using the [Tag wiki page](https://github.com/IBM-Bluemix/logistics-wizard/wiki/Tags) as a reference
+3. Apply the proper labels, using the [Labels wiki page](https://github.com/IBM-Bluemix/logistics-wizard/wiki/Labels) as a reference
 
 That's it! We will do our best to fix the bug as soon as humanly possible and keep you informed on its progress.
 
@@ -78,7 +78,7 @@ If you like the app and want to suggest an improvement without doing the leg wor
 
 1. [Check the existing Issues](https://github.com/IBM-Bluemix/logistics-wizard/issues) and make sure that the enhancement you are requesting has not already been made.
 2. Create a new issue which describes your enhancement request in detail
-3. Apply the proper tags, using the [Tag wiki page](https://github.com/IBM-Bluemix/logistics-wizard/wiki/Tags) as a reference
+3. Apply the proper labels, using the [Labels wiki page](https://github.com/IBM-Bluemix/logistics-wizard/wiki/Labels) as a reference
 
 The Logistics Wizard delivery team will review your RFE and turn turn it into a story or epic, depending on the scope we determine. There is no guarantee that we will take on the RFE, but we will do our best
 
