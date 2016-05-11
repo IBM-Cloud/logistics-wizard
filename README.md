@@ -9,8 +9,32 @@ Logistics Wizard is a reimagined supply chain optimization system for the 21st c
 The following services are leveraged in the overall Logistics Wizard solution, yet are built to be extensible for other purposes:
 
 * [logistics-wizard-erp](https://github.com/IBM-Bluemix/logistics-wizard-erp)
+* [logistics-wizard-recommendation](https://github.com/IBM-Bluemix/logistics-wizard-recommendation)
 
 **Note:** You can view the architecture design on [our public Mural.ly](http://mur.al/mnkN28lN). This is currently a work in progress and will be changing many times over the coming weeks!
+
+![Architecture](http://g.gravizo.com/g?
+  digraph G {
+    node [fontname = "helvetica"]
+    rankdir=RL
+    user -> controller [label="1 - Makes a request"]
+    recommendations -> discovery [headlabel="2 - Registers and sends heartbeat" labeldistance=12 labelangle=-16]
+    erp -> discovery [label="3 - Registers and sends heartbeat"]
+    controller -> discovery [taillabel="4 - Query for services" labeldistance=8 labelangle=-7]
+    controller -> erp [label="5 - CRUD SCM data"]
+    controller -> recommendations [label="6 - Retrieve/update recommendations" dir="back"]
+    {rank=max; user}
+    {rank=same; erp -> controller [style=invis]}
+    {rank=same; controller -> recommendations [style=invis]}
+    {rank=min; discovery}
+    /* styling */
+    user [shape=diamond width=1 height=1 fixedsize=true style=filled color="black" fontcolor=white label="User"]
+    erp [shape=rect style=filled color="%2324B643" fontcolor=white label="ERP"]
+    controller [shape=rect label="Controller API"]
+    recommendations [shape=rect style=filled color="%2324B643" fontcolor=white label="Recommendations"]
+    discovery [shape=circle width=1 fixedsize=true style=filled color="%234E96DB" fontcolor=white label="Service\\nRegistry"]
+  }
+)
 
 ## Running the app on Bluemix
 <Either add a Deploy to Bluemix button or include detailed instructions on how to deploy the app(s) to Bluemix after cloning the repo. You should assume the user has little to no Bluemix experience and provide as much detail as possible in the steps.>
