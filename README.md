@@ -11,8 +11,6 @@ The following services are leveraged in the overall Logistics Wizard solution, y
 * [logistics-wizard-erp](https://github.com/IBM-Bluemix/logistics-wizard-erp)
 * [logistics-wizard-recommendation](https://github.com/IBM-Bluemix/logistics-wizard-recommendation)
 
-**Note:** You can view the architecture design on [our public Mural.ly](http://mur.al/mnkN28lN). This is currently a work in progress and will be changing many times over the coming weeks!
-
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
     node [fontname = "helvetica"]
