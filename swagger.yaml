@@ -1,23 +1,25 @@
 swagger: '2.0'
 info:
-  title: Logistics Wizard API
-  description: The main controller app for the Logistics Wizard system, interfacing with the ERP, Recommendations, and UI services.
   version: "1.0.0"
+  title: Logistics Wizard Controller
+  description: The main controller app for the Logistics Wizard system, interfacing with the ERP, Recommendations, and UI services.
+  license:
+    name: Apache 2.0
 # the domain of the service
 host: logistics-wizard.mybluemix.net
 # array of all schemes that your API supports
 schemes:
   - https
 # will be prefixed to all paths
-basePath: /v1
+basePath: /api/v1
 produces:
   - application/json
 paths:
-  /users:
+  '/users':
     get:
       summary: Get Users
       description: |
-        Returns all users who have access to the Logistics Wizard in some capacity.
+        Returns all users who have access to the Logistics Wizard system in some capacity.
       parameters:
         - name: Authorization
           in: header
@@ -25,7 +27,7 @@ paths:
           required: true
           type: string
       tags:
-        - Users
+        - User
       responses:
         200:
           description: An array of users
@@ -33,6 +35,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/User'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -49,17 +55,21 @@ paths:
           schema:
             $ref: '#/definitions/User'
       tags:
-        - Users
+        - User
       responses:
         201:
           description: The new user object
           schema:
             $ref: '#/definitions/User'
+        409:
+          description: Username/email is taken
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /users/{user_id}:
+  '/users/{id}':
     get:
       summary: Get User
       description: |
@@ -70,35 +80,39 @@ paths:
           description: Bearer token
           required: true
           type: string
-        - name: user_id
+        - name: id
           in: path
           description: ID of the user to be retrieved
           required: true
           type: string
       tags:
-        - Users
+        - User
       responses:
         200:
           description: The retrieved User object
           schema:
             $ref: '#/definitions/User'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-    patch:
+    put:
       summary: Update User
       description: |
-        Updates the user with the input user ID
+        Updates attributes for a user
       parameters:
         - name: Authorization
           in: header
           description: Bearer token
           required: true
           type: string
-        - name: user_id
+        - name: id
           in: path
-          description: ID of the user to be updated
+          description: ID of the user to be retrieved
           required: true
           type: string
         - name: user
@@ -108,17 +122,21 @@ paths:
           schema:
             $ref: '#/definitions/User'
       tags:
-        - Users
+        - User
       responses:
         200:
           description: The updated User object
           schema:
             $ref: '#/definitions/User'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /auth:
+  '/auth':
     post:
       summary: Sign In
       description: |
@@ -131,38 +149,21 @@ paths:
           schema:
             $ref: '#/definitions/User'
       tags:
-        - Users
+        - User
       responses:
         200:
           description: The bearer token
           schema:
-            $ref: '#/definitions/Token'
+            $ref: '#/definitions/AccessToken'
+        401:
+          description: Username/password is incorrect
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /auth/{token}:
-    get:
-      summary: Retrieve Logged In User
-      description: |
-        Retrieves user info of the currently logged in user
-      parameters:
-        - name: token
-          in: path
-          description: token of the signed in user to be retrieved
-          required: true
-          type: string
-      tags:
-        - Users
-      responses:
-        200:
-          description: The retrieved User object
-          schema:
-            $ref: '#/definitions/User'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+  '/auth/{token}':
     delete:
       summary: User Logout
       description: |
@@ -170,21 +171,23 @@ paths:
       parameters:
         - name: token
           in: path
-          description: token of the user to be logged out
+          description: Token of the user to be logged out
           required: true
           type: string
       tags:
-        - Users
+        - User
       responses:
         204:
           description: The retrieved User object
+        401:
+          description: Unauthorized
           schema:
-            type: boolean
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /shipments:
+  '/shipments':
     get:
       summary: Retrieves Shipments
       description: |
@@ -196,7 +199,7 @@ paths:
           required: true
           type: string
       tags:
-        - Shipments
+        - Shipment
       responses:
         200:
           description: An array of shipments
@@ -204,15 +207,139 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Shipment'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /distribution-centers:
+    post:
+      summary: Create Shipment
+      description: |
+        Creates a new shipment in the ERP system
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Shipment to be created
+          required: true
+          schema:
+            $ref: '#/definitions/Shipment'
+      tags:
+        - Shipment
+      responses:
+        201:
+          description: Shipment created successfully
+          schema:
+            $ref: '#/definitions/Shipment'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/shipments/{id}':
+    get:
+      summary: Retrieve shipment from the ERP
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the shipment to be retrieved
+          required: true
+          type: string
+      tags:
+        - Shipment
+      responses:
+        200:
+          description: Shipment retrieved successfully
+          schema:
+            $ref: '#/definitions/Shipment'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete a shipment from the ERP
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the shipment to be deleted
+          required: true
+          type: string
+      tags:
+        - Shipment
+      responses:
+        204:
+          description: Shipment deleted successfully
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update attributes of a shipment in the ERP
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the shipment to be updated
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: The shipment object to replace the object currently associated with input ID
+          required: false
+          schema:
+            $ref: '#/definitions/Shipment'
+      tags:
+        - Shipment
+      responses:
+        200:
+          description: Shipment updated successfully
+          schema:
+            $ref: '#/definitions/Shipment'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/distribution-centers':
     get:
       summary: Retrieves Distribution Centers
       description: |
-        Retrieves a list of distribution centers. Only accessible to supply chain admins
+        Retrieves a list of distribution centers. Returned list will be dictated by user's access level
       parameters:
         - name: Authorization
           in: header
@@ -220,23 +347,56 @@ paths:
           required: true
           type: string
       tags:
-        - DistributionCenters
+        - DistributionCenter
       responses:
         200:
-          description: An array of distribution centers
+          description: Retrieved distribution centers successfully
           schema:
             type: array
             items:
               $ref: '#/definitions/DistributionCenter'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /retailers:
+  '/distribution-centers/{id}':
+    get:
+      summary: Retrieve distribution center from the ERP
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the distribution center to be retrieved
+          required: true
+          type: string
+      tags:
+        - DistributionCenter
+      responses:
+        200:
+          description: Distribution center retrieved successfully
+          schema:
+            $ref: '#/definitions/DistributionCenter'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/retailers':
     get:
       summary: Retrieves Retailers
       description: |
-        Retrieves a list of all retail locations. Only accessible to supply chain admins
+        Retrieves a list of all retailers. Only accessible to supply chain admins
       parameters:
         - name: Authorization
           in: header
@@ -244,23 +404,56 @@ paths:
           required: true
           type: string
       tags:
-        - Retailers
+        - Retailer
       responses:
         200:
-          description: An array of retail locations
+          description: Retrieved retailers successfully
           schema:
             type: array
             items:
               $ref: '#/definitions/Retailer'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /recommendations:
+  '/retailers/{id}':
+    get:
+      summary: Retrieve retailer from the ERP
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the retailer to be retrieved
+          required: true
+          type: string
+      tags:
+        - Retailer
+      responses:
+        200:
+          description: Retailer retrieved successfully
+          schema:
+            $ref: '#/definitions/Retailer'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/recommendations':
     get:
       summary: Retrieve Recommendations
       description: |
-        Retrieves all recommendations relevant to the logged in user
+        Retrieves all recommendations relevant to the logged-in user
       parameters:
         - name: Authorization
           in: header
@@ -268,14 +461,18 @@ paths:
           required: true
           type: string
       tags:
-        - Recommendations
+        - Recommendation
       responses:
         200:
-          description: An array of recommendations
+          description: Retrieved recommendations successfully
           schema:
             type: array
             items:
               $ref: '#/definitions/Recommendation'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -284,53 +481,165 @@ definitions:
   User:
     type: object
     properties:
-      user_id:
+      id:
         type: string
-        description: Unique identifier representing the username of a user in the system
       email:
         type: string
-        description: Email of the user
       password:
         type: string
         format: password
-        description: Password of the user
       role:
         type: string
-        description: Role of the user - either supply chain admin or a retail manager
+      createdAt:
+        type: string
+        format: date
+      accessToken:
+        $ref: '#/definitions/AccessToken'
+    required:
+      - email
+      - password
+  AccessToken:
+    properties:
+      id:
+        type: string
+      ttl:
+        default: 1209600
+        description: time to live in seconds (2 weeks by default)
+        type: number
+        format: double
       created:
         type: string
         format: date
-        description: Datetime that the user was created
+      userId:
+        type: string
+    required:
+      - id
+    additionalProperties: false
+  Product:
+    properties:
+      name:
+        type: string
+      id:
+        type: string
+      supplierId:
+        type: string
+    required:
+      - name
+  Supplier:
+    properties:
+      name:
+        type: string
+      id:
+        type: string
+    required:
+      - name
+    additionalProperties: false
   Shipment:
-    type: object
     properties:
-      shipment_id:
+      status:
+        default: NEW
         type: string
-        description: Unique identifier representing a shipment
+      createdAt:
+        type: string
+        format: date
+      updatedAt:
+        type: string
+        format: date
+      deliveredAt:
+        type: string
+        format: date
+      estimatedTimeOfArrival:
+        type: string
+        format: date
+      id:
+        type: string
+      currentLocation:
+        $ref: '#/definitions/Address'
+      fromId:
+        type: string
+      toId:
+        type: string
+    required:
+      - status
+      - createdAt
+    additionalProperties: false
+  Inventory:
+    properties:
+      quantity:
+        default: 0
+        type: number
+        format: double
+      id:
+        type: string
+      productId:
+        type: string
+      dcId:
+        type: string
+    additionalProperties: false
+  LineItem:
+    properties:
+      quantity:
+        default: 0
+        type: number
+        format: double
+      id:
+        type: string
+      shipmentId:
+        type: string
+    required:
+      - quantity
+    additionalProperties: false
   DistributionCenter:
-    type: object
     properties:
-      shipment_id:
+      id:
         type: string
-        description: Unique identifier representing a distribution center
+      address:
+        $ref: '#/definitions/Address'
+      contact:
+        $ref: '#/definitions/Contact'
+    additionalProperties: false
   Retailer:
-    type: object
     properties:
-      shipment_id:
+      id:
         type: string
-        description: Unique identifier representing a retail location
+      address:
+        $ref: '#/definitions/Address'
+      contact:
+        $ref: '#/definitions/Contact'
+    additionalProperties: false
+  Address:
+    properties:
+      city:
+        type: string
+      state:
+        type: string
+      country:
+        type: string
+      latitude:
+        type: number
+        format: double
+      longitude:
+        type: number
+        format: double
+      id:
+        type: string
+    additionalProperties: false
+  Contact:
+    properties:
+      name:
+        type: string
+      id:
+        type: string
+    required:
+      - name
+    additionalProperties: false
   Recommendation:
     type: object
     properties:
-      shipment_id:
+      shipmentId:
         type: string
-        description: Unique identifier representing a recommendation
-  Token:
-    type: object
-    properties:
-      token:
+      justification:
         type: string
-        description: The bearer token
   Error:
     type: object
     properties:
@@ -341,3 +650,11 @@ definitions:
         type: string
       fields:
         type: string
+tags:
+  - name: Supplier
+  - name: Product
+  - name: DistributionCenter
+  - name: Shipment
+  - name: Retailer
+  - name: Inventory
+  - name: User
