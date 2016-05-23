@@ -44,7 +44,26 @@ Coming Soon!
 <Create sub-sections to break down larger sequences of steps. General rule of thumb is that you should not have more than 9 steps in each task. Include sanity checks, or ways for the developer to confirm what they have done so far is correct, every 20 steps. Also, avoid directly referencing the Bluemix UI components so that ACE changes don't invalidate your README.>
 
 ## Run the app locally
-Coming soon!
+
+1. Clone this repo
+2. Create a python virtual environment
+3. Install PostgreSQL and create a DB called `logistics_wizard`
+4. Install Redis
+4. Install module requirements in `requirements.dev.txt`
+5. Start the app
+
+~~~~
+you@logistics-wizard:~$ git clone https://github.com/IBM-Bluemix/logistics-wizard.git
+you@logistics-wizard:~$ cd logistics-wizard
+you@logistics-wizard:~/logistics-wizard virtualenv venv
+you@logistics-wizard:~/logistics-wizard pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+you@logistics-wizard:~/logistics-wizard createdb logistics_wizard
+you@logistics-wizard:~/logistics-wizard source .env
+(venv)you@logistics-wizard:~/logistics-wizard pip install -r requirements.dev.txt
+(venv)you@logistics-wizard:~/logistics-wizard python bin/start_web.py
+ * Running on http://localhost:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+~~~~
 
 ## API documentation
 The API methods that this component exposes requires the discovery of dependent services, however, the API will gracefully fail when they are not available.
