@@ -506,21 +506,12 @@ definitions:
       - email
       - password
   AccessToken:
+    description: JSON Web Token for UI session management
     properties:
-      id:
-        type: string
-      ttl:
-        default: 1209600
-        description: time to live in seconds (2 weeks by default)
-        type: number
-        format: double
-      created:
-        type: string
-        format: date
-      userId:
+      token:
         type: string
     required:
-      - id
+      - token
     additionalProperties: false
   Product:
     properties:

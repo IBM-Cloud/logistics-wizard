@@ -17,12 +17,9 @@ def create_app():
     :return:         A flask object/wsgi callable.
     """
     from server.config import Config
-    from server.data import init_db, remove_session, wire_models
     from server.exceptions import APIException
     from server.web.utils import request_wants_json
-    from server.web.rest.users import users_v1_blueprint, setup_user_from_request
-
-    wire_models()
+    from server.web.rest.users import users_v1_blueprint
 
     # Create the app
     logistics_wizard = Flask('logistics_wizard', static_folder=None)
@@ -30,15 +27,8 @@ def create_app():
     if Config.ENVIRONMENT == 'DEV':
         logistics_wizard.debug = True
 
-    # Initialize the database (recreate if dev or test environment)
-    drop = True if Config.ENVIRONMENT == 'TEST' else False
-    init_db(drop)
-    logistics_wizard.teardown_appcontext(remove_session)
-
     # Register the blueprints for each version
     logistics_wizard.register_blueprint(users_v1_blueprint, url_prefix='/api/v1')
-
-    logistics_wizard.before_request(setup_user_from_request)
 
     def exception_handler(e):
         """
@@ -55,15 +45,22 @@ def create_app():
         else:
             exc = e
         current_app.logger.error(exc)
-        return Response(json.dumps({'error': e.message}),
+        return Response(json.dumps({
+                            'code': exc.status_code,
+                            'message': e.message
+                        }),
                         status=exc.status_code,
                         mimetype='application/json')
 
     def not_found_handler(e):
         current_app.logger.exception(e)
         if request_wants_json():
-            return Response(json.dumps({'error': 'Resource not found.'}),
-                            status=404,
+            status_code = 404
+            return Response(json.dumps({
+                                'code': status_code,
+                                'message': 'Resource not found.'
+                            }),
+                            status=status_code,
                             mimetype='application/json')
         else:
             # TODO: Default to the root web page
@@ -72,8 +69,12 @@ def create_app():
 
     def bad_request_handler(e):
         current_app.logger.exception(e)
-        return Response(json.dumps({'error': 'Bad request.'}),
-                        status=400,
+        status_code = 400
+        return Response(json.dumps({
+                            'code': status_code,
+                            'message': 'Bad request.'
+                        }),
+                        status=status_code,
                         mimetype='application/json')
 
     # Register error handlers

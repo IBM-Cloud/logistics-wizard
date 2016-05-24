@@ -10,22 +10,22 @@ from server.exceptions import (TokenException,
                                AuthorizationException,
                                ResourceDoesNotExistException,
                                ValidationException)
-from server.web.utils import has_permission, get_token_from_request, jsonify
+from server.web.utils import get_token_from_request, jsonify
 
 users_v1_blueprint = Blueprint('users_v1_api', __name__)
 
 
-def setup_user_from_request():
+def setup_auth_from_request():
     """
-    Get the user from the request headers and store on the g
+    Get the Auth data from the request headers and store on the g
     object for later use.
     """
     try:
         token = get_token_from_request()
         if token is not None:
-            g.user = user_service.get_user_from_token(token)
+            g.auth = user_service.get_auth_from_token(token)
     except (TokenException, ResourceDoesNotExistException):
-        g.user = None
+        g.auth = None
 
 
 @users_v1_blueprint.route('/users', methods=['POST'])
@@ -49,20 +49,25 @@ def create_user():
 
     """
     data = request.get_json()
+    user_id = data.get('id')
+    email = data.get('email')
     role = data.get('role')
+    password = data.get('password')
 
-    if role is None:
+    if user_id is None:
+        raise ValidationException('You must define a username to create a new user.')
+    elif email is None:
+        raise ValidationException('You must include an email to create a new user.')
+    elif role is None:
         raise ValidationException('You must define a role to create a new user.')
-    elif role != 'supplychainmanager' and \
-            role != 'retailstoremanager' and \
-            g.user is not None and \
-            not user_service.has_permission(g.user, 'edit_users'):
-        raise AuthorizationException('You don\'t have permission to set roles.')
+    elif password is None:
+        raise ValidationException('You must set a password to create a new user.')
 
-    user = user_service.create_user(user_id=data.get('id'),
-                                    email=data.get('email'),
+    user = user_service.create_user(auth=g.auth,
+                                    user_id=user_id,
+                                    email=email,
                                     role=role,
-                                    password=data.get('password'))
+                                    password=password)
 
     return Response(jsonify(user, user_service.user_to_dict),
                     status=201,
@@ -83,10 +88,10 @@ def get_user(user_id):
         "created": "2015-11-05T22:00:51.692765"
     }
     """
-    user = user_service.get_user_by_id(user_id)
-    if not user_service.is_owner(g.user, user):
-        user_service.check_permission(g.user, 'view_users')
-    return Response(jsonify(user, user_service.user_to_dict))
+    user = user_service.get_user_by_id(g.auth, user_id)
+    return Response(jsonify(user, user_service.user_to_dict),
+                    status=200,
+                    mimetype='application/json')
 
 
 @users_v1_blueprint.route('/users/<int:user_id>', methods=['PUT', 'PATCH'])
@@ -111,23 +116,11 @@ def update_user(user_id):
         "created": "2015-11-05T22:00:51.692765"
     }
     """
+    if user_id is None:
+        raise ValidationException('You must include a user_id to designate the user to be updated')
+
     data = request.get_json()
-
-    user = user_service.get_user_by_id(user_id)
-    if not user_service.is_owner(g.user, user):
-        user_service.check_permission(g.user, 'edit_users')
-
-    # We have now confirmed a user is updating their own profile
-    user_dict = user_service.teacher_to_dict(user)
-
-    # Make sure PUT requests received complete user object
-    if request.method == 'PUT':
-        for key in user_dict:
-            if key not in data:
-                raise ValidationException(
-                    'Must pass full user representation.')
-
-    user_service.update_teacher(user, data)
+    user = user_service.update_user(g.auth, user_id, data)
     return Response(jsonify(user, user_service.user_to_dict))
 
 
@@ -145,15 +138,23 @@ def authenticate():
     }
 
     :return: {
-        "id": "eyJhbGciOi...WT2aGgjY5JHvCsbA",
-        "ttl": "1440",
-        "createdAt": "2015-11-05T22:00:51.692765",
-        "userId": "test@example.com"
+        "token": "eyJhbGciOi...WT2aGgjY5JHvCsbA"
     }
     """
     data = request.get_json()
-    token = user_service.authenticate(user_id=data.get('user_id'),
-                                     password=data.get('password'))
+    user_id = data.get('user_id')
+    password = data.get('password')
+
+    if user_id is None:
+        raise ValidationException('You must a username when logging in.')
+    elif password is None:
+        raise ValidationException('You must include a password when logging in.')
+    auth_data = user_service.login(user_id=user_id,
+                                   password=password)
+
+    # TODO: Determine the desired session length (currently defaulted to 1 day)
+    token = user_service.get_token_for_user(auth_data, expire_days=1)
+
     resp = Response(json.dumps({'token': token}),
                     status=200,
                     mimetype='application/json')
@@ -172,18 +173,12 @@ def deauthenticate(token):
 
     # Only allow deletion of a web token if the token belongs to the current user,
     # or if the current user has the delete permission (currently only admins)
-    if request_token == token or \
-            user_service.check_permission(g.user, 'delete_sessions'):
-        try:
-            # TODO: Invalidate JWT so session expires
-            pass
-        except ResourceDoesNotExistException:
-            pass
+    if request_token == token:
+        user_service.logout(token=g.auth['loopback_token'])
     return '', 204
 
 
 @users_v1_blueprint.route('/users', methods=['GET'])
-@has_permission('view_users')
 def list_users():
     """
     List all users. Requires administrator privileges.
@@ -195,5 +190,5 @@ def list_users():
         "createdAt": "2015-11-05T22:00:51.692765"
     }, {...}]
     """
-    users = user_service.list_users()
+    users = user_service.list_users(g.auth)
     return Response(jsonify(users, user_service.user_to_dict))

@@ -5,13 +5,9 @@ Flask app and request.
 """
 import json
 
-from decorator import decorator
 from flask import g, request
 
-from server.exceptions import (AuthorizationException,
-                               TokenException)
-import server.services.users as user_service
-
+from server.exceptions import (TokenException)
 
 ###########################
 #     Request Utils       #
@@ -40,35 +36,6 @@ def get_token_from_request():
     return token
 
 
-def has_permission(*permissions):
-    """
-    Decorator for checking that the user is authenticated and
-    has proper permissions to access resource.
-
-    :param permissions:
-    :return:
-    """
-
-    @decorator
-    def decorator_function(func, *args, **kwargs):
-        if g.user is None:
-            raise AuthorizationException('Unable to identify user')
-        elif not user_service.has_permission(g.user, *permissions):
-            raise AuthorizationException('Insufficient permissions.')
-
-        return func(*args, **kwargs)
-
-    return decorator_function
-
-
-@decorator
-def logged_in(func, *args, **kwargs):
-    if g.user is None:
-        raise AuthorizationException('No user logged in.')
-    else:
-        return func(*args, **kwargs)
-
-
 def _default_mapper(x):
     """
     The default mapper expects a dict and returns it.
@@ -80,7 +47,7 @@ def _default_mapper(x):
 
 def jsonify(resource, dict_mapper, **kwargs):
     """
-    Convert an instance or a list of instances of the User model
+    Convert an instance or a list of instances of the resource model
     to JSON.
 
     :param resource:     An instance or a list of instances of the resource
