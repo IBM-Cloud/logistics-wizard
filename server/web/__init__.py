@@ -19,7 +19,7 @@ def create_app():
     from server.config import Config
     from server.exceptions import APIException
     from server.web.utils import request_wants_json
-    from server.web.rest.users import users_v1_blueprint
+    from server.web.rest.demos import demos_v1_blueprint, setup_auth_from_request
 
     # Create the app
     logistics_wizard = Flask('logistics_wizard', static_folder=None)
@@ -28,7 +28,9 @@ def create_app():
         logistics_wizard.debug = True
 
     # Register the blueprints for each version
-    logistics_wizard.register_blueprint(users_v1_blueprint, url_prefix='/api/v1')
+    logistics_wizard.register_blueprint(demos_v1_blueprint, url_prefix='/api/v1')
+
+    logistics_wizard.before_request(setup_auth_from_request)
 
     def exception_handler(e):
         """

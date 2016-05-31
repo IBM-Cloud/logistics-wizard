@@ -5,9 +5,11 @@ Flask app and request.
 """
 import json
 
+from decorator import decorator
 from flask import g, request
 
-from server.exceptions import (TokenException)
+from server.exceptions import (AuthorizationException,
+                               TokenException)
 
 ###########################
 #     Request Utils       #
@@ -34,6 +36,14 @@ def get_token_from_request():
         raise TokenException('Unable to get token from request.')
 
     return token
+
+
+@decorator
+def logged_in(func, *args, **kwargs):
+    if g.auth is None:
+        raise AuthorizationException('No existing session.')
+    else:
+        return func(*args, **kwargs)
 
 
 def _default_mapper(x):

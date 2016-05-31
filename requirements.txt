@@ -2,6 +2,3 @@ Flask==0.10.1
 Flask-Failsafe==0.2
 PyJWT==1.4.0
 decorator==4.0.4
-SQLAlchemy==1.0.9
-psycopg2==2.6.1
-rq==0.5.6
