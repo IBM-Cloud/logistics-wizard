@@ -12,6 +12,7 @@ import server.services.demos as demo_service
 from server.config import Config
 from server.exceptions import (ResourceDoesNotExistException,
                                AuthenticationException,
+                               APIException,
                                ValidationException)
 from server.utils import tokenize, detokenize
 
@@ -64,11 +65,13 @@ def create_user(guid, retailer_id):
 
     try:
         response = requests.request("POST", url, data=payload_json, headers=headers)
-    except ResourceDoesNotExistException as e:
-        raise ResourceDoesNotExistException('Demo does not exist', internal_details=str(e))
-    except ValidationException as e:
-        raise ValidationException('ERP threw error creating a new demo user',
-                                  internal_details=str(e))
+    except Exception as e:
+        raise APIException('ERP threw error creating new user for demo', internal_details=str(e))
+
+    # Check for expected errors in response
+    if response.status_code == 404:
+        raise ResourceDoesNotExistException('Demo or retailer does not exist',
+                                            internal_details=json.loads(response.text).get('error').get('message'))
 
     return response.text
 

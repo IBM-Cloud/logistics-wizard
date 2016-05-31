@@ -9,7 +9,8 @@ from decorator import decorator
 from flask import g, request
 
 from server.exceptions import (AuthorizationException,
-                               TokenException)
+                               TokenException,
+                               ValidationException)
 
 ###########################
 #     Request Utils       #
@@ -82,3 +83,44 @@ def request_wants_json():
     return best == 'application/json' and \
         request.accept_mimetypes[best] > \
         request.accept_mimetypes['text/html']
+
+
+def get_json_data(req):
+    """
+    Takes a request and extracts the JSON from the body
+
+    :param req:     An API request
+    :return:        A JSON object.
+    """
+    try:
+        return req.get_json()
+    except Exception:
+        raise ValidationException('No JSON payload received in the request')
+
+
+def check_null_input(param, error_string):
+    """
+    Checks a param and raises a ValidationException if None
+
+    :param param:           An API input parameter
+    :param error_string:    An string to specify the error if param is None
+    """
+    if param is None:
+        raise ValidationException('You must specify {0} '.format(error_string))
+
+
+def compose_error(exc, e):
+    """
+    Composes an error to return to the client after APIException is thrown
+
+    :param exc:     Raised exception
+    :param e:       Returned error
+    :return:        An string to specify the error if param is None
+    """
+    return_error = dict(code=exc.status_code,
+                        message=e.message)
+    if e.user_details is not None:
+        return_error['user_details'] = e.user_details
+
+    return return_error
+

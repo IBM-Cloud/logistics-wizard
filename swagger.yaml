@@ -40,6 +40,10 @@ paths:
           description: Invalid email
           schema:
             $ref: '#/definitions/Error'
+        500:
+          description: ERP Unreachable
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -64,6 +68,10 @@ paths:
             $ref: '#/definitions/Demo'
         404:
           description: Demo does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: ERP Unreachable
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -147,8 +155,16 @@ paths:
           description: The new User object
           schema:
             $ref: '#/definitions/User'
+        400:
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/Error'
         404:
           description: Demo or Retailer does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: ERP Unreachable
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -715,7 +731,7 @@ definitions:
         format: int32
       message:
         type: string
-      fields:
+      user_details:
         type: string
 tags:
   - name: Supplier

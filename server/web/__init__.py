@@ -7,6 +7,7 @@ import re
 import json
 
 from flask import Flask, current_app, Response
+from server.web.utils import compose_error
 
 
 def create_app():
@@ -47,10 +48,7 @@ def create_app():
         else:
             exc = e
         current_app.logger.error(exc)
-        return Response(json.dumps({
-                            'code': exc.status_code,
-                            'message': e.message
-                        }),
+        return Response(json.dumps(compose_error(exc, e)),
                         status=exc.status_code,
                         mimetype='application/json')
 

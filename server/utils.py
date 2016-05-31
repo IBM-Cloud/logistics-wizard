@@ -3,9 +3,26 @@ High level utilities, can be used by any of the layers (data, service,
 interface) and should not have any dependency on Flask or request context.
 """
 import jwt
+import re
 
 from server.config import Config
 from server.exceptions import TokenException
+
+
+def validate_email(email_address):
+    """
+    Verify that the email is a valid email address
+    """
+    email_regex = re.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+"
+                             "(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*"
+                             "@"
+                             "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+"
+                             "[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+
+    if email_regex.match(email_address) is None:
+        return False
+    else:
+        return True
 
 
 def tokenize(data):

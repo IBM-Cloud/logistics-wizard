@@ -5,12 +5,14 @@ import json
 
 import server.services.demos as demo_service
 import server.services.users as user_service
-from flask import g, request, Response, url_for, Blueprint
+from flask import g, request, Response, Blueprint
 from server.exceptions import (TokenException,
                                AuthorizationException,
                                ResourceDoesNotExistException,
                                ValidationException)
-from server.web.utils import jsonify, get_token_from_request
+from server.web.utils import (get_token_from_request,
+                              get_json_data,
+                              check_null_input)
 
 demos_v1_blueprint = Blueprint('demos_v1_api', __name__)
 
@@ -47,12 +49,12 @@ def create_demo():
     }
 
     """
-    data = request.get_json()
+
+    # Get inputs and make sure required params are not null
+    data = get_json_data(request)
     demo_name = data.get('name')
     user_email = data.get('email')
-
-    if demo_name is None:
-        raise ValidationException('You must specify a demo name for the new demo session')
+    check_null_input(demo_name, 'a demo name for the new demo session')
 
     demo = demo_service.create_demo(demo_name, user_email)
     return Response(demo,
@@ -144,13 +146,12 @@ def create_demo_user(guid):
         "email": "ruth.XXX@acme.com"
     }
     """
-    data = request.get_json()
-    retailer_id = data.get('retailerId')
 
-    if guid is None:
-        raise ValidationException('You must specify a demo for which to create a user')
-    if retailer_id is None:
-        raise ValidationException('You must specify a retailer to make a user for the demo')
+    # Get inputs and make sure required params are not null
+    data = get_json_data(request)
+    retailer_id = data.get('retailerId')
+    check_null_input(guid, 'a demo for which to create a user')
+    check_null_input(retailer_id, 'a retailer to make a user for the demo')
 
     user = user_service.create_user(guid, retailer_id)
     return Response(user,

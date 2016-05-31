@@ -7,8 +7,11 @@ object and should just call into the service layer to act upon a demo resource.
 import requests
 import json
 from server.config import Config
+from server.utils import validate_email
 from server.exceptions import (ResourceDoesNotExistException)
-from server.exceptions import (ValidationException)
+from server.exceptions import (APIException,
+                               ValidationException,
+                               UnprocessableEntityException)
 
 ###########################
 #         Utilities       #
@@ -51,7 +54,7 @@ def find_user_in_demo(demo, user_id):
 #         Services        #
 ###########################
 
-def create_demo(demo_name, user_email):
+def create_demo(demo_name, user_email=None):
     """
     Create a new demo session in the ERP system.
 
@@ -60,6 +63,10 @@ def create_demo(demo_name, user_email):
 
     :return:         The created Demo model.
     """
+
+    # Check email
+    if user_email is not None and validate_email(user_email) == False:
+        raise UnprocessableEntityException("Invalid email address")
 
     # Create and format request to ERP
     url = Config.ERP + "Demos"
@@ -73,8 +80,8 @@ def create_demo(demo_name, user_email):
 
     try:
         response = requests.request("POST", url, data=payload_json, headers=headers)
-    except ValidationException as e:
-        raise ValidationException('ERP threw error creating new Demo', internal_details=str(e))
+    except Exception as e:
+        raise APIException('ERP threw error creating new Demo', internal_details=str(e))
 
     # TODO: Send email to the user with demo info
     if user_email:
@@ -100,10 +107,12 @@ def get_demo_by_guid(guid):
 
     try:
         response = requests.request("GET", url, headers=headers)
-    except ResourceDoesNotExistException as e:
-        raise ResourceDoesNotExistException('Demo does not exist', internal_details=str(e))
-    except ValidationException as e:
-        raise ValidationException('ERP threw error getting demo', internal_details=str(e))
+    except Exception as e:
+        raise APIException('ERP threw error retrieving demo', internal_details=str(e))
+
+    if response.status_code == 404:
+        raise ResourceDoesNotExistException('Demo does not exist',
+                                            internal_details=json.loads(response.text).get('error').get('message'))
 
     return response.text
 

@@ -14,8 +14,9 @@ class APIException(Exception):
         """
         Create a new APIException
 
-        :param message:       General exception message
-        :param user_details:  Message to be shown to user
+        :param message:             General exception message
+        :param user_details:        Message to be shown to user
+        :param internal_details:    Additional details provided by the system
         """
         self.message = message
         self.internal_details = internal_details
@@ -70,6 +71,18 @@ class ValidationException(APIException):
             message, user_details=user_details, internal_details=internal_details)
 
 
+class UnprocessableEntityException(APIException):
+    """
+    Indicates an exception when valid input is semantically incorrect.
+    """
+
+    status_code = 422
+
+    def __init__(self, message, user_details=None, internal_details=None):
+        super(UnprocessableEntityException, self).__init__(
+            message, user_details=user_details, internal_details=internal_details)
+
+
 class IntegrityException(APIException):
     """
     Raised when database constraints are not met on updates.
@@ -85,7 +98,7 @@ class IntegrityException(APIException):
 
 class ResourceDoesNotExistException(APIException):
     """
-    Raised when retrieving a user and it cannot be found in the database.
+    Raised when retrieving a resource and it cannot be found in the database.
     """
 
     status_code = 404
