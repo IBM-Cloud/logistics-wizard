@@ -5,11 +5,13 @@ the interface layer should have no knowledge of the properties of the user
 object and should just call into the service layer to act upon a user resource.
 """
 from datetime import datetime, timedelta
+import json
+import requests
 
-from server.exceptions import (TokenException,
-                               ResourceDoesNotExistException,
+from server.config import Config
+from server.exceptions import (ResourceDoesNotExistException,
                                AuthenticationException,
-                               AuthorizationException)
+                               ValidationException)
 from server.utils import tokenize, detokenize
 
 
@@ -27,10 +29,10 @@ def user_to_dict(user):
     """
     return {
         'id': user.get('id'),
+        'demoId': user.get('demoId'),
         'email': user.get('email'),
         'username': user.get('username'),
-        'role': user.get('role'),
-        'createdAt': user.get('createdAt')
+        'roles': user.get('roles'),
     }
 
 
@@ -48,16 +50,28 @@ def create_user(guid, retailer_id):
 
     :return:            The created User model.
     """
-    # TODO: Call ERP API to create a user
-    user = {
-        'id': "123",
-        'email': "test@example.com",
-        'username': "test@example.com",
-        'role': "retailstoremanager",
-        'createdAt': "2015-11-05T22:00:51.692765"
-    }
 
-    return user
+    # Create and format request to ERP
+    url = Config.ERP + "Demos/" + guid + "/createUser"
+    headers = {
+        'content-type': "application/json",
+        'cache-control': "no-cache"
+    }
+    payload = dict()
+    payload['retailerId'] = retailer_id
+    payload_json = json.dumps(payload)
+
+    try:
+        response = requests.request("POST", url, data=payload_json, headers=headers)
+    except ResourceDoesNotExistException as e:
+        raise ResourceDoesNotExistException('Demo does not exist', internal_details=str(e))
+    except ValidationException as e:
+        raise ValidationException('ERP threw error creating a new demo user',
+                                  internal_details=str(e))
+
+    # TODO: Update and test when createUser API is fixed
+    print response.text
+    return response.text
 
 
 def get_user_by_id(guid, user_id):
@@ -69,16 +83,26 @@ def get_user_by_id(guid, user_id):
     :return:          An instance of the User.
     """
     try:
-        # TODO: Call ERP API to get the user
+        # TODO: Waiting for ERP API to implement this
+        roles = list()
+        roles.append({
+            "id": "2",
+            "name": "retailstoremanager",
+            "created": "2016-05-30T18:32:50.077Z",
+            "modified": "2016-05-30T18:32:50.077Z"
+        })
         user = {
-            'id': "123",
+            'id': user_id,
+            "demoId": "123",
             'email': "test@example.com",
-            'username': "test@example.com",
-            'role': "retailstoremanager",
-            'createdAt': "2015-11-05T22:00:51.692765"
+            'username': "Retail Store Manager (test)",
+            'roles': roles
         }
     except ResourceDoesNotExistException as e:
         raise ResourceDoesNotExistException('User does not exist', internal_details=str(e))
+    except ValidationException as e:
+        raise ValidationException('ERP threw error retrieving the user',
+                                  internal_details=str(e))
     return user
 
 
@@ -90,21 +114,27 @@ def login(guid, user_id):
     :param user_id:     The user_id for which to log in.
     :return:            Auth data returned by ERP system
     """
+
+    # Create and format request to ERP
+    url = Config.ERP + "Demos/" + guid + "/loginAs"
+    headers = {
+        'content-type': "application/json",
+        'cache-control': "no-cache"
+    }
+    payload = dict()
+    payload['userId'] = user_id
+    payload_json = json.dumps(payload)
+
     try:
-        # TODO: Call ERP API to log the user in
-        auth_data = {
-            'id': "UQO8hEw5tSc4LBPuRDZ7fmUyiqgZPH5o0XhEla29PAr8d7D0OEfRYYo5gCBoHm9b",
-            'ttl': 1209600,
-            'created': "2016-05-30T21:56:43.727Z",
-            'userId': user_id
-        }
+        response = requests.request("POST", url, data=payload_json, headers=headers)
     except ResourceDoesNotExistException:
         raise AuthenticationException('User does not exist')
 
+    # Get the user we just logged in
     user = get_user_by_id(guid, user_id)
 
     return {
-        'loopback_token': auth_data.get('id'),
+        'loopback_token': json.loads(response.text).get('id'),
         'user': user
     }
 
@@ -115,8 +145,17 @@ def logout(token):
 
     :param token:   The ERP Loopback session token
     """
+
+    # Create and format request to ERP
+    url = Config.ERP + "Users/logout"
+    headers = {
+        'content-type': "application/json",
+        'cache-control': "no-cache",
+        'Authorization': token
+    }
+
     try:
-        # TODO: Call ERP API to log the user out
+        response = requests.request("POST", url, headers=headers)
         pass
     except ResourceDoesNotExistException:
         raise ResourceDoesNotExistException('Session does not exist', internal_details=str(e))

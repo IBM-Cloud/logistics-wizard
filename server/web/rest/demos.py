@@ -56,7 +56,7 @@ def create_demo():
         raise ValidationException('You must specify a demo name for the new demo session')
 
     demo = demo_service.create_demo(demo_name, user_email)
-    return Response(jsonify(demo, demo_service.demo_to_dict),
+    return Response(demo,
                     status=201,
                     mimetype='application/json')
 
@@ -79,7 +79,7 @@ def get_demo(guid):
         raise ValidationException('You must specify a demo to retrieve')
 
     demo = demo_service.get_demo_by_guid(guid)
-    return Response(jsonify(demo, demo_service.demo_to_dict),
+    return Response(demo,
                     status=200,
                     mimetype='application/json')
 
@@ -116,7 +116,7 @@ def get_demo_retailers(guid):
         raise ValidationException('You must specify a demo for which to retrieve retailers')
 
     retailers = demo_service.get_demo_retailers(guid)
-    return Response(jsonify(retailers, retailer_service.retailer_to_dict),
+    return Response(retailers,
                     status=200,
                     mimetype='application/json')
 
@@ -148,7 +148,7 @@ def create_demo_user(guid):
         raise ValidationException('You must specify a retailer to make a user for the demo')
 
     user = user_service.create_user(guid, retailer_id)
-    return Response(jsonify(user, user_service.user_to_dict),
+    return Response(user,
                     status=201,
                     mimetype='application/json')
 

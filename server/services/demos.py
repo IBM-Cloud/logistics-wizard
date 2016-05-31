@@ -4,9 +4,11 @@ the calls get routed to the ERP service appropriately. As much as possible,
 the interface layer should have no knowledge of the properties of the demo
 object and should just call into the service layer to act upon a demo resource.
 """
+import requests
+import json
 from server.config import Config
 from server.exceptions import (ResourceDoesNotExistException)
-
+from server.exceptions import (ValidationException)
 
 ###########################
 #         Utilities       #
@@ -21,11 +23,11 @@ def demo_to_dict(demo):
     :return:      A dict representing the demo.
     """
     return {
-        'id': demo.get('id'),
-        'name': demo.get('name'),
-        'guid': demo.get('guid'),
-        'createdAt': demo.get('createdAt'),
-        'users': demo.get('users')
+        'id': demo.id,
+        'name': demo.name,
+        'guid': demo.guid,
+        'createdAt': demo.createdAt,
+        'users': demo.users
     }
 
 
@@ -37,30 +39,32 @@ def create_demo(demo_name, user_email):
     """
     Create a new demo session in the ERP system.
 
+    :param demo_name:   Name of the demo being created.
+    :param user_email:  Email of the user creating the demo.
+
     :return:         The created Demo model.
     """
-    # TODO: Call ERP API to create a demo
-    users = list()
-    users.append({
-        'id': "123",
-        'email': "test@example.com",
-        'username': "test@example.com",
-        'role': "supplychainmanager",
-        'createdAt': "2015-11-05T22:00:51.692765"
-    })
-    demo = {
-        'id': "123",
-        'name': demo_name,
-        'guid': "JDJhJDEdTRURVBrbW9vcj3k4L2sy",
-        'createdAt': "2015-11-05T22:00:51.692765",
-        'users': users
+
+    # Create and format request to ERP
+    url = Config.ERP + "Demos"
+    headers = {
+        'content-type': "application/json",
+        'cache-control': "no-cache"
     }
+    payload = dict()
+    payload['name'] = demo_name
+    payload_json = json.dumps(payload)
+
+    try:
+        response = requests.request("POST", url, data=payload_json, headers=headers)
+    except ValidationException as e:
+        raise ValidationException('ERP threw error creating new Demo', internal_details=str(e))
 
     # TODO: Send email to the user with demo info
     if user_email:
         pass
 
-    return demo
+    return response.text
 
 
 def get_demo_by_guid(guid):
@@ -68,27 +72,24 @@ def get_demo_by_guid(guid):
     Retrieve a demo from the ERP system by guid.
 
     :param guid:    The demo's guid.
+
     :return:        An instance of the Demo.
     """
+
+    # Create and format request to ERP
+    url = Config.ERP + "Demos/findByGuid/" + guid
+    headers = {
+        'cache-control': "no-cache"
+    }
+
     try:
-        # TODO: Call ERP API to get the demo
-        users = list()
-        users.append({
-            'id': "123",
-            'email': "test@example.com",
-            'username': "test@example.com",
-            'role': "supplychainmanager",
-            'createdAt': "2015-11-05T22:00:51.692765"
-        })
-        demo = {
-            'id': "123",
-            'guid': guid,
-            'createdAt': "2015-11-05T22:00:51.692765",
-            'users': users
-        }
+        response = requests.request("GET", url, headers=headers)
     except ResourceDoesNotExistException as e:
         raise ResourceDoesNotExistException('Demo does not exist', internal_details=str(e))
-    return demo
+    except ValidationException as e:
+        raise ValidationException('ERP threw error getting demo', internal_details=str(e))
+
+    return response.text
 
 
 def delete_demo_by_guid(guid):
@@ -97,11 +98,22 @@ def delete_demo_by_guid(guid):
 
     :param guid:    The demo's guid.
     """
+
+    # TODO: Update DELETE URL once ERP spec is updated
+    # Create and format request to ERP
+    url = Config.ERP + "Demos/deleteByGuid/" + guid
+    headers = {
+        'cache-control': "no-cache"
+    }
+
     try:
-        # TODO: Call ERP API to delete the demo
-        pass
+        response = requests.request("DELETE", url, headers=headers)
     except ResourceDoesNotExistException as e:
         raise ResourceDoesNotExistException('Demo does not exist', internal_details=str(e))
+    except ValidationException as e:
+        raise ValidationException('ERP threw error deleting demo', internal_details=str(e))
+
+    print response.status_code
     return
 
 
@@ -112,31 +124,19 @@ def get_demo_retailers(guid):
     :param guid:    The demo's guid.
     :return:        An instance of the Demo.
     """
+
+    # Create and format request to ERP
+    url = Config.ERP + "Demos/" + guid + "/retailers"
+    headers = {
+        'cache-control': "no-cache"
+    }
+
     try:
-        # TODO: Call ERP API to get the demo retailers
-        retailers = list()
-        contact = {
-            'id': "123",
-            'name': "John Smith"
-        }
-        address = {
-            'city': "New York City",
-            'state': "New York",
-            'country': "United States",
-            'latitude': "123.1234",
-            'longitude': "123.1234",
-            'id': "123",
-        }
-        retailers.append({
-            'id': "123",
-            'contact': contact,
-            'address': address
-        })
-        retailers.append({
-            'id': "321",
-            'contact': contact,
-            'address': address
-        })
+        response = requests.request("GET", url, headers=headers)
     except ResourceDoesNotExistException as e:
         raise ResourceDoesNotExistException('Demo does not exist', internal_details=str(e))
-    return retailers
+    except ValidationException as e:
+        raise ValidationException('ERP threw error retrieving retailers for demo',
+                                  internal_details=str(e))
+
+    return response.text
