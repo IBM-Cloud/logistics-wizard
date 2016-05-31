@@ -14,57 +14,28 @@ schemes:
 basePath: /api/v1
 produces:
   - application/json
+consumes:
+  - application/json
 paths:
-  '/users':
-    get:
-      summary: Get Users
-      description: |
-        Returns all users who have access to the Logistics Wizard system in some capacity.
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          type: string
-      tags:
-        - User
-      responses:
-        200:
-          description: An array of users
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/User'
-        401:
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+  '/demos':
     post:
-      summary: Create User
+      summary: Create Demo
       description: |
-        Creates a new user in the system
+        Create new demo session
       parameters:
-        - name: user
+        - name: demoInfo
           in: body
-          description: User object
+          description: Demo name and user email
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/Demo'
       tags:
-        - User
+        - Demo
       responses:
         201:
-          description: The new user object
+          description: The new Demo object
           schema:
-            $ref: '#/definitions/User'
-        409:
-          description: Username/email is taken
-          schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/Demo'
         422:
           description: Invalid email
           schema:
@@ -73,86 +44,136 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/users/{id}':
+  '/demos/{guid}':
     get:
-      summary: Get User
+      summary: Get Demo
       description: |
-        Retrieves the user with the input user ID
+        Retrieves the demo given the demo guid
       parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          type: string
-        - name: id
+        - name: guid
           in: path
-          description: ID of the user to be retrieved
+          description: Demo guid
           required: true
           type: string
       tags:
         - User
       responses:
         200:
-          description: The retrieved User object
+          description: The retrieved Demo object
           schema:
-            $ref: '#/definitions/User'
-        401:
-          description: Unauthorized
+            $ref: '#/definitions/Demo'
+        404:
+          description: Demo does not exist
           schema:
             $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-    put:
-      summary: Update User
+    delete:
+      summary: Delete Demo
       description: |
-        Updates attributes for a user
+        Deletes a Demo given the demo guid
       parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          type: string
-        - name: id
+        - name: guid
           in: path
-          description: ID of the user to be retrieved
+          description: Demo guid
           required: true
           type: string
-        - name: user
+      tags:
+        - Demo
+      responses:
+        204:
+          description: Demo deleted successfully
+        404:
+          description: Demo does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/demos/{guid}/retailers':
+    get:
+      summary: Get Demo retailers
+      description: |
+        Retrieves the retailers for a demo given the demo guid
+      parameters:
+        - name: guid
+          in: path
+          description: Demo guid
+          required: true
+          type: string
+      tags:
+        - Demo
+        - Retailer
+      responses:
+        200:
+          description: The retrieved Retailers
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Retailer'
+        404:
+          description: Demo does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/demos/{guid}/users':
+    post:
+      summary: Create Demo User
+      description: |
+        Create new user for the demo given demo guid
+      parameters:
+        - name: guid
+          in: path
+          description: Demo guid
+          required: true
+          type: string
+        - name: retailerId
           in: body
-          description: User object
+          description: ID of assigned retailer
           required: true
           schema:
-            $ref: '#/definitions/User'
+            type: string
       tags:
+        - Demo
         - User
       responses:
-        200:
-          description: The updated User object
+        201:
+          description: The new User object
           schema:
             $ref: '#/definitions/User'
-        401:
-          description: Unauthorized
+        404:
+          description: Demo or Retailer does not exist
           schema:
             $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/auth':
+  '/demos/{guid}/login':
     post:
       summary: Sign In
       description: |
-        Signs a specific user into the system and returns a bearer token
+        Signs a specific user into a demo session
       parameters:
-        - name: user
+        - name: guid
+          in: path
+          description: Demo guid
+          required: true
+          type: string
+        - name: userId
           in: body
-          description: The User being signed in
+          description: User ID
           required: true
           schema:
-            $ref: '#/definitions/User'
+            type: string
       tags:
+        - Demo
         - User
       responses:
         200:
@@ -163,11 +184,15 @@ paths:
           description: Username/password is incorrect
           schema:
             $ref: '#/definitions/Error'
+        404:
+          description: Demo or User does not exist
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/auth/{token}':
+  '/logout/{token}':
     delete:
       summary: User Logout
       description: |
@@ -487,31 +512,75 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 definitions:
-  User:
-    type: object
+  Demo:
     properties:
       id:
         type: string
-      email:
+      guid:
         type: string
-      password:
-        type: string
-        format: password
-      role:
+      name:
         type: string
       createdAt:
         type: string
         format: date
+      users:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+    required:
+      - name
+  User:
+    properties:
+      id:
+        type: string
+      demoId:
+        type: string
+      username:
+        type: string
+      email:
+        type: string
+      roles:
+        type: array
+        items:
+          $ref: '#/definitions/Role'
+      created:
+        type: string
+        format: date
+      lastUpdated:
+        type: string
+        format: date
     required:
       - email
-      - password
-  AccessToken:
-    description: JSON Web Token for UI session management
+  Role:
     properties:
-      token:
+      id:
+        type: string
+      name:
+        type: string
+      created:
+        type: string
+        format: date
+      modified:
+        type: string
+        format: date
+    required:
+      - name
+  AccessToken:
+    properties:
+      id:
+        type: string
+      ttl:
+        default: 1209600
+        description: time to live in seconds (2 weeks by default)
+        type: number
+        format: double
+      created:
+        type: string
+        format: date
+      userId:
         type: string
     required:
-      - token
+      - id
     additionalProperties: false
   Product:
     properties:
@@ -656,3 +725,5 @@ tags:
   - name: Retailer
   - name: Inventory
   - name: User
+  - name: Demo
+  - name: Role

@@ -5,7 +5,6 @@ import json
 
 import server.services.demos as demo_service
 import server.services.users as user_service
-import server.services.retailers as retailer_service
 from flask import g, request, Response, url_for, Blueprint
 from server.exceptions import (TokenException,
                                AuthorizationException,
@@ -70,6 +69,7 @@ def get_demo(guid):
 
     :return: {
         "id": "123",
+        "name": "Example Demo Name",
         "guid": "JDJhJDEdTRUR...VBrbW9vcj3k4L2sy",
         "createdAt": "2015-11-05T22:00:51.692765",
         "users": [{User}...{User}]
@@ -107,9 +107,15 @@ def get_demo_retailers(guid):
     :param guid:   The demo's guid
 
     :return: [{
-        "id": "123",
-        "address": {Address},
-        "contact": {Contact}
+        "id": "R1",
+        "address": {
+          "city": "Raleigh",
+          "state": "North Carolina",
+          "country": "US",
+          "latitude": 35.71,
+          "longitude": -78.63
+        },
+        "managerId": "123"
     }, {...}]
     """
     if guid is None:
@@ -132,11 +138,10 @@ def create_demo_user(guid):
     }
 
     :return: {
-        'id': "123",
-        'email': "test@example.com",
-        'username': "test@example.com",
-        'role': "retailstoremanager",
-        'createdAt': "2015-11-05T22:00:51.692765"
+        "id": "123",
+        "demoId": "123",
+        "username": "Retail Store Manager (XXX)",
+        "email": "ruth.XXX@acme.com"
     }
     """
     data = request.get_json()
@@ -153,22 +158,22 @@ def create_demo_user(guid):
                     mimetype='application/json')
 
 
+"""
 @demos_v1_blueprint.route('/demos/<string:guid>/users/<string:user_id>', methods=['GET'])
 def get_demo_user(guid, user_id):
-    """
+
     Gets a user of a single demo
 
     :param guid:   The demo's guid
     :param user_id:   The user being retrieved
 
     :return: {
-        'id': "123",
-        'email': "test@example.com",
-        'username': "test@example.com",
-        'role': "retailstoremanager",
-        'createdAt': "2015-11-05T22:00:51.692765"
+        "id": "123",
+        "demoId": "123",
+        "username": "Retail Store Manager (XXX)",
+        "email": "ruth.XXX@acme.com"
     }
-    """
+
     if guid is None:
         raise ValidationException('You must specify a demo for which to retrieve a user')
     if user_id is None:
@@ -178,6 +183,7 @@ def get_demo_user(guid, user_id):
     return Response(jsonify(user, user_service.user_to_dict),
                     status=200,
                     mimetype='application/json')
+"""
 
 
 @demos_v1_blueprint.route('/demos/<string:guid>/login', methods=['POST'])

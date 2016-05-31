@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import json
 import requests
 
+import server.services.demos as demo_service
 from server.config import Config
 from server.exceptions import (ResourceDoesNotExistException,
                                AuthenticationException,
@@ -69,19 +70,18 @@ def create_user(guid, retailer_id):
         raise ValidationException('ERP threw error creating a new demo user',
                                   internal_details=str(e))
 
-    # TODO: Update and test when createUser API is fixed
-    print response.text
     return response.text
 
 
+"""
 def get_user_by_id(guid, user_id):
-    """
+
     Retrieve a user from the ERP system by user_id.
 
     :param guid:        The demo's guid
     :param user_id:   The user's id.
     :return:          An instance of the User.
-    """
+
     try:
         # TODO: Waiting for ERP API to implement this
         roles = list()
@@ -104,6 +104,7 @@ def get_user_by_id(guid, user_id):
         raise ValidationException('ERP threw error retrieving the user',
                                   internal_details=str(e))
     return user
+"""
 
 
 def login(guid, user_id):
@@ -130,8 +131,9 @@ def login(guid, user_id):
     except ResourceDoesNotExistException:
         raise AuthenticationException('User does not exist')
 
-    # Get the user we just logged in
-    user = get_user_by_id(guid, user_id)
+    # Get the demo's users and find the one we just logged in
+    demo = demo_service.get_demo_by_guid(guid)
+    user = demo_service.find_user_in_demo(demo, user_id)
 
     return {
         'loopback_token': json.loads(response.text).get('id'),
@@ -150,7 +152,6 @@ def logout(token):
     url = Config.ERP + "Users/logout"
     headers = {
         'content-type': "application/json",
-        'cache-control': "no-cache",
         'Authorization': token
     }
 
