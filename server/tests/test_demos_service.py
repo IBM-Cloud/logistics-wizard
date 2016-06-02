@@ -103,13 +103,66 @@ class RetrieveDemoTestCase(unittest.TestCase):
         # Destroy demo
         demo_service.delete_demo_by_guid(demo_json.get('guid'))
 
-    def test_demo_retrieve_invalid_inputs(self):
-        """With an invalid inputs, are correct errors thrown?"""
+    def test_demo_retrieve_invalid_input(self):
+        """With invalid guid, is correct error thrown?"""
 
-        # Attempt to create demo with invalid guid
+        # Attempt to retrieve demo with invalid guid
         self.assertRaises(ResourceDoesNotExistException,
                           demo_service.get_demo_by_guid,
                           'ABC123')
+
+
+class DeleteDemoTestCase(unittest.TestCase):
+    """Tests for `services/demos.py - delete_demo_by_guid()`."""
+
+    def test_demo_delete_success(self):
+        """With correct values, is a valid demo deleted?"""
+
+        # Create demo
+        demo_name = datetime.now().isoformat("T")
+        demo = demo_service.create_demo(demo_name)
+
+        # Destroy demo and check for successful return
+        self.assertTrue(demo_service.delete_demo_by_guid(loads(demo).get('guid')) is None)
+
+    def test_demo_delete_invalid_input(self):
+        """With invalid guid, is correct error thrown?"""
+
+        # Attempt to delete demo with invalid guid
+        self.assertRaises(ResourceDoesNotExistException,
+                          demo_service.delete_demo_by_guid,
+                          'ABC123')
+
+
+class RetrieveDemoRetailersTestCase(unittest.TestCase):
+    """Tests for `services/demos.py - get_demo_retailers()`."""
+
+    def test_demo_retrieve_retailers_success(self):
+        """With correct values, are valid demo retailers returned?"""
+
+        # Create and then retrieve demo
+        demo_name = datetime.now().isoformat("T")
+        created_demo = demo_service.create_demo(demo_name)
+        demo_guid = loads(created_demo).get('guid')
+        retailers = demo_service.get_demo_retailers(demo_guid)
+        retailers_json = loads(retailers)
+
+        # TODO: Update to use assertIsInstance(a,b)
+        # Check that the retailers are valid
+        for retailer_json in retailers_json:
+            self.assertTrue(retailer_json.get('id'))
+            self.assertTrue(retailer_json.get('address'))
+
+            address_json = retailer_json.get('address')
+            self.assertTrue(address_json.get('city'))
+            self.assertTrue(address_json.get('state'))
+            self.assertTrue(address_json.get('country'))
+            self.assertTrue(address_json.get('latitude'))
+            self.assertTrue(address_json.get('longitude'))
+
+        # Destroy demo
+        demo_service.delete_demo_by_guid(demo_guid)
+
 
 if __name__ == '__main__':
     unittest.main()

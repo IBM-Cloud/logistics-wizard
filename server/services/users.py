@@ -68,7 +68,7 @@ def create_user(guid, retailer_id):
     except Exception as e:
         raise APIException('ERP threw error creating new user for demo', internal_details=str(e))
 
-    # Check for expected errors in response
+    # Check for possible errors in response
     if response.status_code == 404:
         raise ResourceDoesNotExistException('Demo or retailer does not exist',
                                             internal_details=json.loads(response.text).get('error').get('message'))
@@ -131,8 +131,13 @@ def login(guid, user_id):
 
     try:
         response = requests.request("POST", url, data=payload_json, headers=headers)
-    except ResourceDoesNotExistException:
-        raise AuthenticationException('User does not exist')
+    except Exception as e:
+        raise APIException('ERP threw error creating new user for demo', internal_details=str(e))
+
+    # Check for possible errors in response
+    if response.status_code == 404:
+        raise ResourceDoesNotExistException('Demo or user does not exist',
+                                            internal_details=json.loads(response.text).get('error').get('message'))
 
     # Get the demo's users and find the one we just logged in
     demo = demo_service.get_demo_by_guid(guid)
@@ -160,9 +165,13 @@ def logout(token):
 
     try:
         response = requests.request("POST", url, headers=headers)
-        pass
-    except ResourceDoesNotExistException:
-        raise ResourceDoesNotExistException('Session does not exist', internal_details=str(e))
+    except Exception as e:
+        raise APIException('ERP threw error creating new user for demo', internal_details=str(e))
+
+    # Check for possible errors in response
+    if response.status_code == 500:
+        raise ResourceDoesNotExistException('Session does not exist',
+                                            internal_details=json.loads(response.text).get('error').get('message'))
 
     return
 

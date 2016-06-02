@@ -196,10 +196,6 @@ paths:
           description: The bearer token
           schema:
             $ref: '#/definitions/AccessToken'
-        401:
-          description: Username/password is incorrect
-          schema:
-            $ref: '#/definitions/Error'
         404:
           description: Demo or User does not exist
           schema:

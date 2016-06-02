@@ -110,6 +110,7 @@ def get_demo_by_guid(guid):
     except Exception as e:
         raise APIException('ERP threw error retrieving demo', internal_details=str(e))
 
+    # Check for possible errors in response
     if response.status_code == 404:
         raise ResourceDoesNotExistException('Demo does not exist',
                                             internal_details=json.loads(response.text).get('error').get('message'))
@@ -129,10 +130,13 @@ def delete_demo_by_guid(guid):
 
     try:
         response = requests.request("DELETE", url)
-    except ResourceDoesNotExistException as e:
-        raise ResourceDoesNotExistException('Demo does not exist', internal_details=str(e))
-    except ValidationException as e:
-        raise ValidationException('ERP threw error deleting demo', internal_details=str(e))
+    except Exception as e:
+        raise APIException('ERP threw error deleting demo', internal_details=str(e))
+
+    # Check for possible errors in response
+    if response.status_code == 404:
+        raise ResourceDoesNotExistException('Demo does not exist',
+                                            internal_details=json.loads(response.text).get('error').get('message'))
 
     return
 
@@ -153,10 +157,13 @@ def get_demo_retailers(guid):
 
     try:
         response = requests.request("GET", url, headers=headers)
-    except ResourceDoesNotExistException as e:
-        raise ResourceDoesNotExistException('Demo does not exist', internal_details=str(e))
-    except ValidationException as e:
-        raise ValidationException('ERP threw error retrieving retailers for demo',
-                                  internal_details=str(e))
+    except Exception as e:
+        raise APIException('ERP threw error retrieving retailers for demo',
+                           internal_details=str(e))
+
+    # Check for possible errors in response
+    if response.status_code == 404:
+        raise ResourceDoesNotExistException('Demo does not exist',
+                                            internal_details=json.loads(response.text).get('error').get('message'))
 
     return response.text

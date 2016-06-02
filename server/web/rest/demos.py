@@ -77,8 +77,7 @@ def get_demo(guid):
         "users": [{User}...{User}]
     }
     """
-    if guid is None:
-        raise ValidationException('You must specify a demo to retrieve')
+    check_null_input(guid, 'a demo to retrieve')
 
     demo = demo_service.get_demo_by_guid(guid)
     return Response(demo,
@@ -94,8 +93,7 @@ def delete_demo(guid):
     :param guid:   The demo's guid
     :return:
     """
-    if guid is None:
-        raise ValidationException('You must specify a demo to delete')
+    check_null_input(guid, 'a demo to delete')
 
     demo_service.delete_demo_by_guid(guid)
     return '', 204
@@ -120,8 +118,7 @@ def get_demo_retailers(guid):
         "managerId": "123"
     }, {...}]
     """
-    if guid is None:
-        raise ValidationException('You must specify a demo for which to retrieve retailers')
+    check_null_input(guid, 'a demo for which to retrieve retailers')
 
     retailers = demo_service.get_demo_retailers(guid)
     return Response(retailers,
@@ -202,11 +199,8 @@ def demo_login(guid):
     """
     data = request.get_json()
     user_id = data.get('userId')
-
-    if user_id is None:
-        raise ValidationException('You must a username when logging in.')
-    elif guid is None:
-        raise ValidationException('You must include a demo guid when logging in.')
+    check_null_input(user_id, 'a username when logging in')
+    check_null_input(guid, 'a demo guid when logging in')
 
     # Login through the ERP system and create a JWT valid for 2 weeks
     auth_data = user_service.login(guid, user_id)
@@ -227,8 +221,6 @@ def deauthenticate(token):
     :return:
     """
     request_token = get_token_from_request()
-    print token
-    print request_token
     # Only allow deletion of a web token if the token belongs to the current user
     if request_token == token:
         user_service.logout(token=g.auth['loopback_token'])
