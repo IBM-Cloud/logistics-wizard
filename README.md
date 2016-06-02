@@ -6,6 +6,8 @@ This repository serves as the central server application for the Logistics Wizar
 
 Logistics Wizard is a reimagined supply chain optimization system for the 21st century. It is comprised of a set of loosely-coupled, distributed services that take an existing ERP system and extend its functionality by leveraging various cloud services. The goal of this system is to showcase several common SaaS implementation patterns and provide them to our developer community. This demo exhibits hybrid cloud, microservices, and big data anlytics concepts that can be reused when building enterprise-level applications on Bluemix.
 
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/IBM-Bluemix/logistics-wizard.git)
+
 The following services are leveraged in the overall Logistics Wizard solution, yet are built to be extensible for other purposes:
 
 * [logistics-wizard-erp](https://github.com/IBM-Bluemix/logistics-wizard-erp)

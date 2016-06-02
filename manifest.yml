@@ -1,0 +1,9 @@
+applications:
+- path: .
+  memory: 256M
+  instances: 1
+  name: logistics-wizard
+  host: logistics-wizard
+  buildpack: python_buildpack
+  env:
+    LOGISTICS_WIZARD_ENV: PROD

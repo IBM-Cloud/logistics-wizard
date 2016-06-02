@@ -1,0 +1,26 @@
+# Logs
+logs
+*.log
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# python virtual environment/compiled files
+venv/
+*.pyc
+
+# Intellij/PyCharm config
+.idea/
+
+# dev files
+requirements.dev.txt
+*.DS_Store
+
+# SCM docs
+README.md
+.github/
+.git/
+
+# API specs
+swagger.yml

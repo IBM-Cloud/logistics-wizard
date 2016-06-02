@@ -1,0 +1,1 @@
+web: python bin/start_web.py

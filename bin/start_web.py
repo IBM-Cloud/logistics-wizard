@@ -15,6 +15,7 @@ TOKEN_SECRET     The secret to be used for creating JSON Web Tokens, should
                  be long and hard to guess, like a password.
 
 """
+import os
 from flask_failsafe import failsafe
 from werkzeug.serving import run_simple
 
@@ -37,8 +38,9 @@ def start_app():
     """
     Run in development mode, never used in production.
     """
+    port = int(os.getenv("PORT", 5000))
     app = create_app()
-    app.run(host='localhost', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=port)
 
 
 if __name__ == "__main__":
