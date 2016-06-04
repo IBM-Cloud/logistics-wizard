@@ -1,1 +1,1 @@
-web: python bin/start_web.py
+web: gunicorn bin.start_web:application

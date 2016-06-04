@@ -7,6 +7,7 @@ import re
 import json
 
 from flask import Flask, current_app, Response
+from flask.ext.cors import CORS
 from server.web.utils import compose_error
 
 
@@ -24,7 +25,7 @@ def create_app():
 
     # Create the app
     logistics_wizard = Flask('logistics_wizard', static_folder=None)
-    # CORS(logistics_wizard, origins=[re.compile('.*')], supports_credentials=True)
+    CORS(logistics_wizard, origins=[re.compile('.*')], supports_credentials=True)
     if Config.ENVIRONMENT == 'DEV':
         logistics_wizard.debug = True
 
