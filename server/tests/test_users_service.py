@@ -37,8 +37,11 @@ class CreateUserTestCase(unittest.TestCase):
         demo = create_demo()
         demo_guid = loads(demo).get('guid')
 
-        # Create new user
-        user = user_service.create_user(demo_guid, 'R1')
+        # Retrieve retailers
+        retailers_json = loads(demo_service.get_demo_retailers(demo_guid))
+
+        # Create new user assigned to the first retailer
+        user = user_service.create_user(demo_guid, retailers_json[0].get('id'))
         user_json = loads(user)
 
         # TODO: Update to use assertIsInstance(a,b)
@@ -58,10 +61,15 @@ class CreateUserTestCase(unittest.TestCase):
         demo = create_demo()
         demo_guid = loads(demo).get('guid')
 
+        # Retrieve retailers
+        retailers_json = loads(demo_service.get_demo_retailers(demo_guid))
+
         # Attempt to create user with invalid inputs
+        # Invalid demo guid
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.create_user,
-                          'ABC123', 'R1')
+                          'ABC123', retailers_json[0].get('id'))
+        # Invalid retailer id
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.create_user,
                           demo_guid, 'R99999')
