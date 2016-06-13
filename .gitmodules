@@ -1,0 +1,6 @@
+[submodule "erp"]
+	path = modules/erp
+	url = https://github.com/IBM-Bluemix/logistics-wizard-erp.git
+[submodule "recommendation"]
+	path = modules/recommendation
+	url = https://github.com/IBM-Bluemix/logistics-wizard-recommendation.git

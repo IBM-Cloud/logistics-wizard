@@ -17,10 +17,15 @@ venv/
 requirements.dev.txt
 *.DS_Store
 
+# sub-modules
+modules/
+
 # SCM docs
 README.md
 .github/
 .git/
+.gitignore
+.gitmodules
 
 # API specs
 swagger.yml
