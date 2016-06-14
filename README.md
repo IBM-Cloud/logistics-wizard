@@ -1,5 +1,7 @@
 # Logistics Wizard Overview
 
+[![Build Status](https://travis-ci.org/IBM-Bluemix/logistics-wizard.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/logistics-wizard)
+
 **WORK IN PROGRESS**
 
 This repository serves as the central server application for the Logistics Wizard application and acts as the main controller for interaction between the system's services.
