@@ -139,13 +139,10 @@ def login(guid, user_id):
         raise ResourceDoesNotExistException('Demo or user does not exist',
                                             internal_details=json.loads(response.text).get('error').get('message'))
 
-    # Get the demo's users and find the one we just logged in
-    demo = demo_service.get_demo_by_guid(guid)
-    user = demo_service.find_user_in_demo(demo, user_id)
-
+    login_response = json.loads(response.text)
     return {
-        'loopback_token': json.loads(response.text).get('id'),
-        'user': user
+        'loopback_token': login_response.get('token').get('id'),
+        'user': login_response.get('user')
     }
 
 

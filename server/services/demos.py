@@ -34,22 +34,6 @@ def demo_to_dict(demo):
     }
 
 
-def find_user_in_demo(demo, user_id):
-    """
-    Finds a specific user within a demo object.
-
-    :param demo:        An instance of the Demo model.
-    :param user_id:     The user we are searching for.
-    :return:            A dict representing the demo.
-    """
-    demo_users = json.loads(demo).get('users')
-    for cur_user in demo_users:
-        if cur_user.get('id') == user_id:
-            return cur_user
-
-    return
-
-
 ###########################
 #         Services        #
 ###########################
