@@ -1,6 +1,6 @@
 # Logistics Wizard Overview
 
-[![Build Status](https://travis-ci.org/IBM-Bluemix/logistics-wizard.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/logistics-wizard)
+[![Build Status](https://travis-ci.org/IBM-Bluemix/logistics-wizard.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/logistics-wizard) [![Coverage Status](https://coveralls.io/repos/github/IBM-Bluemix/logistics-wizard/badge.svg?branch=master)](https://coveralls.io/github/IBM-Bluemix/logistics-wizard?branch=master)
 
 **WORK IN PROGRESS**
 

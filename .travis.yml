@@ -3,10 +3,12 @@ cache: pip
 python:
   - "2.7"
 # command to install dependencies
-install: "pip install -r requirements.txt"
+install: "pip install -r requirements.txt && pip install coveralls"
 # command to run tests
 before_script:
   - source .env
 script:
-  - python server/tests/test_demos_service.py
-  - python server/tests/test_users_service.py
+  - coverage run server/tests/test_demos_service.py
+  - coverage run server/tests/test_users_service.py
+after_success:
+  coveralls
