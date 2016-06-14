@@ -10,8 +10,8 @@ Logistics Wizard is a reimagined supply chain optimization system for the 21st c
 
 The following services are leveraged in the overall Logistics Wizard solution, yet are built to be extensible for other purposes:
 
-* [logistics-wizard-erp](https://github.com/IBM-Bluemix/logistics-wizard-erp)
-* [logistics-wizard-recommendation](https://github.com/IBM-Bluemix/logistics-wizard-recommendation)
+* [logistics-wizard-erp][erp_github_url]
+* [logistics-wizard-recommendation][recommendation_github_url]
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
@@ -37,35 +37,100 @@ The following services are leveraged in the overall Logistics Wizard solution, y
 )
 
 ## Running the app on Bluemix
-<Either add a Deploy to Bluemix button or include detailed instructions on how to deploy the app(s) to Bluemix after cloning the repo. You should assume the user has little to no Bluemix experience and provide as much detail as possible in the steps.>
 
-Coming Soon!
+1. If you do not already have a Bluemix account, [sign up here][bluemix_signup_url]
 
-[Sign up for Bluemix][bluemix_signup_url] in the meantime!
+2. Download and install the [Cloud Foundry CLI][cloud_foundry_url] tool
 
-<Create sub-sections to break down larger sequences of steps. General rule of thumb is that you should not have more than 9 steps in each task. Include sanity checks, or ways for the developer to confirm what they have done so far is correct, every 20 steps. Also, avoid directly referencing the Bluemix UI components so that ACE changes don't invalidate your README.>
+3. Clone the app and its submodules to your local environment from your terminal using the following command:
+
+	```bash
+	$ git clone --recursive https://github.com/IBM-Bluemix/logistics-wizard.git
+	```
+
+4. `cd` into this newly created directory
+
+5. Open the `manifest.yml` file and change the `host` value to something unique.
+
+  The host you choose will determinate the subdomain of your application's URL:  `<host>.mybluemix.net`
+
+6. Connect to Bluemix in the command line tool and follow the prompts to log in.
+
+	```bash
+	$ cf api https://api.ng.bluemix.net
+	$ cf login
+	```
+7. Push the app to Bluemix.
+
+	```bash
+	$ cf push
+	```
+
+And voila! You now have your very own instance of Logistics Wizard running on Bluemix.
 
 ## Run the app locally
 
-1. Clone this repo
-2. Create a python virtual environment
-3. Install PostgreSQL and create a DB called `logistics_wizard`
-4. Install Redis
-4. Install module requirements in `requirements.dev.txt`
-5. Start the app
+1. If you have not already, [download Python 2.7][download_python_url] and install it on your local machine.
 
-~~~~
-you@logistics-wizard:~$ git clone https://github.com/IBM-Bluemix/logistics-wizard.git
-you@logistics-wizard:~$ cd logistics-wizard
-you@logistics-wizard:~/logistics-wizard virtualenv venv
-you@logistics-wizard:~/logistics-wizard pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
-you@logistics-wizard:~/logistics-wizard createdb logistics_wizard
-you@logistics-wizard:~/logistics-wizard source .env
-(venv)you@logistics-wizard:~/logistics-wizard pip install -r requirements.dev.txt
-(venv)you@logistics-wizard:~/logistics-wizard python bin/start_web.py
- * Running on http://localhost:5000/ (Press CTRL+C to quit)
- * Restarting with stat
-~~~~
+2. Clone the app to your local environment from your terminal using the following command:
+
+  ```bash 
+  $ git clone --recursive https://github.com/IBM-Bluemix/logistics-wizard.git
+  ```
+
+3. `cd` into this newly created directory
+
+4. In order to create an isolated development environment, we will be using Python's [virtualenv][virtualenv_url] tool. If you do not have it installed already, run
+
+  ```bash
+  $ pip install virtualenv
+  ```
+  
+  Then create a virtual environment called `venv` by running
+
+  ```bash
+  $ virtualenv venv
+  ```
+
+5. Activate this new environment with
+
+  ```bash
+  $ source .env
+  ```
+  
+6. Install module requirements
+
+  ```bash
+  $ pip install -r requirements.dev.txt
+  ```
+
+7. Finally, start the app
+
+  ```bash
+  $ python bin/start_web.py
+  ```
+
+## Running Unit Tests
+
+There are series of unit tests located in the [`server/tests`](server/tests) folder. The tests are composed using the Python [unittest framework][unittest_docs_url]. To run the tests, execute the following commands:
+
+  ```bash
+  $ python server/tests/test_demos_service.py
+  $ python server/tests/test_users_service.py
+  ```
+
+The tests will print a dot for each succefully completed unit test. If a test fails for any reason, it will immediately exit and print the reason for its failure. For example, here is the output of a successfully complete [`test_demos_service.py`](server/tests/test_demos_service.py) test:
+
+  ```bash
+  (venv) MyMac:logistics-wizard Jake_Peyser$ python server/	tests/test_des_service.py 
+  .......
+  ----------------------------------------------------------------------
+  Ran 7 tests in 30.597s
+  
+  OK
+  ```
+
+The unit tests are currently hitting the production version of the [logistics-wizard-erp][erp_github_url] application. In the future these tests will be able to be run in isolation.
 
 ## API documentation
 The API methods that this component exposes requires the discovery of dependent services, however, the API will gracefully fail when they are not available.
@@ -91,4 +156,11 @@ For more detailed information on troubleshooting your application, see the [Trou
 
 See [License.txt](License.txt) for license information.
 
+<!--Links-->
+[erp_github_url]: https://github.com/IBM-Bluemix/logistics-wizard-erp
+[recommendation_github_url]: https://github.com/IBM-Bluemix/logistics-wizard-recommendation
 [bluemix_signup_url]: http://ibm.biz/logistics-wizard-signup
+[cloud_foundry_url]: https://github.com/cloudfoundry/cli
+[download_python_url]: https://www.python.org/downloads/
+[virtualenv_url]: http://docs.python-guide.org/en/latest/dev/virtualenvs/
+[unittest_docs_url]: https://docs.python.org/3/library/unittest.html
