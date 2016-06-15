@@ -3,4 +3,4 @@ omit =
     */python?.?/*
     */site-packages/
     *__init__*
-    */tests/
+    */tests/*
