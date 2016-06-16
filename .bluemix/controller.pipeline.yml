@@ -1,0 +1,70 @@
+---
+stages:
+- name: BUILD
+  inputs:
+  - type: git
+    branch: master
+    service: ${CONTROLLER_REPO}
+  triggers:
+  - type: commit
+  jobs:
+  - name: Build
+    type: builder
+- name: Tests
+  inputs:
+  - type: job
+    stage: Build
+    job: Build
+  triggers:
+  - type: stage
+  jobs:
+  - name: Unit Test
+    type: tester
+    script: |
+      #!/bin/bash
+      # invoke tests here
+      pip install coveralls
+      source .env
+      coverage run server/tests/test_demos_service.py
+      coverage run server/tests/test_users_service.py
+      coveralls
+- name: PROD
+  inputs:
+  - type: job
+    stage: BUILD
+    job: Build
+  triggers:
+  - type: stage
+  properties:
+  - name: CF_APP_NAME
+    value: undefined
+    type: text
+  jobs:
+  - name: Blue/Green Deploy
+    type: deployer
+    target:
+      region_id: ${PROD_REGION_ID}
+      organization: ${PROD_ORG_NAME}
+      space: ${PROD_SPACE_NAME}
+      application: ${CF_APP_NAME}
+    script: |-
+      #!/bin/bash
+      if ! cf app $CF_APP; then
+        cf push $CF_APP
+      else
+        OLD_CF_APP=${CF_APP}-OLD-$(date +"%s")
+        rollback() {
+          set +e
+          if cf app $OLD_CF_APP; then
+            cf logs $CF_APP --recent
+            cf delete $CF_APP -f
+            cf rename $OLD_CF_APP $CF_APP
+          fi
+          exit 1
+        }
+        set -e
+        trap rollback ERR
+        cf rename $CF_APP $OLD_CF_APP
+        cf push $CF_APP
+        cf delete $OLD_CF_APP -f
+      fi

@@ -1,0 +1,81 @@
+---
+name: "Logistics Wizard Toolchain"
+description: "With this cloud-native toolchain, you can continuosly test and deploy the microservices in the Logistics Wizard demo"
+version: 0.2
+image: data:image/png;base64,$file(dra-toolchain2.png,base64)
+required:
+ - deploy
+ - github
+
+# Github repos
+erp-api-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "{{github.parameters.erp-api-repo_name}}"
+    repo_url: "{{github.parameters.erp-api-repo_url}}"
+    type: clone
+    has_issues: false
+  hidden: [form, description]
+
+controller-repo:
+  service_id: githubpublic
+  parameters:
+    repo_name: "{{github.parameters.controller-repo_name}}"
+    repo_url: "{{github.parameters.controller-repo_url}}"
+    type: clone
+    has_issues: false
+  hidden: [form, description]
+
+# Pipelines
+erp-api-build:
+  service_id: pipeline
+  parameters:
+    name: "logistics-wizard-erp-{{name}}"
+    configuration:
+      content: $file(erp-api.pipeline.yml)
+      env:
+        ERP_API_REPO: "erp-api-repo"
+        CF_APP_NAME: "{{deploy.parameters.erp-app-name}}"
+        PROD_SPACE_NAME: "{{deploy.parameters.prod-space}}"
+        PROD_ORG_NAME: "{{deploy.parameters.prod-organization}}"
+        PROD_REGION_ID: "{{deploy.parameters.prod-region}}"
+      execute: true
+    services: ["erp-api-repo", "test"]
+  hidden: [form, description]
+
+controller-build:
+  service_id: pipeline
+  parameters:
+    name: "logistics-wizard-{{name}}"
+    configuration:
+      content: $file(controller.pipeline.yml)
+      env:
+        CONTROLLER_REPO: "controller-repo"
+        CF_APP_NAME: "{{deploy.parameters.controller-app-name}}"
+        PROD_SPACE_NAME: "{{deploy.parameters.prod-space}}"
+        PROD_ORG_NAME: "{{deploy.parameters.prod-organization}}"
+        PROD_REGION_ID: "{{deploy.parameters.prod-region}}"
+      execute: true
+    services: ["controller-repo", "test"]
+  hidden: [form, description]
+
+#Deployment
+deploy:
+  schema: deploy.json
+  service-category: pipeline
+  parameters:
+    prod-region: "{{region}}"
+    prod-organization: "{{organization}}"
+    prod-space: lw-demo-test
+    erp-app-name: "{{erp-api-repo.parameters.repo_name}}"
+    controller-app-name: "{{controller-repo.parameters.repo_name}}"
+
+#Github
+github:
+  schema: github.json
+  service-category: githubpublic
+  parameters:
+    erp-api-repo_name: "logistics-wizard-erp-{{name}}"
+    erp-api-repo_url: https://github.com/IBM-Bluemix/logistics-wizard-erp
+    controller-repo_name: "logistics-wizard-{{name}}"
+    controller-repo_url: https://github.com/IBM-Bluemix/logistics-wizard

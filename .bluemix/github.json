@@ -1,0 +1,70 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Logistics Wizard Deploy Stage",
+    "description": "Deployment of the Logistics Wizard demo",
+    "type": "object",
+    "properties": {
+        "erp-api-repo_name": {
+            "type": "string"
+        },
+        "erp-api-repo_url": {
+            "type": "string"
+        },
+        "controller-repo_name": {
+            "type": "string"
+        },
+        "controller-repo_url": {
+            "type": "string"
+        }
+    },
+    "required": ["erp-api-repo_name", "erp-api-repo_url", "controller-repo_name", "controller-repo_url"],
+    "form": [
+      {
+        "type": "validator",
+        "url": "/devops/setup/bm-helper/custom_github_helper.html"
+      },
+      {
+        "type": "table",
+        "columnCount": 3,
+        "widths": ["47%", "6%", "47%"],
+        "items": [
+            {
+              "type": "label",
+              "title": "Source Repository"
+            },
+            {
+              "type": "label",
+              "title": ""
+            },
+            {
+              "type": "label",
+              "title": "Target Repository"
+            },
+            {
+              "type": "text",
+              "key": "erp-api-repo_url"
+            },
+            {
+              "type": "icon",
+              "iconType": "right_arrow"
+            },
+            {
+              "type": "text",
+              "key": "erp-api-repo_name"
+            },
+            {
+              "type": "text",
+              "key": "controller-repo_url"
+            },
+            {
+              "type": "icon",
+              "iconType": "right_arrow"
+            },
+            {
+              "type": "text",
+              "key": "controller-repo_name"
+            }
+        ]
+      }
+    ] 
+}
