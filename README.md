@@ -8,14 +8,14 @@ This repository serves as the central server application for the Logistics Wizar
 
 Logistics Wizard is a reimagined supply chain optimization system for the 21st century. It is comprised of a set of loosely-coupled, distributed services that take an existing ERP system and extend its functionality by leveraging various cloud services. The goal of this system is to showcase several common SaaS implementation patterns and provide them to our developer community. This demo exhibits hybrid cloud, microservices, and big data anlytics concepts that can be reused when building enterprise-level applications on Bluemix.
 
-[![Create Toolchain](./.bluemix/create_toolchain_button.png)](https://new-console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A//github.com//IBM-Bluemix/logistics-wizard.git)
-
 [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/IBM-Bluemix/logistics-wizard.git)
 
 The following services are leveraged in the overall Logistics Wizard solution, yet are built to be extensible for other purposes:
 
 * [logistics-wizard-erp][erp_github_url]
 * [logistics-wizard-recommendation][recommendation_github_url]
+
+To deploy the full system all at once, check out the [Logistics Wizard Toolchain][toolchain_github_url]
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
@@ -163,6 +163,7 @@ See [License.txt](License.txt) for license information.
 <!--Links-->
 [erp_github_url]: https://github.com/IBM-Bluemix/logistics-wizard-erp
 [recommendation_github_url]: https://github.com/IBM-Bluemix/logistics-wizard-recommendation
+[toolchain_github_url]: https://github.com/IBM-Bluemix/logistics-wizard-toolchain
 [bluemix_signup_url]: http://ibm.biz/logistics-wizard-signup
 [cloud_foundry_url]: https://github.com/cloudfoundry/cli
 [download_python_url]: https://www.python.org/downloads/
