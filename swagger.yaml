@@ -40,10 +40,6 @@ paths:
           description: Invalid email
           schema:
             $ref: '#/definitions/Error'
-        500:
-          description: ERP Unreachable
-          schema:
-            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -68,10 +64,6 @@ paths:
             $ref: '#/definitions/Demo'
         404:
           description: Demo does not exist
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: ERP Unreachable
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -163,10 +155,6 @@ paths:
           description: Demo or Retailer does not exist
           schema:
             $ref: '#/definitions/Error'
-        500:
-          description: ERP Unreachable
-          schema:
-            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -204,6 +192,44 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  '/demos/{guid}/data':
+    get:
+      summary: Get initial demo data
+      description: |
+        Retrieves data for the initial admin screen rendering
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: guid
+          in: path
+          description: Demo guid
+          required: true
+          type: string
+      tags:
+        - Demo
+        - Shipment
+        - Retailer
+        - DistributionCenter
+      responses:
+        200:
+          description: The retrieved demo session objects
+          schema:
+            $ref: '#/definitions/Session'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Demo does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   '/logout/{token}':
     delete:
       summary: User Logout
@@ -235,14 +261,19 @@ paths:
             $ref: '#/definitions/Error'
   '/shipments':
     get:
-      summary: Retrieves Shipments
+      summary: Retrieve shipments
       description: |
-        Retrieves a list of all shipments. Returned items will differ based on the identity and type of user logged in
+        Retrieves a list of all shipments for the supply chain managers
       parameters:
         - name: Authorization
           in: header
           description: Bearer token
           required: true
+          type: string
+        - name: status
+          in: query
+          description: Status of the shipments to be returned
+          required: false
           type: string
       tags:
         - Shipment
@@ -261,40 +292,9 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-    post:
-      summary: Create Shipment
-      description: |
-        Creates a new shipment in the ERP system
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          type: string
-        - name: data
-          in: body
-          description: Shipment to be created
-          required: true
-          schema:
-            $ref: '#/definitions/Shipment'
-      tags:
-        - Shipment
-      responses:
-        201:
-          description: Shipment created successfully
-          schema:
-            $ref: '#/definitions/Shipment'
-        401:
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
   '/shipments/{id}':
     get:
-      summary: Retrieve shipment from the ERP
+      summary: Retrieve a single shipment from the ERP
       parameters:
         - name: Authorization
           in: header
@@ -315,6 +315,10 @@ paths:
             $ref: '#/definitions/Shipment'
         401:
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Shipment does not exist
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -343,12 +347,16 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/Error'
+        404:
+          description: Shipment does not exist
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
     put:
-      summary: Update attributes of a shipment in the ERP
+      summary: Update a shipment in the ERP
       parameters:
         - name: Authorization
           in: header
@@ -377,15 +385,19 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/Error'
+        404:
+          description: Shipment does not exist
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
   '/distribution-centers':
     get:
-      summary: Retrieves Distribution Centers
+      summary: Retrieve distribution centers
       description: |
-        Retrieves a list of distribution centers. Returned list will be dictated by user's access level
+        Retrieves a list of distribution centers, only for the supply chain managers
       parameters:
         - name: Authorization
           in: header
@@ -434,15 +446,19 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/Error'
+        404:
+          description: Distribution center does not exist
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
   '/retailers':
     get:
-      summary: Retrieves Retailers
+      summary: Retrieves retailers
       description: |
-        Retrieves a list of all retailers. Only accessible to supply chain admins
+        Retrieves a list of all retailers, only for supply chain managers
       parameters:
         - name: Authorization
           in: header
@@ -491,15 +507,134 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/Error'
+        404:
+          description: Retailer does not exist
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/recommendations':
+  '/retailers/{id}/shipments':
     get:
-      summary: Retrieve Recommendations
+      summary: Retrieve shipments for a specific retailer
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the retailer for which shipments are to be retrieved
+          required: true
+          type: string
+        - name: status
+          in: query
+          description: Status of the shipments to be returned
+          required: false
+          type: string
+      tags:
+        - Retailer
+        - Shipment
+      responses:
+        200:
+          description: Shipments retrieved successfully
+          schema:
+            $ref: '#/definitions/Retailer'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Retailer does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create new shipment
       description: |
-        Retrieves all recommendations relevant to the logged-in user
+        Create a new shipment for the retailer
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the retailer for which shipments are to be retrieved
+          required: true
+          type: string
+        - name: shipment
+          in: body
+          description: Shipment to be created
+          required: true
+          schema:
+            $ref: '#/definitions/Shipment'
+      tags:
+        - Retailer
+        - Shipment
+      responses:
+        201:
+          description: The new Shipment object
+          schema:
+            $ref: '#/definitions/Demo'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Retailer does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/retailers/{id}/sales':
+    get:
+      summary: Retrieve sales data for a specific retailer
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the retailer for which sales data is to be retrieved
+          required: true
+          type: string
+      tags:
+        - Retailer
+      responses:
+        200:
+          description: Sales data retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SalesData'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Retailer does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/products':
+    get:
+      summary: Retrieves products
+      description: |
+        Retrieves all products distributed by the organization
       parameters:
         - name: Authorization
           in: header
@@ -507,14 +642,14 @@ paths:
           required: true
           type: string
       tags:
-        - Recommendation
+        - Product
       responses:
         200:
-          description: Retrieved recommendations successfully
+          description: Retrieved products successfully
           schema:
             type: array
             items:
-              $ref: '#/definitions/Recommendation'
+              $ref: '#/definitions/Product'
         401:
           description: Unauthorized
           schema:
@@ -541,6 +676,22 @@ definitions:
           $ref: '#/definitions/User'
     required:
       - name
+  Session:
+    properties:
+      shipments:
+        type: array
+        items:
+          $ref: '#/definitions/Shipment'
+      distributionCenters:
+        type: array
+        items:
+          $ref: '#/definitions/DistributionCenter'
+      retailers:
+        type: array
+        items:
+          $ref: '#/definitions/Retailer'
+    required:
+      - retailers
   User:
     properties:
       id:
@@ -604,15 +755,6 @@ definitions:
         type: string
     required:
       - name
-  Supplier:
-    properties:
-      name:
-        type: string
-      id:
-        type: string
-    required:
-      - name
-    additionalProperties: false
   Shipment:
     properties:
       status:
@@ -676,6 +818,8 @@ definitions:
         $ref: '#/definitions/Address'
       contact:
         $ref: '#/definitions/Contact'
+      inventory:
+        $ref: '#/definitions/Inventory'
     additionalProperties: false
   Retailer:
     properties:
@@ -712,13 +856,20 @@ definitions:
     required:
       - name
     additionalProperties: false
-  Recommendation:
-    type: object
+  SalesData:
     properties:
-      shipmentId:
+      productId:
         type: string
-      justification:
+      sales:
+        type: array
+        items:
+          $ref: '#/definitions/MonthlySales'
+  MonthlySales:
+    properties:
+      month:
         type: string
+      amount:
+        type: integer
   Error:
     type: object
     properties:
