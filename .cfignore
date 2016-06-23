@@ -17,6 +17,10 @@ venv/
 requirements.dev.txt
 *.DS_Store
 
+# test files
+.coverage
+.coveragerc
+
 # sub-modules
 modules/
 

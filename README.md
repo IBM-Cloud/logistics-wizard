@@ -114,8 +114,9 @@ And voila! You now have your very own instance of Logistics Wizard running on Bl
   $ python bin/start_web.py
   ```
 
-## Running Unit Tests
+## Testing
 
+### Unit Tests
 There are series of unit tests located in the [`server/tests`](server/tests) folder. The tests are composed using the Python [unittest framework][unittest_docs_url]. To run the tests, execute the following commands:
 
   ```bash
@@ -123,7 +124,7 @@ There are series of unit tests located in the [`server/tests`](server/tests) fol
   $ python server/tests/test_users_service.py
   ```
 
-The tests will print a dot for each succefully completed unit test. If a test fails for any reason, it will immediately exit and print the reason for its failure. For example, here is the output of a successfully complete [`test_demos_service.py`](server/tests/test_demos_service.py) test:
+The tests will print a dot for each successfully completed unit test. If a test fails for any reason, it will immediately exit and print the reason for its failure. For example, here is the output of a successfully complete [`test_demos_service.py`](server/tests/test_demos_service.py) test:
 
   ```bash
   (venv) MyMac:logistics-wizard Jake_Peyser$ python server/	tests/test_des_service.py 
@@ -134,7 +135,18 @@ The tests will print a dot for each succefully completed unit test. If a test fa
   OK
   ```
 
-The unit tests are currently hitting the production version of the [logistics-wizard-erp][erp_github_url] application. In the future these tests will be able to be run in isolation.
+### Code Coverage Tests
+If you have you would like to perform code coverage tests as well, you can use [coveralls][coveralls_url] to perform this task. If you are using [Travis CI][travis_url] as your CI tool, simply replace `python` in your test commands with `coverage run` and then run `coveralls` as follows:
+
+  ```bash
+  $ coverage run server/tests/test_demos_service.py
+  $ coverage run server/tests/test_users_service.py
+  $ coveralls
+  ```
+
+For more in-depth instructions, check out the [coveralls usage documentation][coveralls_usage_url].
+
+**Note**: The unit tests are currently hitting the production version of the [logistics-wizard-erp][erp_github_url] application. In the future these tests will be able to be run in isolation.
 
 ## API documentation
 The API methods that this component exposes requires the discovery of dependent services, however, the API will gracefully fail when they are not available.
@@ -169,3 +181,6 @@ See [License.txt](License.txt) for license information.
 [download_python_url]: https://www.python.org/downloads/
 [virtualenv_url]: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 [unittest_docs_url]: https://docs.python.org/3/library/unittest.html
+[travis_url]: https://travis-ci.org/
+[coveralls_url]: https://coveralls.io/
+[coveralls_usage_url]: https://pypi.python.org/pypi/coveralls#usage-travis-ci
