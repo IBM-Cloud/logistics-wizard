@@ -41,7 +41,7 @@ def get_distribution_centers(token):
 
     :param token:   The ERP Loopback session token.
 
-    :return:        The list of existing shipments.
+    :return:        The list of existing distribution centers.
     """
 
     # Create and format request to ERP
