@@ -156,6 +156,81 @@ class GetShipmentsTestCase(unittest.TestCase):
                           bad_token)
 
 
+class CreateShipmentTestCase(unittest.TestCase):
+    """Tests for `services/shipments.py - create_shipment()`."""
+
+    def test_create_shipment_success(self):
+        """With correct values, is a valid shipment created?"""
+
+        # Create demo
+        demo = create_demo()
+        demo_json = loads(demo)
+        demo_guid = demo_json.get('guid')
+        demo_user_id = demo_json.get('users')[0].get('id')
+
+        # Log in user
+        auth_data = user_service.login(demo_guid, demo_user_id)
+        loopback_token = auth_data.get('loopback_token')
+
+        # Get shipments
+        shipments = shipment_service.get_shipments(loopback_token)
+        from_id = loads(shipments)[0].get('fromId')
+        to_id = loads(shipments)[0].get('toId')
+
+        # Create shipment
+        shipment = dict()
+        shipment['fromId'] = from_id
+        shipment['toId'] = to_id
+        created_shipment = shipment_service.create_shipment(loopback_token, shipment)
+
+        # TODO: Update to use assertIsInstance(a,b)
+        # Check all expected object values are present
+        shipment_json = loads(created_shipment)
+        # Check that the shipment is valid
+        self.assertTrue(shipment_json.get('id'))
+        self.assertTrue(shipment_json.get('status'))
+        self.assertTrue(shipment_json.get('createdAt'))
+        self.assertTrue(shipment_json.get('fromId'))
+        self.assertTrue(shipment_json.get('toId'))
+
+        # Destroy demo
+        delete_demo(demo_guid)
+
+    def test_create_shipment_invalid_token(self):
+        """With an invalid token, are correct errors thrown?"""
+
+        # Create demo
+        demo = create_demo()
+        demo_json = loads(demo)
+        demo_guid = demo_json.get('guid')
+        demo_user_id = demo_json.get('users')[0].get('id')
+
+        # Log in user
+        auth_data = user_service.login(demo_guid, demo_user_id)
+        loopback_token = auth_data.get('loopback_token')
+
+        # Get shipments
+        shipments = shipment_service.get_shipments(loopback_token)
+        from_id = loads(shipments)[0].get('fromId')
+        to_id = loads(shipments)[0].get('toId')
+
+        # Create shipment
+        shipment = dict()
+        shipment['fromId'] = from_id
+        shipment['toId'] = to_id
+
+        # Retrieve shipment with bad token
+        bad_token = get_bad_token()
+
+        # Attempt to create a shipment with invalid token
+        self.assertRaises(AuthenticationException,
+                          shipment_service.create_shipment,
+                          bad_token, shipment)
+
+        # Destroy demo
+        delete_demo(demo_guid)
+
+
 class GetShipmentTestCase(unittest.TestCase):
     """Tests for `services/shipments.py - get_shipment()`."""
 
@@ -180,7 +255,7 @@ class GetShipmentTestCase(unittest.TestCase):
         # TODO: Update to use assertIsInstance(a,b)
         # Check all expected object values are present
         shipment_json = loads(shipment)
-        # Check that the shipments are valid
+        # Check that the shipment is valid
         self.assertTrue(shipment_json.get('id'))
         self.assertTrue(shipment_json.get('status'))
         self.assertTrue(shipment_json.get('createdAt'))

@@ -43,6 +43,42 @@ def get_shipments():
                     mimetype='application/json')
 
 
+@shipments_v1_blueprint.route('/shipments', methods=['POST'])
+@logged_in
+def create_shipment():
+    """
+    Create a new shipment object.
+
+    :param {
+        "status": "NEW",
+        "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+        "fromId": "D2",
+        "toId": "R2-331ba1af395808e6fddf3466fe218485"
+    }
+
+    :return: {
+        "id": "S5-51b8849982d82ea90d68b55f04be12b8",
+        "status": "ACCEPTED",
+        "createdAt": "2015-11-05T22:00:51.692765",
+        "updatedAt": "2015-11-08T22:00:51.692765",
+        "deliveredAt": "2015-11-08T22:00:51.692765",
+        "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+        "currentLocation": {Address},
+        "fromId": "D2",
+        "toId:": "R2-331ba1af395808e6fddf3466fe218485"
+    }
+
+    """
+
+    # Get inputs and make sure required params are not null
+    data = get_json_data(request)
+
+    shipment = shipment_service.create_shipment(token=g.auth['loopback_token'], shipment=data)
+    return Response(shipment,
+                    status=201,
+                    mimetype='application/json')
+
+
 @shipments_v1_blueprint.route('/shipments/<string:shipment_id>', methods=['GET'])
 @logged_in
 def get_shipment(shipment_id):

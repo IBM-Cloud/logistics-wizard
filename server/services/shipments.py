@@ -10,7 +10,8 @@ from server.config import Config
 from server.exceptions import (ResourceDoesNotExistException)
 from server.exceptions import (APIException,
                                AuthenticationException,
-                               UnprocessableEntityException)
+                               UnprocessableEntityException,
+                               ValidationException)
 
 ###########################
 #         Utilities       #
@@ -131,6 +132,44 @@ def get_shipment(token, shipment_id):
     elif response.status_code == 404:
         raise ResourceDoesNotExistException('Shipment does not exist',
                                             internal_details=json.loads(response.text).get('error').get('message'))
+
+    return response.text
+
+
+def create_shipment(token, shipment):
+    """
+    Create a shipment in the ERP system.
+
+    :param token:       The ERP Loopback session token.
+    :param shipment:    The shipment object to be created.
+
+    :return:         The created shipment.
+    """
+
+    # Create and format request to ERP
+    url = Config.ERP + "Shipments/"
+    headers = {
+        'content-type': "application/json",
+        'cache-control': "no-cache",
+        'Authorization': token
+    }
+    shipment_json = json.dumps(shipment)
+
+    try:
+        response = requests.request("POST", url, data=shipment_json, headers=headers)
+    except Exception as e:
+        raise APIException('ERP threw error creating shipment', internal_details=str(e))
+
+    # Check for possible errors in response
+    if response.status_code == 400:
+        raise ValidationException('Bad shipment data',
+                                  internal_details=json.loads(response.text).get('error').get('message'))
+    elif response.status_code == 401:
+        raise AuthenticationException('ERP access denied',
+                                      internal_details=json.loads(response.text).get('error').get('message'))
+    elif response.status_code == 422:
+        raise UnprocessableEntityException('Required data for shipment is either absent or invalid',
+                                           internal_details=json.loads(response.text).get('error').get('message'))
 
     return response.text
 

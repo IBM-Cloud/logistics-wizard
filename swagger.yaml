@@ -292,6 +292,40 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+    post:
+      summary: Create shipment
+      description: |
+        Create new shipment in the ERP system
+      parameters:
+        - name: shipment
+          in: body
+          description: ID of assigned retailer
+          required: true
+          schema:
+            $ref: '#/definitions/Shipment'
+      tags:
+        - Shipment
+      responses:
+        201:
+          description: The new Shipment object
+          schema:
+            $ref: '#/definitions/Shipment'
+        400:
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        422:
+          description: Required data is absent or invalid
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   '/shipments/{id}':
     get:
       summary: Retrieve a single shipment from the ERP
@@ -542,47 +576,6 @@ paths:
           description: Shipments retrieved successfully
           schema:
             $ref: '#/definitions/Retailer'
-        401:
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        404:
-          description: Retailer does not exist
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-    post:
-      summary: Create new shipment
-      description: |
-        Create a new shipment for the retailer
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          type: string
-        - name: id
-          in: path
-          description: ID of the retailer for which shipments are to be retrieved
-          required: true
-          type: string
-        - name: shipment
-          in: body
-          description: Shipment to be created
-          required: true
-          schema:
-            $ref: '#/definitions/Shipment'
-      tags:
-        - Retailer
-        - Shipment
-      responses:
-        201:
-          description: The new Shipment object
-          schema:
-            $ref: '#/definitions/Demo'
         401:
           description: Unauthorized
           schema:
