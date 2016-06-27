@@ -4,6 +4,7 @@ from json import loads, dumps
 import server.services.demos as demo_service
 import server.services.users as user_service
 import server.services.shipments as shipment_service
+import server.services.retailers as retailer_service
 from server.exceptions import (ValidationException,
                                AuthenticationException,
                                ResourceDoesNotExistException)
@@ -111,6 +112,34 @@ class GetShipmentsTestCase(unittest.TestCase):
         # Check that the shipments have correct status
         for shipment_json in shipments_json:
             self.assertTrue(shipment_json.get('status') == query_status)
+
+        # Destroy demo
+        delete_demo(demo_guid)
+
+    def test_get_shipments_retailer_id_filter_success(self):
+        """Are correct retailers' shipments returned?"""
+
+        # Create demo
+        demo = create_demo()
+        demo_json = loads(demo)
+        demo_guid = demo_json.get('guid')
+        demo_user_id = demo_json.get('users')[0].get('id')
+
+        # Log in user
+        auth_data = user_service.login(demo_guid, demo_user_id)
+        loopback_token = auth_data.get('loopback_token')
+
+        # Get shipments
+        retailers = retailer_service.get_retailers(loopback_token)
+        retailer_id = loads(retailers)[0].get('id')
+        shipments = shipment_service.get_shipments(loopback_token, retailer_id=retailer_id)
+
+        # TODO: Update to use assertIsInstance(a,b)
+        # Check all expected object values are present
+        shipments_json = loads(shipments)
+        # Check that the shipments have correct retailer ID (toId)
+        for shipment_json in shipments_json:
+            self.assertTrue(shipment_json.get('toId') == retailer_id)
 
         # Destroy demo
         delete_demo(demo_guid)

@@ -37,6 +37,29 @@ def shipment_to_dict(shipment):
     }
 
 
+def add_query_filter(cur_query, filter_type, property_name, op, value):
+    """
+    Add a query condition to an input query string
+
+    :param cur_query:       The current query string.
+    :param filter_type:     The type of Loopback filter for the query.
+    :param property_name:   The object's property used by the query to filter the result set.
+    :param op:              Equivalence operator for the query's evaluation.
+    :param value:           The value that the property is evaluated against.
+
+    :return:         The list of existing shipments.
+    """
+
+    # If the query string is null, initialize it
+    # If it is non-empty, separate from new query with ampersand
+    if cur_query is None:
+        cur_query = ""
+    elif cur_query != "":
+        cur_query += "&"
+
+    return cur_query + "filter[" + filter_type + "][" + property_name + "]" + op + value
+
+
 ###########################
 #         Services        #
 ###########################
@@ -52,10 +75,12 @@ def get_shipments(token, retailer_id=None, status=None):
     :return:         The list of existing shipments.
     """
 
-    # Add status filter if present
+    # Add filters if corresponding inputs are present
     status_query = ""
     if status is not None:
-        status_query += ("filter[where][status]=" + status)
+        status_query = add_query_filter(status_query, "where", "status", "=", status)
+    if retailer_id is not None:
+        status_query = add_query_filter(status_query, "where", "toId", "=", retailer_id)
 
     # Create and format request to ERP
     url = Config.ERP + "Shipments?" + status_query
