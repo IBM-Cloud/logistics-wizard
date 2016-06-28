@@ -122,6 +122,10 @@ There are series of unit tests located in the [`server/tests`](server/tests) fol
   ```bash
   $ python server/tests/test_demos_service.py
   $ python server/tests/test_users_service.py
+  $ python server/tests/test_shipments_service.py
+  $ python server/tests/test_distribution_centers_service.py
+  $ python server/tests/test_retailers_service.py
+  $ python server/tests/test_products_service.py
   ```
 
 The tests will print a dot for each successfully completed unit test. If a test fails for any reason, it will immediately exit and print the reason for its failure. For example, here is the output of a successfully complete [`test_demos_service.py`](server/tests/test_demos_service.py) test:
@@ -141,6 +145,10 @@ If you have you would like to perform code coverage tests as well, you can use [
   ```bash
   $ coverage run server/tests/test_demos_service.py
   $ coverage run server/tests/test_users_service.py
+  $ coverage run server/tests/test_shipments_service.py
+  $ coverage run server/tests/test_distribution_centers_service.py
+  $ coverage run server/tests/test_retailers_service.py
+  $ coverage run server/tests/test_products_service.py
   $ coveralls
   ```
 

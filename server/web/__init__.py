@@ -25,6 +25,7 @@ def create_app():
     from server.web.rest.shipments import shipments_v1_blueprint
     from server.web.rest.distribution_centers import distribution_centers_v1_blueprint
     from server.web.rest.retailers import retailers_v1_blueprint
+    from server.web.rest.products import products_v1_blueprint
 
     # Create the app
     logistics_wizard = Flask('logistics_wizard', static_folder=None)
@@ -37,6 +38,7 @@ def create_app():
     logistics_wizard.register_blueprint(shipments_v1_blueprint, url_prefix='/api/v1')
     logistics_wizard.register_blueprint(distribution_centers_v1_blueprint, url_prefix='/api/v1')
     logistics_wizard.register_blueprint(retailers_v1_blueprint, url_prefix='/api/v1')
+    logistics_wizard.register_blueprint(products_v1_blueprint, url_prefix='/api/v1')
 
     logistics_wizard.before_request(setup_auth_from_request)
 

@@ -19,7 +19,7 @@ from server.exceptions import (APIException,
 
 def distribution_center_to_dict(distribution_center):
     """
-    Convert an instance of the Shipment model to a dict.
+    Convert an instance of the Distribution Center model to a dict.
 
     :param distribution_center: An instance of the Distribution Center model.
     :return:                    A dict representing the distribution center.
