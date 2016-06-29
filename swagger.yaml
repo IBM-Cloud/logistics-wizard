@@ -192,44 +192,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/demos/{guid}/data':
-    get:
-      summary: Get initial demo data
-      description: |
-        Retrieves data for the initial admin screen rendering
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          type: string
-        - name: guid
-          in: path
-          description: Demo guid
-          required: true
-          type: string
-      tags:
-        - Demo
-        - Shipment
-        - Retailer
-        - DistributionCenter
-      responses:
-        200:
-          description: The retrieved demo session objects
-          schema:
-            $ref: '#/definitions/Session'
-        401:
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        404:
-          description: Demo does not exist
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
   '/logout/{token}':
     delete:
       summary: User Logout
@@ -251,6 +213,34 @@ paths:
       responses:
         204:
           description: Logout successful
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/admin':
+    get:
+      summary: Get initial demo data for logged in user
+      description: |
+        Retrieves data for the initial admin screen rendering
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+      tags:
+        - Shipment
+        - Retailer
+        - DistributionCenter
+      responses:
+        200:
+          description: The retrieved demo session objects
+          schema:
+            $ref: '#/definitions/Session'
         401:
           description: Unauthorized
           schema:
