@@ -5,14 +5,20 @@ import json
 
 import server.services.demos as demo_service
 import server.services.users as user_service
+import server.services.shipments as shipment_service
+import server.services.distribution_centers as distribution_center_service
+import server.services.retailers as retailer_service
 from flask import g, request, Response, Blueprint
+from multiprocessing import Pool
 from server.exceptions import (TokenException,
                                AuthorizationException,
                                ResourceDoesNotExistException,
                                ValidationException)
 from server.web.utils import (get_token_from_request,
                               get_json_data,
-                              check_null_input)
+                              check_null_input,
+                              logged_in,
+                              async_helper)
 
 demos_v1_blueprint = Blueprint('demos_v1_api', __name__)
 
@@ -225,3 +231,41 @@ def deauthenticate(token):
     if request_token == token:
         user_service.logout(token=g.auth['loopback_token'])
     return '', 204
+
+
+def func(x):
+    return x * x
+
+
+@demos_v1_blueprint.route('/admin', methods=['GET'])
+@logged_in
+def load_admin_data():
+    """
+    Load all data relative to the currently logged in user
+
+    :return: {
+        "shipments": [{Shipments}],
+        "retailers": [{Retailer}],
+        "distribution_centers": [{Distribution Center}]
+    }
+    """
+
+    # Specify functions and their corresponding arguments to be called
+    erp_calls = [(shipment_service.get_shipments, g.auth['loopback_token']),
+                 (distribution_center_service.get_distribution_centers, g.auth['loopback_token']),
+                 (retailer_service.get_retailers, g.auth['loopback_token'])]
+    pool = Pool(processes=len(erp_calls))
+
+    # Asynchronously make calls and then wait on all processes to finish
+    results = pool.map(async_helper, erp_calls)
+    pool.close()
+    pool.join()
+
+    # Send back serialized results to client
+    return Response(json.dumps({
+                        "shipments": json.loads(results[0]),
+                        "distribution-centers": json.loads(results[1]),
+                        "retailers": json.loads(results[2])
+                    }),
+                    status=200,
+                    mimetype='application/json')

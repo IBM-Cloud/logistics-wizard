@@ -1,7 +1,13 @@
 import unittest
 from datetime import datetime
 from json import loads
+from multiprocessing import Pool
 import server.services.demos as demo_service
+import server.services.users as user_service
+import server.services.shipments as shipment_service
+import server.services.distribution_centers as distribution_center_service
+import server.services.retailers as retailer_service
+from server.web.utils import async_helper
 from server.exceptions import (ValidationException,
                                UnprocessableEntityException,
                                ResourceDoesNotExistException)
@@ -159,6 +165,73 @@ class RetrieveDemoRetailersTestCase(unittest.TestCase):
             self.assertTrue(address_json.get('country'))
             self.assertTrue(address_json.get('latitude'))
             self.assertTrue(address_json.get('longitude'))
+
+        # Destroy demo
+        demo_service.delete_demo_by_guid(demo_guid)
+
+
+class RetrieveAdminDataTestCase(unittest.TestCase):
+    """Tests for `web/utils.py - async_helper()`."""
+
+    def test_admin_data_async_success(self):
+        """With correct values, is valid data returned asynchronously?"""
+
+        # Create and then retrieve demo
+        demo_name = datetime.now().isoformat("T")
+        created_demo = demo_service.create_demo(demo_name)
+        demo_json = loads(created_demo)
+        demo_guid = demo_json.get('guid')
+        demo_user_id = demo_json.get('users')[0].get('id')
+
+        # Log in user
+        auth_data = user_service.login(demo_guid, demo_user_id)
+        loopback_token = auth_data.get('loopback_token')
+
+        # Specify functions and their corresponding arguments to be called
+        erp_calls = [(shipment_service.get_shipments, loopback_token),
+                     (distribution_center_service.get_distribution_centers, loopback_token),
+                     (retailer_service.get_retailers, loopback_token)]
+        pool = Pool(processes=len(erp_calls))
+
+        # Asynchronously make calls and then wait on all processes to finish
+        results = pool.map(async_helper, erp_calls)
+        pool.close()
+        pool.join()
+
+        # Check that the shipment is valid
+        shipment = loads(results[0])[0]
+        self.assertTrue(shipment.get('id'))
+        self.assertTrue(shipment.get('status'))
+        self.assertTrue(shipment.get('createdAt'))
+        self.assertTrue(shipment.get('estimatedTimeOfArrival'))
+        self.assertTrue(shipment.get('fromId'))
+        self.assertTrue(shipment.get('toId'))
+        if shipment.get('currentLocation'):
+            self.assertTrue(shipment.get('currentLocation').get('city'))
+            self.assertTrue(shipment.get('currentLocation').get('state'))
+            self.assertTrue(shipment.get('currentLocation').get('country'))
+            self.assertTrue(shipment.get('currentLocation').get('latitude'))
+            self.assertTrue(shipment.get('currentLocation').get('longitude'))
+
+        # Check that the retailer is valid
+        retailer = loads(results[1])[0]
+        self.assertTrue(retailer.get('id'))
+        if retailer.get('address'):
+            self.assertTrue(retailer.get('address').get('city'))
+            self.assertTrue(retailer.get('address').get('state'))
+            self.assertTrue(retailer.get('address').get('country'))
+            self.assertTrue(retailer.get('address').get('latitude'))
+            self.assertTrue(retailer.get('address').get('longitude'))
+
+        # Check that the distribution center is valid
+        distribution_center = loads(results[2])[0]
+        self.assertTrue(distribution_center.get('id'))
+        if distribution_center.get('address'):
+            self.assertTrue(distribution_center.get('address').get('city'))
+            self.assertTrue(distribution_center.get('address').get('state'))
+            self.assertTrue(distribution_center.get('address').get('country'))
+            self.assertTrue(distribution_center.get('address').get('latitude'))
+            self.assertTrue(distribution_center.get('address').get('longitude'))
 
         # Destroy demo
         demo_service.delete_demo_by_guid(demo_guid)

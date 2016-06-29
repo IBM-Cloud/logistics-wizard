@@ -6,6 +6,7 @@ Flask app and request.
 import json
 
 from decorator import decorator
+from types import FunctionType
 from flask import g, request
 
 from server.exceptions import (AuthorizationException,
@@ -119,8 +120,22 @@ def compose_error(exc, e):
     """
     return_error = dict(code=exc.status_code,
                         message=e.message)
-    if e.user_details is not None:
+
+    if hasattr(e, 'user_details') and e.user_details is not None:
         return_error['user_details'] = e.user_details
 
     return return_error
 
+
+def async_helper(args):
+    """
+    Calls the passed in function with the input arguments. Used to mitigate
+    calling different functions during multiprocessing
+
+    :param args:    Function and its arguments
+    :return:        Result of the called function
+    """
+
+    # Isolate function arguments in their own tuple and then call the function
+    func_args = tuple(y for y in args if type(y) != FunctionType)
+    return args[0](*func_args)

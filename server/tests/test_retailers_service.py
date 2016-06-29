@@ -118,7 +118,7 @@ class GetRetailerTestCase(unittest.TestCase):
         # TODO: Update to use assertIsInstance(a,b)
         # Check all expected object values are present
         retailer_json = loads(retailer)
-        # Check that the distribution center is valid
+        # Check that the retailer is valid
         self.assertTrue(retailer_json.get('id'))
 
         # Check that retailer address is valid, if present
