@@ -74,7 +74,7 @@ def get_retailer(token, retailer_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Retailers/" + retailer_id
+    url = Config.ERP + "Retailers/" + str(retailer_id)
     headers = {
         'cache-control': "no-cache",
         'Authorization': token

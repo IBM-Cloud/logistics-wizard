@@ -68,11 +68,11 @@ class CreateUserTestCase(unittest.TestCase):
         # Invalid demo guid
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.create_user,
-                          'ABC123', retailers_json[0].get('id'))
+                          '123321', retailers_json[0].get('id'))
         # Invalid retailer id
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.create_user,
-                          demo_guid, 'R99999')
+                          demo_guid, '123321')
 
         # Destroy demo
         delete_demo(demo_guid)
@@ -126,10 +126,10 @@ class UserLoginTestCase(unittest.TestCase):
         # Attempt to create user with invalid inputs
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.login,
-                          'ABC123', demo_user_id)
+                          '123321', demo_user_id)
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.login,
-                          demo_guid, '9283742b918a9367c83b4c4d4e327ed7')
+                          demo_guid, '123321')
 
         # Destroy demo
         delete_demo(demo_guid)

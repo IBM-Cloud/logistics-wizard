@@ -75,7 +75,7 @@ def get_distribution_center(token, dc_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "DistributionCenters/" + dc_id
+    url = Config.ERP + "DistributionCenters/" + str(dc_id)
     headers = {
         'cache-control': "no-cache",
         'Authorization': token

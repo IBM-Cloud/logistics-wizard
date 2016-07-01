@@ -290,7 +290,7 @@ class GetShipmentTestCase(unittest.TestCase):
         # Invalid shipment id
         self.assertRaises(ResourceDoesNotExistException,
                           shipment_service.get_shipment,
-                          loopback_token, 'S1-123')
+                          loopback_token, '123321')
 
         # Destroy demo
         delete_demo(demo_guid)
@@ -366,7 +366,7 @@ class DeleteShipmentTestCase(unittest.TestCase):
         # Invalid shipment id
         self.assertRaises(ResourceDoesNotExistException,
                           shipment_service.delete_shipment,
-                          loopback_token, 'S1-123')
+                          loopback_token, '123321')
 
         # Destroy demo
         delete_demo(demo_guid)
@@ -467,7 +467,7 @@ class UpdateShipmentTestCase(unittest.TestCase):
         shipment['status'] = 'ACCEPTED'
         self.assertRaises(ResourceDoesNotExistException,
                           shipment_service.update_shipment,
-                          loopback_token, 'S1-123', shipment)
+                          loopback_token, '123321', shipment)
 
         # Destroy demo
         delete_demo(demo_guid)

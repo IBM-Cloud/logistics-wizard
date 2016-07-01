@@ -58,7 +58,7 @@ def add_query_filter(cur_query, filter_type, property_name, op, value):
     elif cur_query != "":
         cur_query += "&"
 
-    return cur_query + "filter[" + filter_type + "][" + property_name + "]" + op + value
+    return cur_query + "filter[" + filter_type + "][" + property_name + "]" + op + str(value)
 
 
 ###########################
@@ -114,7 +114,7 @@ def get_shipment(token, shipment_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Shipments/" + shipment_id
+    url = Config.ERP + "Shipments/" + str(shipment_id)
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -183,7 +183,7 @@ def delete_shipment(token, shipment_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Shipments/" + shipment_id
+    url = Config.ERP + "Shipments/" + str(shipment_id)
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -217,7 +217,7 @@ def update_shipment(token, shipment_id, shipment):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Shipments/" + shipment_id
+    url = Config.ERP + "Shipments/" + str(shipment_id)
     headers = {
         'cache-control': "no-cache",
         'Authorization': token

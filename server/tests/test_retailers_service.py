@@ -148,7 +148,7 @@ class GetRetailerTestCase(unittest.TestCase):
         # Invalid retailer id
         self.assertRaises(ResourceDoesNotExistException,
                           retailer_service.get_retailer,
-                          loopback_token, 'R1-123')
+                          loopback_token, '123321')
 
         # Destroy demo
         delete_demo(demo_guid)

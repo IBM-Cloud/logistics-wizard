@@ -156,7 +156,7 @@ class GetDistributionCenterTestCase(unittest.TestCase):
         # Invalid distribution center id
         self.assertRaises(ResourceDoesNotExistException,
                           distribution_center_service.get_distribution_center,
-                          loopback_token, 'DXXX')
+                          loopback_token, '123321')
 
         # Destroy demo
         delete_demo(demo_guid)
