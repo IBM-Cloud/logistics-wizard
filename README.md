@@ -126,6 +126,7 @@ There are series of unit tests located in the [`server/tests`](server/tests) fol
   $ python server/tests/test_distribution_centers_service.py
   $ python server/tests/test_retailers_service.py
   $ python server/tests/test_products_service.py
+  $ python server/tests/test_messaging_service.py
   ```
 
 The tests will print a dot for each successfully completed unit test. If a test fails for any reason, it will immediately exit and print the reason for its failure. For example, here is the output of a successfully complete [`test_demos_service.py`](server/tests/test_demos_service.py) test:
@@ -139,6 +140,24 @@ The tests will print a dot for each successfully completed unit test. If a test 
   OK
   ```
 
+### Travis CI
+One popular option for continuous integration is [Travis CI][travis_url]. We have provided a `.travis.yml` file in this repository for convenience. In order to set it up for your repository, take the following actions:
+
+1. Go to your [Travis CI Profile][travis_profile_url]
+
+2. Check the box next to your logistics-wizard GitHub repository and then click the settings cog
+
+3. Create the following environment variables
+	- `LOGISTICS_WIZARD_ENV` - TEST
+	- `SMTP_SERVER` - smpt.gmail.com
+	- `SMTP_SERVER_PORT` - 587
+	- `SMTP_USER_NAME`
+	- `SMTP_PASSWORD`
+
+	To get values for the `SMTP_USER_NAME` and `SMTP_PASSWORD` variables, check out the [Setting up email](#setting-up-email) section.
+
+Thats it! Now your future pushes to GitHub will be built and tested by Travis CI.
+
 ### Code Coverage Tests
 If you have you would like to perform code coverage tests as well, you can use [coveralls][coveralls_url] to perform this task. If you are using [Travis CI][travis_url] as your CI tool, simply replace `python` in your test commands with `coverage run` and then run `coveralls` as follows:
 
@@ -149,12 +168,31 @@ If you have you would like to perform code coverage tests as well, you can use [
   $ coverage run server/tests/test_distribution_centers_service.py
   $ coverage run server/tests/test_retailers_service.py
   $ coverage run server/tests/test_products_service.py
+  $ coverage run server/tests/test_messaging_service.py
   $ coveralls
   ```
 
-For more in-depth instructions, check out the [coveralls usage documentation][coveralls_usage_url].
+To determine how to run coveralls using another CI tool or for more in-depth instructions, check out the [coveralls usage documentation][coveralls_usage_url].
 
 **Note**: The unit tests are currently hitting the production version of the [logistics-wizard-erp][erp_github_url] application. In the future these tests will be able to be run in isolation.
+
+## Setting up email
+In order to send welcome emails, we need to configure the app to use an SMTP server. For simplicity's sake, we will use the free SMTP server that Gmail provides. This section will walk you through how to do this:
+
+1. [Create a new Gmail account][gmail_signup_url] to serve as the `FROM` address for your application's emails
+
+2. Turn on [Gmail access for less secure apps][google_less_secure_setting_url] so that your app will be able to send emails on your behalf
+
+3. Go to the _Forwarding/IMAP_ tab in your [Gmail settings][gmail_settings_url] and make sure IMAP is enabled. This ensures emails are properly copied into your sent folder.
+
+4. Lastly, your Gmail username and password must be copied to the service you are using for deployment. Here are some common options:
+	- **CF CLI**: Update the environment variables in your `manifest.yml` file or in your app dashboard's *Runtime* --> *Environment Variables* section after deployment.
+	- **DevOps Services Toolchain**: Configure the environment properties for the `TEST` stage in the `logistics-wizard` delivery pipeline.
+	- **Travis CI**: Go to the *Settings* tab for your repo and update the environment variables there.
+
+Your app should now be capable of sending welcome emails to any end users that include their email address during signup.
+
+**Note**: Be aware that Google restricts the number of messages sent per day to 99 emails. The restriction is automatically removed within 24 hours after the limit was reached.
 
 ## API documentation
 The API methods that this component exposes requires the discovery of dependent services, however, the API will gracefully fail when they are not available.
@@ -162,7 +200,7 @@ The API methods that this component exposes requires the discovery of dependent 
 The API and data models are defined in [this Swagger 2.0 file](swagger.yaml). You can view this file in the [Swagger Editor](http://editor.swagger.io/#/?import=https://raw.githubusercontent.com/IBM-Bluemix/logistics-wizard/master/swagger.yaml).
 
 Use the Postman collection to help you get started with the controller API:  
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/b39a8c0ce27371fbd972)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/b39a8c0ce27371fbd972#?env%5BLW_Prod%5D=W3sia2V5IjoiZXJwX2hvc3QiLCJ2YWx1ZSI6Imh0dHA6Ly9sb2dpc3RpY3Mtd2l6YXJkLWVycC5teWJsdWVtaXgubmV0LyIsInR5cGUiOiJ0ZXh0IiwiZW5hYmxlZCI6dHJ1ZSwiaG92ZXJlZCI6ZmFsc2V9LHsia2V5IjoiY29udHJvbGxlcl9ob3N0IiwidmFsdWUiOiJodHRwczovL2xvZ2lzdGljcy13aXphcmQubXlibHVlbWl4Lm5ldCIsInR5cGUiOiJ0ZXh0IiwiZW5hYmxlZCI6dHJ1ZSwiaG92ZXJlZCI6ZmFsc2V9XQ==)
 
 ## Contribute
 Please check out our [Contributing Guidelines](.github/CONTRIBUTING.md) for detailed information on how you can lend a hand to the Logistics Wizard demo implementation effort.
@@ -190,5 +228,9 @@ See [License.txt](License.txt) for license information.
 [virtualenv_url]: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 [unittest_docs_url]: https://docs.python.org/3/library/unittest.html
 [travis_url]: https://travis-ci.org/
+[travis_profile_url]: https://travis-ci.org/profile/
 [coveralls_url]: https://coveralls.io/
 [coveralls_usage_url]: https://pypi.python.org/pypi/coveralls#usage-travis-ci
+[gmail_signup_url]: https://accounts.google.com/signup
+[gmail_settings_url]: https://mail.google.com/mail/u/1/#settings/fwdandpop
+[google_less_secure_setting_url]: https://www.google.com/settings/security/lesssecureapps

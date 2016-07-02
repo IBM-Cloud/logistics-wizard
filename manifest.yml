@@ -6,3 +6,7 @@ applications:
   host: logistics-wizard
   env:
     LOGISTICS_WIZARD_ENV: PROD
+    SMTP_SERVER: smtp.gmail.com
+    SMTP_SERVER_PORT: 587
+    SMTP_USER_NAME: XXX
+    SMTP_PASSWORD: XXX

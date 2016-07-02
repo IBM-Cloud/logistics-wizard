@@ -565,7 +565,7 @@ paths:
         200:
           description: Shipments retrieved successfully
           schema:
-            $ref: '#/definitions/Retailer'
+            $ref: '#/definitions/Shipment'
         401:
           description: Unauthorized
           schema:

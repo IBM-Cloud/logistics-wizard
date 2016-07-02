@@ -15,6 +15,7 @@ venv/
 
 # dev files
 requirements.dev.txt
+.env.local
 *.DS_Store
 
 # test files

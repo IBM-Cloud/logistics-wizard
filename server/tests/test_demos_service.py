@@ -66,8 +66,8 @@ class CreateDemoTestCase(unittest.TestCase):
 
         # Test valid email completes
         demo_name = datetime.now().isoformat("T")
-        invalid_email = "firstname-lastname@example.com"
-        demo = demo_service.create_demo(demo_name, invalid_email)
+        valid_email = "test@example.com"
+        demo = demo_service.create_demo(demo_name, valid_email)
         self.assertTrue(loads(demo).get('id'))
 
 
