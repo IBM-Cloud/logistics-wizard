@@ -5,9 +5,10 @@ import server.services.demos as demo_service
 import server.services.users as user_service
 import server.services.shipments as shipment_service
 import server.services.retailers as retailer_service
-from server.exceptions import (ValidationException,
-                               AuthenticationException,
-                               ResourceDoesNotExistException)
+import server.services.distribution_centers as distribution_center_service
+from server.exceptions import (AuthenticationException,
+                               ResourceDoesNotExistException,
+                               UnprocessableEntityException)
 
 
 ###########################
@@ -63,6 +64,15 @@ class GetShipmentsTestCase(unittest.TestCase):
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
 
+        # Create shipment
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
+
         # Get shipments
         shipments = shipment_service.get_shipments(loopback_token)
 
@@ -102,6 +112,22 @@ class GetShipmentsTestCase(unittest.TestCase):
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
 
+        # Create shipments
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "status": "NEW",
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
+        shipment_service.create_shipment(loopback_token, {
+            "status": "SHIPPED",
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
+
         # Get shipments
         query_status = 'SHIPPED'
         shipments = shipment_service.get_shipments(loopback_token, status=query_status)
@@ -129,17 +155,31 @@ class GetShipmentsTestCase(unittest.TestCase):
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
 
-        # Get shipments
+        # Create shipments
         retailers = retailer_service.get_retailers(loopback_token)
-        retailer_id = loads(retailers)[0].get('id')
-        shipments = shipment_service.get_shipments(loopback_token, retailer_id=retailer_id)
+        retailer_id_filter = loads(retailers)[0].get('id')
+        retailer_id_other = loads(retailers)[0].get('id')
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": retailer_id_filter
+        })
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": retailer_id_other
+        })
+
+        # Get shipments
+        shipments = shipment_service.get_shipments(loopback_token, retailer_id=retailer_id_filter)
 
         # TODO: Update to use assertIsInstance(a,b)
         # Check all expected object values are present
         shipments_json = loads(shipments)
         # Check that the shipments have correct retailer ID (toId)
         for shipment_json in shipments_json:
-            self.assertTrue(shipment_json.get('toId') == retailer_id)
+            self.assertTrue(shipment_json.get('toId') == retailer_id_filter)
 
         # Destroy demo
         delete_demo(demo_guid)
@@ -172,15 +212,14 @@ class CreateShipmentTestCase(unittest.TestCase):
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
 
-        # Get shipments
-        shipments = shipment_service.get_shipments(loopback_token)
-        from_id = loads(shipments)[0].get('fromId')
-        to_id = loads(shipments)[0].get('toId')
+        # Get retailers and distribution centers
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
 
         # Create shipment
         shipment = dict()
-        shipment['fromId'] = from_id
-        shipment['toId'] = to_id
+        shipment['fromId'] = loads(distribution_centers)[0].get('id')
+        shipment['toId'] = loads(retailers)[0].get('id')
         created_shipment = shipment_service.create_shipment(loopback_token, shipment)
 
         # TODO: Update to use assertIsInstance(a,b)
@@ -192,6 +231,42 @@ class CreateShipmentTestCase(unittest.TestCase):
         self.assertTrue(shipment_json.get('createdAt'))
         self.assertTrue(shipment_json.get('fromId'))
         self.assertTrue(shipment_json.get('toId'))
+
+        # Destroy demo
+        delete_demo(demo_guid)
+
+    def test_create_shipment_invalid_ids(self):
+        """With an invalid retailer/distribution center IDs, are correct errors thrown?"""
+
+        # Create demo
+        demo = create_demo()
+        demo_json = loads(demo)
+        demo_guid = demo_json.get('guid')
+        demo_user_id = demo_json.get('users')[0].get('id')
+
+        # Log in user
+        auth_data = user_service.login(demo_guid, demo_user_id)
+        loopback_token = auth_data.get('loopback_token')
+
+        # Get retailers and distribution centers
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+
+        # Create invalid shipments
+        shipment_invalid_retailer = dict()
+        shipment_invalid_retailer['fromId'] = loads(distribution_centers)[0].get('id')
+        shipment_invalid_retailer['toId'] = "123321"
+        shipment_invalid_dist = dict()
+        shipment_invalid_dist['fromId'] = "123321"
+        shipment_invalid_dist['toId'] = loads(retailers)[0].get('id')
+
+        # Attempt to create a shipment with invalid IDs
+        self.assertRaises(UnprocessableEntityException,
+                          shipment_service.create_shipment,
+                          loopback_token, shipment_invalid_retailer)
+        self.assertRaises(UnprocessableEntityException,
+                          shipment_service.create_shipment,
+                          loopback_token, shipment_invalid_dist)
 
         # Destroy demo
         delete_demo(demo_guid)
@@ -209,15 +284,15 @@ class CreateShipmentTestCase(unittest.TestCase):
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
 
-        # Get shipments
-        shipments = shipment_service.get_shipments(loopback_token)
-        from_id = loads(shipments)[0].get('fromId')
-        to_id = loads(shipments)[0].get('toId')
+        # Get retailers and distribution centers
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
 
         # Create shipment
         shipment = dict()
-        shipment['fromId'] = from_id
-        shipment['toId'] = to_id
+        shipment['fromId'] = loads(distribution_centers)[0].get('id')
+        shipment['toId'] = loads(retailers)[0].get('id')
+        created_shipment = shipment_service.create_shipment(loopback_token, shipment)
 
         # Retrieve shipment with bad token
         bad_token = get_bad_token()
@@ -246,6 +321,15 @@ class GetShipmentTestCase(unittest.TestCase):
         # Log in user
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
+
+        # Create shipment
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
 
         # Get shipments
         shipments = shipment_service.get_shipments(loopback_token)
@@ -308,6 +392,15 @@ class GetShipmentTestCase(unittest.TestCase):
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
 
+        # Create shipment
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
+
         # Get shipments
         shipments = shipment_service.get_shipments(loopback_token)
         shipment_id = loads(shipments)[0].get('id')
@@ -339,6 +432,15 @@ class DeleteShipmentTestCase(unittest.TestCase):
         # Log in user
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
+
+        # Create shipment
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
 
         # Get shipments
         shipments = shipment_service.get_shipments(loopback_token)
@@ -384,6 +486,15 @@ class DeleteShipmentTestCase(unittest.TestCase):
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
 
+        # Create shipment
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
+
         # Get shipments
         shipments = shipment_service.get_shipments(loopback_token)
         shipment_id = loads(shipments)[0].get('id')
@@ -415,6 +526,15 @@ class UpdateShipmentTestCase(unittest.TestCase):
         # Log in user
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
+
+        # Create shipment
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
 
         # Get shipments
         shipments = shipment_service.get_shipments(loopback_token)
@@ -484,6 +604,15 @@ class UpdateShipmentTestCase(unittest.TestCase):
         # Log in user
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
+
+        # Create shipment
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
 
         # Get shipments
         shipments = shipment_service.get_shipments(loopback_token)

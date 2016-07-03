@@ -25,8 +25,8 @@ def retailer_to_dict(retailer):
     :return:      A dict representing the retailer.
     """
     return {
-        'id': retailer.get('id'),
-        'address': retailer.get('address')
+        'id': retailer.id,
+        'address': retailer.address
     }
 
 

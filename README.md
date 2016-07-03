@@ -114,6 +114,8 @@ And voila! You now have your very own instance of Logistics Wizard running on Bl
   $ python bin/start_web.py
   ```
 
+To get values for your local environment variables in `.env.local`, check out the [Setting up email](#setting-up-email) section.
+
 ## Testing
 
 ### Unit Tests
@@ -189,6 +191,7 @@ In order to send welcome emails, we need to configure the app to use an SMTP ser
 	- **CF CLI**: Update the environment variables in your `manifest.yml` file or in your app dashboard's *Runtime* --> *Environment Variables* section after deployment.
 	- **DevOps Services Toolchain**: Configure the environment properties for the `TEST` stage in the `logistics-wizard` delivery pipeline.
 	- **Travis CI**: Go to the *Settings* tab for your repo and update the environment variables there.
+	- **`.env.local`**: If you would like to test this functionality while developing locally, copy the values into this file.
 
 Your app should now be capable of sending welcome emails to any end users that include their email address during signup.
 

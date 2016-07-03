@@ -6,7 +6,6 @@ object and should just call into the service layer to act upon a demo resource.
 """
 import requests
 import json
-from multiprocessing import Process
 import server.services.messaging as messaging_service
 from server.config import Config
 from server.utils import validate_email
@@ -74,8 +73,7 @@ def create_demo(demo_name, user_email=None):
         subject = "Your Logistics Wizard session has been created - Demo #" + \
                   demo.get('guid')[-6:].upper()
         message = messaging_service.compose_welcome_msg(demo.get('guid'), demo.get('users')[0])
-        Process(target=messaging_service.send_email,
-                args=(user_email, subject, message, 'html')).start()
+        messaging_service.send_email(user_email, subject, message, 'html')
 
     return response.text
 

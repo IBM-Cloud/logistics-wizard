@@ -11,9 +11,7 @@ import server.services.retailers as retailer_service
 from flask import g, request, Response, Blueprint
 from multiprocessing import Pool
 from server.exceptions import (TokenException,
-                               AuthorizationException,
-                               ResourceDoesNotExistException,
-                               ValidationException)
+                               ResourceDoesNotExistException)
 from server.web.utils import (get_token_from_request,
                               get_json_data,
                               check_null_input,
@@ -113,7 +111,7 @@ def get_demo_retailers(guid):
     :param guid:   The demo's guid
 
     :return: [{
-        "id": "R1",
+        "id": "123",
         "address": {
           "city": "Raleigh",
           "state": "North Carolina",
@@ -233,10 +231,6 @@ def deauthenticate(token):
     return '', 204
 
 
-def func(x):
-    return x * x
-
-
 @demos_v1_blueprint.route('/admin', methods=['GET'])
 @logged_in
 def load_admin_data():
@@ -250,10 +244,11 @@ def load_admin_data():
     }
     """
 
-    # Specify functions and their corresponding arguments to be called
-    erp_calls = [(shipment_service.get_shipments, g.auth['loopback_token']),
-                 (distribution_center_service.get_distribution_centers, g.auth['loopback_token']),
-                 (retailer_service.get_retailers, g.auth['loopback_token'])]
+    # Specify functions and corresponding arguments to call to retrieve ERP data
+    loopback_token = g.auth['loopback_token']
+    erp_calls = [(shipment_service.get_shipments, loopback_token),
+                 (distribution_center_service.get_distribution_centers, loopback_token),
+                 (retailer_service.get_retailers, loopback_token)]
     pool = Pool(processes=len(erp_calls))
 
     # Asynchronously make calls and then wait on all processes to finish

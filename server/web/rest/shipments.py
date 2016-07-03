@@ -23,7 +23,7 @@ def get_shipments():
     Get all shipment objects.
 
     :return: [{
-        "id": "S5-51b8849982d82ea90d68b55f04be12b8",
+        "id": "123",
         "status": "SHIPPED",
         "createdAt": "2015-11-05T22:00:51.692765",
         "updatedAt": "2015-11-08T22:00:51.692765",
@@ -31,7 +31,7 @@ def get_shipments():
         "estimatedTimeOfArrival": "2015-11-07T22:00:51.692765",
         "currentLocation": {Address},
         "fromId": "D2",
-        "toId:": "R2-51b8849982d82ea90d68b55f04be12b8"
+        "toId:": "123"
     }, {...}]
 
     """
@@ -53,11 +53,11 @@ def create_shipment():
         "status": "NEW",
         "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
         "fromId": "D2",
-        "toId": "R2-331ba1af395808e6fddf3466fe218485"
+        "toId": "123"
     }
 
     :return: {
-        "id": "S5-51b8849982d82ea90d68b55f04be12b8",
+        "id": "123",
         "status": "ACCEPTED",
         "createdAt": "2015-11-05T22:00:51.692765",
         "updatedAt": "2015-11-08T22:00:51.692765",
@@ -65,7 +65,7 @@ def create_shipment():
         "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
         "currentLocation": {Address},
         "fromId": "D2",
-        "toId:": "R2-331ba1af395808e6fddf3466fe218485"
+        "toId:": "123"
     }
 
     """
@@ -88,7 +88,7 @@ def get_shipment(shipment_id):
     :param shipment_id:   The shipment's id
 
     :return: {
-        "id": "S5-51b8849982d82ea90d68b55f04be12b8",
+        "id": "123",
         "status": "SHIPPED",
         "createdAt": "2015-11-05T22:00:51.692765",
         "updatedAt": "2015-11-08T22:00:51.692765",
@@ -96,7 +96,7 @@ def get_shipment(shipment_id):
         "estimatedTimeOfArrival": "2015-11-07T22:00:51.692765",
         "currentLocation": {Address},
         "fromId": "D2",
-        "toId:": "R2-51b8849982d82ea90d68b55f04be12b8"
+        "toId:": "123"
     }
 
     """
@@ -132,7 +132,7 @@ def update_shipment(shipment_id):
 
     :param shipment_id:   The shipment's id
     :param  {
-        "id": "S5-51b8849982d82ea90d68b55f04be12b8",
+        "id": "123",
         "status": "SHIPPED",
         "createdAt": "2015-11-05T22:00:51.692765",
         "updatedAt": "2015-11-08T22:00:51.692765",
@@ -140,11 +140,11 @@ def update_shipment(shipment_id):
         "estimatedTimeOfArrival": "2015-11-07T22:00:51.692765",
         "currentLocation": {Address},
         "fromId": "D2",
-        "toId:": "R2-51b8849982d82ea90d68b55f04be12b8"
+        "toId:": "123"
     }
 
     :return: {
-        "id": "S5-51b8849982d82ea90d68b55f04be12b8",
+        "id": "123",
         "status": "SHIPPED",
         "createdAt": "2015-11-05T22:00:51.692765",
         "updatedAt": "2015-11-08T22:00:51.692765",
@@ -152,7 +152,7 @@ def update_shipment(shipment_id):
         "estimatedTimeOfArrival": "2015-11-07T22:00:51.692765",
         "currentLocation": {Address},
         "fromId": "D2",
-        "toId:": "R2-51b8849982d82ea90d68b55f04be12b8"
+        "toId:": "123"
     }
 
     """

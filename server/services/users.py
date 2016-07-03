@@ -30,11 +30,11 @@ def user_to_dict(user):
     :return:      A dict representing the user.
     """
     return {
-        'id': user.get('id'),
-        'demoId': user.get('demoId'),
-        'email': user.get('email'),
-        'username': user.get('username'),
-        'roles': user.get('roles'),
+        'id': user.id,
+        'demoId': user.demoId,
+        'email': user.email,
+        'username': user.username,
+        'roles': user.roles
     }
 
 
@@ -61,6 +61,7 @@ def create_user(guid, retailer_id):
     }
     payload = dict()
     payload['retailerId'] = retailer_id
+    # payload['retailerId'] = int(retailer_id) <-- use this after ERP switches to numerical IDs
     payload_json = json.dumps(payload)
 
     try:
@@ -127,6 +128,7 @@ def login(guid, user_id):
     }
     payload = dict()
     payload['userId'] = user_id
+    # payload['userId'] = int(user_id) <-- use this after ERP switches to numerical IDs
     payload_json = json.dumps(payload)
 
     try:

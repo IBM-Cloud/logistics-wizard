@@ -24,7 +24,7 @@ def get_retailers():
     Get all retailer objects.
 
     :return: [{
-        "id": "R1-331ba1af395808e6fddf3466fe218485",
+        "id": "123",
         "address": {Address}
     }, {...}]
 
@@ -45,7 +45,7 @@ def get_retailer(retailer_id):
     :param retailer_id:   The retailer's id
 
     :return: {
-        "id": "D2",
+        "id": "123",
         "address": {Address}
     }
 
@@ -68,7 +68,7 @@ def get_retailer_shipments(retailer_id):
     :param retailer_id:   The retailer's id
 
     :return: [{
-        "id": "S5-51b8849982d82ea90d68b55f04be12b8",
+        "id": "123",
         "status": "SHIPPED",
         "createdAt": "2015-11-05T22:00:51.692765",
         "updatedAt": "2015-11-08T22:00:51.692765",
@@ -76,7 +76,7 @@ def get_retailer_shipments(retailer_id):
         "estimatedTimeOfArrival": "2015-11-07T22:00:51.692765",
         "currentLocation": {Address},
         "fromId": "D2",
-        "toId:": "R2-51b8849982d82ea90d68b55f04be12b8"
+        "toId:": "123"
     }, {...}]
 
     """

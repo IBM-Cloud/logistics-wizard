@@ -70,6 +70,9 @@ class CreateDemoTestCase(unittest.TestCase):
         demo = demo_service.create_demo(demo_name, valid_email)
         self.assertTrue(loads(demo).get('id'))
 
+        # Destroy demo
+        demo_service.delete_demo_by_guid(loads(demo).get('guid'))
+
 
 class RetrieveDemoTestCase(unittest.TestCase):
     """Tests for `services/demos.py - get_demo_by_guid()`."""
@@ -186,6 +189,15 @@ class RetrieveAdminDataTestCase(unittest.TestCase):
         # Log in user
         auth_data = user_service.login(demo_guid, demo_user_id)
         loopback_token = auth_data.get('loopback_token')
+
+        # Create shipment
+        retailers = retailer_service.get_retailers(loopback_token)
+        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
+        shipment_service.create_shipment(loopback_token, {
+            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
+            "fromId": loads(distribution_centers)[0].get('id'),
+            "toId": loads(retailers)[0].get('id')
+        })
 
         # Specify functions and their corresponding arguments to be called
         erp_calls = [(shipment_service.get_shipments, loopback_token),
