@@ -6,6 +6,7 @@ python:
 install: "pip install -r requirements.dev.txt"
 # command to run tests
 before_script:
+  - rm .env.local
   - source .env
 script:
   - python server/tests/test_demos_service.py
