@@ -68,12 +68,13 @@ def create_demo(demo_name, user_email=None):
     except Exception as e:
         raise APIException('ERP threw error creating new Demo', internal_details=str(e))
 
-    if user_email:
-        demo = json.loads(response.text)
-        subject = "Your Logistics Wizard session has been created - Demo #" + \
-                  demo.get('guid')[-6:].upper()
-        message = messaging_service.compose_welcome_msg(demo.get('guid'), demo.get('users')[0])
-        messaging_service.send_email(user_email, subject, message, 'html')
+    # Commenting out synchronous email sending until one-off tasks are enabled
+    # if user_email:
+    #     demo = json.loads(response.text)
+    #     subject = "Your Logistics Wizard session has been created - Demo #" + \
+    #               demo.get('guid')[-6:].upper()
+    #     message = messaging_service.compose_welcome_msg(demo.get('guid'), demo.get('users')[0])
+    #     messaging_service.send_email(user_email, subject, message, 'html')
 
     return response.text
 
