@@ -11,7 +11,8 @@ import server.services.retailers as retailer_service
 from flask import g, request, Response, Blueprint
 from multiprocessing import Pool
 from server.exceptions import (TokenException,
-                               ResourceDoesNotExistException)
+                               ResourceDoesNotExistException,
+                               APIException)
 from server.web.utils import (get_token_from_request,
                               get_json_data,
                               check_null_input,
@@ -252,10 +253,13 @@ def load_admin_data():
     pool = Pool(processes=len(erp_calls))
 
     # Asynchronously make calls and then wait on all processes to finish
-    results = pool.map(async_helper, erp_calls)
+    try:
+        results = pool.map(async_helper, erp_calls)
+    except Exception as e:
+        raise APIException('Error retrieving admin data view', internal_details=str(e))
+
     pool.close()
     pool.join()
-
     # Send back serialized results to client
     return Response(json.dumps({
                         "shipments": json.loads(results[0]),

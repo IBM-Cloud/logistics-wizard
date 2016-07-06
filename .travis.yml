@@ -9,10 +9,4 @@ before_script:
   - rm .env.local
   - source .env
 script:
-  - python server/tests/test_demos_service.py
-  - python server/tests/test_users_service.py
-  - python server/tests/test_shipments_service.py
-  - python server/tests/test_distribution_centers_service.py
-  - python server/tests/test_retailers_service.py
-  - python server/tests/test_products_service.py
-  - python server/tests/test_messaging_service.py
+  - python server/tests/run_tests.py

@@ -7,10 +7,10 @@ object and should just call into the service layer to act upon a shipment resour
 import requests
 import json
 from server.config import Config
-from server.exceptions import (ResourceDoesNotExistException)
 from server.exceptions import (APIException,
                                AuthenticationException,
                                UnprocessableEntityException,
+                               ResourceDoesNotExistException,
                                ValidationException)
 
 ###########################

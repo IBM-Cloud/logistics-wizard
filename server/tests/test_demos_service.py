@@ -2,15 +2,28 @@ import unittest
 from datetime import datetime
 from json import loads
 from multiprocessing import Pool
+import server.tests.utils as utils
 import server.services.demos as demo_service
 import server.services.users as user_service
 import server.services.shipments as shipment_service
 import server.services.distribution_centers as distribution_center_service
 import server.services.retailers as retailer_service
 from server.web.utils import async_helper
-from server.exceptions import (ValidationException,
-                               UnprocessableEntityException,
+from server.exceptions import (UnprocessableEntityException,
                                ResourceDoesNotExistException)
+
+
+def suite():
+    test_suite = unittest.TestSuite()
+    test_suite.addTest(CreateDemoTestCase('test_demo_create_success'))
+    test_suite.addTest(CreateDemoTestCase('test_demo_create_email'))
+    test_suite.addTest(RetrieveDemoTestCase('test_demo_retrieve_success'))
+    test_suite.addTest(RetrieveDemoTestCase('test_demo_retrieve_invalid_input'))
+    test_suite.addTest(RetrieveDemoTestCase('test_demo_retrieve_retailers_success'))
+    test_suite.addTest(RetrieveDemoTestCase('test_admin_data_async_success'))
+    test_suite.addTest(DeleteDemoTestCase('test_demo_delete_success'))
+    test_suite.addTest(DeleteDemoTestCase('test_demo_delete_invalid_input'))
+    return test_suite
 
 
 ###########################
@@ -75,23 +88,34 @@ class CreateDemoTestCase(unittest.TestCase):
 
 
 class RetrieveDemoTestCase(unittest.TestCase):
-    """Tests for `services/demos.py - get_demo_by_guid()`."""
+    """Tests for `services/demos.py - get_demo_by_guid(), get_demo_retailers()`.
+       Tests for `web/utils.py - async_helper()`."""
+
+    def setUp(self):
+        # Create demo
+        self.demo = utils.create_demo()
+        demo_json = loads(self.demo)
+        demo_guid = demo_json.get('guid')
+        demo_user_id = demo_json.get('users')[0].get('id')
+
+        # Log in user
+        auth_data = user_service.login(demo_guid, demo_user_id)
+        self.loopback_token = auth_data.get('loopback_token')
 
     def test_demo_retrieve_success(self):
         """With correct values, is a valid demo returned?"""
 
-        # Create and then retrieve demo
-        demo_name = datetime.now().isoformat("T")
-        created_demo = demo_service.create_demo(demo_name)
-        retrieved_demo = demo_service.get_demo_by_guid(loads(created_demo).get('guid'))
+        # Retrieve demo
+        retrieved_demo = demo_service.get_demo_by_guid(loads(self.demo).get('guid'))
 
         # TODO: Update to use assertIsInstance(a,b)
         # Check all expected object values are present
+        created_demo_json = loads(self.demo)
         demo_json = loads(retrieved_demo)
-        self.assertTrue(demo_json.get('id') == loads(created_demo).get('id'))
-        self.assertTrue(demo_json.get('guid') == loads(created_demo).get('guid'))
-        self.assertTrue(demo_json.get('name') == loads(created_demo).get('name'))
-        self.assertTrue(demo_json.get('createdAt') == loads(created_demo).get('createdAt'))
+        self.assertTrue(demo_json.get('id') == created_demo_json.get('id'))
+        self.assertTrue(demo_json.get('guid') == created_demo_json.get('guid'))
+        self.assertTrue(demo_json.get('name') == created_demo_json.get('name'))
+        self.assertTrue(demo_json.get('createdAt') == created_demo_json.get('createdAt'))
         self.assertTrue(demo_json.get('users'))
 
         # Check that the users are valid
@@ -109,50 +133,17 @@ class RetrieveDemoTestCase(unittest.TestCase):
                     self.assertTrue(role_json.get('created'))
                     self.assertTrue(role_json.get('modified'))
 
-        # Destroy demo
-        demo_service.delete_demo_by_guid(demo_json.get('guid'))
-
     def test_demo_retrieve_invalid_input(self):
         """With invalid guid, is correct error thrown?"""
-
-        # Attempt to retrieve demo with invalid guid
         self.assertRaises(ResourceDoesNotExistException,
                           demo_service.get_demo_by_guid,
                           'ABC123')
 
-
-class DeleteDemoTestCase(unittest.TestCase):
-    """Tests for `services/demos.py - delete_demo_by_guid()`."""
-
-    def test_demo_delete_success(self):
-        """With correct values, is a valid demo deleted?"""
-
-        # Create demo
-        demo_name = datetime.now().isoformat("T")
-        demo = demo_service.create_demo(demo_name)
-
-        # Destroy demo and check for successful return
-        self.assertTrue(demo_service.delete_demo_by_guid(loads(demo).get('guid')) is None)
-
-    def test_demo_delete_invalid_input(self):
-        """With invalid guid, is correct error thrown?"""
-
-        # Attempt to delete demo with invalid guid
-        self.assertRaises(ResourceDoesNotExistException,
-                          demo_service.delete_demo_by_guid,
-                          'ABC123')
-
-
-class RetrieveDemoRetailersTestCase(unittest.TestCase):
-    """Tests for `services/demos.py - get_demo_retailers()`."""
-
     def test_demo_retrieve_retailers_success(self):
         """With correct values, are valid demo retailers returned?"""
 
-        # Create and then retrieve demo
-        demo_name = datetime.now().isoformat("T")
-        created_demo = demo_service.create_demo(demo_name)
-        demo_guid = loads(created_demo).get('guid')
+        # Retrieve demo retailers
+        demo_guid = loads(self.demo).get('guid')
         retailers = demo_service.get_demo_retailers(demo_guid)
         retailers_json = loads(retailers)
 
@@ -169,40 +160,13 @@ class RetrieveDemoRetailersTestCase(unittest.TestCase):
             self.assertTrue(address_json.get('latitude'))
             self.assertTrue(address_json.get('longitude'))
 
-        # Destroy demo
-        demo_service.delete_demo_by_guid(demo_guid)
-
-
-class RetrieveAdminDataTestCase(unittest.TestCase):
-    """Tests for `web/utils.py - async_helper()`."""
-
     def test_admin_data_async_success(self):
         """With correct values, is valid data returned asynchronously?"""
 
-        # Create and then retrieve demo
-        demo_name = datetime.now().isoformat("T")
-        created_demo = demo_service.create_demo(demo_name)
-        demo_json = loads(created_demo)
-        demo_guid = demo_json.get('guid')
-        demo_user_id = demo_json.get('users')[0].get('id')
-
-        # Log in user
-        auth_data = user_service.login(demo_guid, demo_user_id)
-        loopback_token = auth_data.get('loopback_token')
-
-        # Create shipment
-        retailers = retailer_service.get_retailers(loopback_token)
-        distribution_centers = distribution_center_service.get_distribution_centers(loopback_token)
-        shipment_service.create_shipment(loopback_token, {
-            "estimatedTimeOfArrival": "2016-07-10T00:00:00.000Z",
-            "fromId": loads(distribution_centers)[0].get('id'),
-            "toId": loads(retailers)[0].get('id')
-        })
-
         # Specify functions and their corresponding arguments to be called
-        erp_calls = [(shipment_service.get_shipments, loopback_token),
-                     (distribution_center_service.get_distribution_centers, loopback_token),
-                     (retailer_service.get_retailers, loopback_token)]
+        erp_calls = [(shipment_service.get_shipments, self.loopback_token),
+                     (distribution_center_service.get_distribution_centers, self.loopback_token),
+                     (retailer_service.get_retailers, self.loopback_token)]
         pool = Pool(processes=len(erp_calls))
 
         # Asynchronously make calls and then wait on all processes to finish
@@ -245,8 +209,29 @@ class RetrieveAdminDataTestCase(unittest.TestCase):
             self.assertTrue(distribution_center.get('address').get('latitude'))
             self.assertTrue(distribution_center.get('address').get('longitude'))
 
-        # Destroy demo
-        demo_service.delete_demo_by_guid(demo_guid)
+    def tearDown(self):
+        utils.delete_demo(loads(self.demo).get('guid'))
+
+
+class DeleteDemoTestCase(unittest.TestCase):
+    """Tests for `services/demos.py - delete_demo_by_guid()`."""
+
+    def setUp(self):
+        # Create demo
+        self.demo = utils.create_demo()
+
+    def test_demo_delete_success(self):
+        """With correct values, is a valid demo deleted?"""
+
+        self.assertTrue(demo_service.delete_demo_by_guid(loads(self.demo).get('guid')) is None)
+
+    def test_demo_delete_invalid_input(self):
+        """With invalid guid, is correct error thrown?"""
+
+        # Attempt to delete demo with invalid guid
+        self.assertRaises(ResourceDoesNotExistException,
+                          demo_service.delete_demo_by_guid,
+                          'ABC123')
 
 
 if __name__ == '__main__':

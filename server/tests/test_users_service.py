@@ -1,26 +1,21 @@
 import unittest
-from datetime import datetime
 from json import loads
+import server.tests.utils as utils
 import server.services.demos as demo_service
 import server.services.users as user_service
 from server.exceptions import (ResourceDoesNotExistException)
 
 
-###########################
-#        Utilities        #
-###########################
-
-def create_demo():
-    """Creates a demo object to work with for the unit tests"""
-
-    demo_name = datetime.now().isoformat("T")
-    return demo_service.create_demo(demo_name)
-
-
-def delete_demo(demo_guid):
-    """Deletes the demo object used by the unit tests"""
-
-    demo_service.delete_demo_by_guid(demo_guid)
+def suite():
+    test_suite = unittest.TestSuite()
+    test_suite.addTest(CreateUserTestCase('test_user_create_success'))
+    test_suite.addTest(CreateUserTestCase('test_user_create_invalid_inputs'))
+    test_suite.addTest(UserLoginTestCase('test_user_login_success'))
+    test_suite.addTest(UserLoginTestCase('test_user_login_invalid_inputs'))
+    test_suite.addTest(UserLogoutTestCase('test_user_logout_success'))
+    test_suite.addTest(UserLogoutTestCase('test_user_logout_invalid_token'))
+    test_suite.addTest(TokenizeTestCase('test_tokenize_and_detokenize'))
+    return test_suite
 
 
 ###########################
@@ -30,68 +25,57 @@ def delete_demo(demo_guid):
 class CreateUserTestCase(unittest.TestCase):
     """Tests for `services/users.py - create_user()`."""
 
+    def setUp(self):
+        # Create demo
+        self.demo = utils.create_demo()
+        self.retailers = demo_service.get_demo_retailers(loads(self.demo).get('guid'))
+
     def test_user_create_success(self):
         """With correct values, is a valid user returned?"""
 
-        # Create demo
-        demo = create_demo()
-        demo_guid = loads(demo).get('guid')
-
-        # Retrieve retailers
-        retailers_json = loads(demo_service.get_demo_retailers(demo_guid))
-
         # Create new user assigned to the first retailer
-        user = user_service.create_user(demo_guid, retailers_json[0].get('id'))
-        user_json = loads(user)
+        user = user_service.create_user(loads(self.demo).get('guid'),
+                                        loads(self.retailers)[0].get('id'))
 
         # TODO: Update to use assertIsInstance(a,b)
         # Check all expected object values are present
+        user_json = loads(user)
         self.assertTrue(user_json.get('id'))
         self.assertTrue(user_json.get('demoId'))
         self.assertTrue(user_json.get('email'))
         self.assertTrue(user_json.get('username'))
 
-        # Destroy demo
-        delete_demo(demo_guid)
-
     def test_user_create_invalid_inputs(self):
         """With invalid inputs, are correct errors thrown?"""
-
-        # Create demo
-        demo = create_demo()
-        demo_guid = loads(demo).get('guid')
-
-        # Retrieve retailers
-        retailers_json = loads(demo_service.get_demo_retailers(demo_guid))
 
         # Attempt to create user with invalid inputs
         # Invalid demo guid
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.create_user,
-                          '123321', retailers_json[0].get('id'))
+                          '123321', loads(self.retailers)[0].get('id'))
         # Invalid retailer id
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.create_user,
-                          demo_guid, '123321')
+                          loads(self.demo).get('guid'), '123321')
 
-        # Destroy demo
-        delete_demo(demo_guid)
+    def tearDown(self):
+        utils.delete_demo(loads(self.demo).get('guid'))
 
 
 class UserLoginTestCase(unittest.TestCase):
     """Tests for `services/users.py - login()`."""
 
+    def setUp(self):
+        # Create demo
+        self.demo = utils.create_demo()
+
     def test_user_login_success(self):
         """With correct values, is a valid user logged in?"""
 
-        # Create demo
-        demo = create_demo()
-        demo_json = loads(demo)
-        demo_guid = demo_json.get('guid')
-        demo_user_id = demo_json.get('users')[0].get('id')
-
         # Log in user
-        auth_data = user_service.login(demo_guid, demo_user_id)
+        demo_json = loads(self.demo)
+        auth_data = user_service.login(demo_json.get('guid'),
+                                       demo_json.get('users')[0].get('id'))
 
         # TODO: Update to use assertIsInstance(a,b)
         # Check all expected object values are present
@@ -111,73 +95,49 @@ class UserLoginTestCase(unittest.TestCase):
                 self.assertTrue(role_json.get('created'))
                 self.assertTrue(role_json.get('modified'))
 
-        # Destroy demo
-        delete_demo(demo_guid)
-
     def test_user_login_invalid_inputs(self):
         """With invalid inputs, are correct errors thrown?"""
 
-        # Create demo
-        demo = create_demo()
-        demo_json = loads(demo)
-        demo_guid = demo_json.get('guid')
-        demo_user_id = demo_json.get('users')[0].get('id')
-
-        # Attempt to create user with invalid inputs
+        demo_json = loads(self.demo)
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.login,
-                          '123321', demo_user_id)
+                          '123321', demo_json.get('users')[0].get('id'))
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.login,
-                          demo_guid, '123321')
+                          demo_json.get('guid'), '123321')
 
-        # Destroy demo
-        delete_demo(demo_guid)
+    def tearDown(self):
+        utils.delete_demo(loads(self.demo).get('guid'))
 
 
 class UserLogoutTestCase(unittest.TestCase):
     """Tests for `services/users.py - logout()`."""
 
-    def test_user_logout_success(self):
-        """With correct values, is a valid user logged out?"""
-
+    def setUp(self):
         # Create demo
-        demo = create_demo()
-        demo_json = loads(demo)
+        self.demo = utils.create_demo()
+        demo_json = loads(self.demo)
         demo_guid = demo_json.get('guid')
         demo_user_id = demo_json.get('users')[0].get('id')
 
         # Log in user
         auth_data = user_service.login(demo_guid, demo_user_id)
-        loopback_token = auth_data.get('loopback_token')
+        self.loopback_token = auth_data.get('loopback_token')
 
-        # Log out user
-        self.assertTrue(user_service.logout(loopback_token) is None)
+    def test_user_logout_success(self):
+        """With correct values, is a valid user logged out?"""
 
-        # Destroy demo
-        delete_demo(demo_guid)
+        self.assertTrue(user_service.logout(self.loopback_token) is None)
 
     def test_user_logout_invalid_token(self):
         """With an invalid token, are correct errors thrown?"""
 
-        # Log out with bad token
-        bad_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJu" \
-                    "YW1lIjoiU3VwcGx5IENoYWluIE1hbmFnZXIgKG1kcTNRMEZDYlEpIiwiZ" \
-                    "GVtb0lkIjoiN2U3ZjQ1ZTA1ZTQyNTFiNWFjZDBiMTlmYTRlZDI5OTIiLC" \
-                    "JlbWFpbCI6ImNocmlzLm1kcTNRMEZDYlFAYWNtZS5jb20iLCJyb2xlcyI" \
-                    "6W3siY3JlYXRlZCI6IjIwMTYtMDYtMDFUMTE6MTU6MzQuNTE1WiIsImlk" \
-                    "IjoiM2RlZjE0MzZlYjUxZTQzOWU3ZmI1MDA5ZmVjM2EwZWIiLCJtb2RpZ" \
-                    "mllZCI6IjIwMTYtMDYtMDFUMTE6MTU6MzQuNTE1WiIsIm5hbWUiOiJzdX" \
-                    "BwbHljaGFpbm1hbmFnZXIifV0sImlkIjoiN2U3ZjQ1ZTA1ZTQyNTFiNWF" \
-                    "jZDBiMTlmYTRlZDQ3OTAifSwiZXhwIjoxNDY2MDQ1MzczLCJsb29wYmFj" \
-                    "a190b2tlbiI6ImhFRnJzeGhSa3lBUEhQWWN0TWtEaE9mSTZOaDY5TlBzc" \
-                    "FhkRWhxWXVSTzBqZDBLem1HVkZFbnpRZVRwVTV2N28ifQ.I8_iqpK7pwY" \
-                    "5mmND220MhnsMDS5FtqRhtliEiXoMAGM"
-
-        # Attempt to log out user with invalid token
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.logout,
-                          bad_token)
+                          utils.get_bad_token())
+
+    def tearDown(self):
+        utils.delete_demo(loads(self.demo).get('guid'))
 
 
 class TokenizeTestCase(unittest.TestCase):
@@ -187,7 +147,7 @@ class TokenizeTestCase(unittest.TestCase):
         """Is auth data correctly tokenized and later detokenized?"""
 
         # Create demo
-        demo = create_demo()
+        demo = utils.create_demo()
         demo_json = loads(demo)
         demo_guid = demo_json.get('guid')
         demo_user_id = demo_json.get('users')[0].get('id')
@@ -208,7 +168,7 @@ class TokenizeTestCase(unittest.TestCase):
                         decrypted_auth_data.get('user').get('id'))
 
         # Destroy demo
-        delete_demo(demo_guid)
+        utils.delete_demo(demo_guid)
 
 if __name__ == '__main__':
     unittest.main()
