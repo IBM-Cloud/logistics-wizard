@@ -189,7 +189,7 @@ In order to send welcome emails, we need to configure the app to use an SMTP ser
 
 4. Lastly, your Gmail username and password must be copied to the service you are using for deployment. Here are some common options:
 	- **CF CLI**: Update the environment variables in your `manifest.yml` file or in your app dashboard's *Runtime* --> *Environment Variables* section after deployment.
-	- **DevOps Services Toolchain**: Configure the environment properties for the `TEST` stage in the `logistics-wizard` delivery pipeline.
+	- **DevOps Services Toolchain**: When configuring your toolchain, set the email parameters in the Delivery Pipleine section.
 	- **Travis CI**: Go to the *Settings* tab for your repo and update the environment variables there.
 	- **`.env.local`**: If you would like to test this functionality while developing locally, copy the values into this file.
 

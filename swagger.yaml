@@ -645,7 +645,8 @@ definitions:
   Demo:
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       guid:
         type: string
       name:
@@ -678,9 +679,11 @@ definitions:
   User:
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       demoId:
-        type: string
+        type: integer
+        format: int32
       username:
         type: string
       email:
@@ -724,7 +727,8 @@ definitions:
         type: string
         format: date
       userId:
-        type: string
+        type: integer
+        format: int32
     required:
       - id
     additionalProperties: false
@@ -733,7 +737,8 @@ definitions:
       name:
         type: string
       id:
-        type: string
+        type: integer
+        format: int32
       supplierId:
         type: string
     required:
@@ -756,13 +761,16 @@ definitions:
         type: string
         format: date
       id:
-        type: string
+        type: integer
+        format: int32
       currentLocation:
         $ref: '#/definitions/Address'
       fromId:
-        type: string
+        type: integer
+        format: int32
       toId:
-        type: string
+        type: integer
+        format: int32
     required:
       - status
       - createdAt
@@ -774,11 +782,14 @@ definitions:
         type: number
         format: double
       id:
-        type: string
+        type: integer
+        format: int32
       productId:
-        type: string
+        type: integer
+        format: int32
       dcId:
-        type: string
+        type: integer
+        format: int32
     additionalProperties: false
   LineItem:
     properties:
@@ -787,16 +798,19 @@ definitions:
         type: number
         format: double
       id:
-        type: string
+        type: integer
+        format: int32
       shipmentId:
-        type: string
+        type: integer
+        format: int32
     required:
       - quantity
     additionalProperties: false
   DistributionCenter:
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       address:
         $ref: '#/definitions/Address'
       contact:
@@ -807,7 +821,8 @@ definitions:
   Retailer:
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       address:
         $ref: '#/definitions/Address'
       contact:
@@ -828,14 +843,16 @@ definitions:
         type: number
         format: double
       id:
-        type: string
+        type: integer
+        format: int32
     additionalProperties: false
   Contact:
     properties:
       name:
         type: string
       id:
-        type: string
+        type: integer
+        format: int32
     required:
       - name
     additionalProperties: false
