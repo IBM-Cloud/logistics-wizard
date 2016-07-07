@@ -73,7 +73,9 @@ def create_demo(demo_name, user_email=None):
     #     demo = json.loads(response.text)
     #     subject = "Your Logistics Wizard session has been created - Demo #" + \
     #               demo.get('guid')[-6:].upper()
-    #     message = messaging_service.compose_welcome_msg(demo.get('guid'), demo.get('users')[0])
+    #     message = messaging_service.compose_msg('welcome.html', (demo.get('guid'),
+    #                                                              demo.get('users')[0].get('username'),
+    #                                                              str(demo.get('users')[0].get('id'))))
     #     messaging_service.send_email(user_email, subject, message, 'html')
 
     return response.text

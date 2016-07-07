@@ -21,15 +21,16 @@ class SendEmailTestCase(unittest.TestCase):
 
     def setUp(self):
         # Create dummy message
-        self.test_email = "test@example.com"
         self.subject = "Test Subject"
         test_user = {
             "username": "Supply Chain Manager (123)",
             "email": "chris.123@acme.com",
-            "id": "123321",
-            "demoId": "123321"
+            "id": 123321,
+            "demoId": 123321
         }
-        self.message = messaging_service.compose_welcome_msg("123321", test_user)
+        self.message = messaging_service.compose_msg('welcome.html', ("123321",
+                                                                      test_user.get('username'),
+                                                                      str(test_user.get('id'))))
 
     def test_generate_welcome_message_success(self):
         """Is a valid welcome message string generated?"""
