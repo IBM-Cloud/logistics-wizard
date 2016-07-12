@@ -7,12 +7,7 @@ import server.services.retailers as retailer_service
 import server.services.shipments as shipment_service
 from flask import g, request, Response, Blueprint
 from server.web.utils import logged_in
-from server.exceptions import (TokenException,
-                               AuthorizationException,
-                               ResourceDoesNotExistException,
-                               ValidationException)
-from server.web.utils import (get_json_data,
-                              check_null_input)
+from server.web.utils import check_null_input
 
 retailers_v1_blueprint = Blueprint('retailers_v1_api', __name__)
 
@@ -87,5 +82,30 @@ def get_retailer_shipments(retailer_id):
                                                retailer_id=retailer_id,
                                                status=status)
     return Response(shipments,
+                    status=200,
+                    mimetype='application/json')
+
+
+@retailers_v1_blueprint.route('/retailers/<string:retailer_id>/inventory', methods=['GET'])
+@logged_in
+def get_retailer_inventory(retailer_id):
+    """
+    Retrieve all inventory at the specified retailer.
+
+    :param retailer_id:   The retailer's id
+
+    :return: [{
+        "id": "123",
+        "quantity": 10,
+        "productId": "123",
+        "locationId": "123",
+        "locationType": "DistributionCenter"
+    }, {...}]
+    """
+    check_null_input(retailer_id, 'a retailer whose inventory you want to retrieve')
+
+    inventory = retailer_service.get_retailer_inventory(token=g.auth['loopback_token'],
+                                                        retailer_id=retailer_id)
+    return Response(inventory,
                     status=200,
                     mimetype='application/json')

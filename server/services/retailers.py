@@ -94,3 +94,36 @@ def get_retailer(token, retailer_id):
                                             internal_details=json.loads(response.text).get('error').get('message'))
 
     return response.text
+
+
+def get_retailer_inventory(token, retailer_id):
+    """
+    Get a retailer from the ERP system.
+
+    :param token:       The ERP Loopback session token.
+    :param retailer_id: The ID of the retailer for which inventory is to be be retrieved.
+
+    :return:        The retrieved retailer's inventory.
+    """
+
+    # Create and format request to ERP
+    url = Config.ERP + "Retailers/" + str(retailer_id) + "/inventories"
+    headers = {
+        'cache-control': "no-cache",
+        'Authorization': token
+    }
+
+    try:
+        response = requests.request("GET", url, headers=headers)
+    except Exception as e:
+        raise APIException('ERP threw error retrieving retailer inventory', internal_details=str(e))
+
+    # Check for possible errors in response
+    if response.status_code == 401:
+        raise AuthenticationException('ERP access denied',
+                                      internal_details=json.loads(response.text).get('error').get('message'))
+    elif response.status_code == 404:
+        raise ResourceDoesNotExistException('Retailer does not exist',
+                                            internal_details=json.loads(response.text).get('error').get('message'))
+
+    return response.text
