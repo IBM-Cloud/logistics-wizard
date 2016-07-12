@@ -79,7 +79,7 @@ class GetShipmentsTestCase(unittest.TestCase):
         """Are correct status shipments returned?"""
 
         # Get shipments with specific status
-        query_status = 'SHIPPED'
+        query_status = 'DELIVERED'
         shipments = shipment_service.get_shipments(self.loopback_token, status=query_status)
 
         # TODO: Update to use assertIsInstance(a,b)
@@ -326,11 +326,11 @@ class UpdateShipmentTestCase(unittest.TestCase):
         """With correct values, is the shipment updated?"""
 
         # Get a specific shipment
-        shipments = shipment_service.get_shipments(self.loopback_token)
+        shipments = shipment_service.get_shipments(self.loopback_token, status="NEW")
         shipment_id = loads(shipments)[0].get('id')
 
         # Change status of shipment
-        new_status = 'ACCEPTED'
+        new_status = 'APPROVED'
         shipment = dict()
         shipment['status'] = new_status
         updated_shipment = shipment_service.update_shipment(self.loopback_token, shipment_id, shipment)
