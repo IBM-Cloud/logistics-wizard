@@ -37,7 +37,12 @@ def get_shipments():
     """
 
     status = request.args.get('status')
-    shipments = shipment_service.get_shipments(token=g.auth['loopback_token'], status=status)
+    retailer_id = request.args.get('rid')
+    dc_id = request.args.get('did')
+    shipments = shipment_service.get_shipments(token=g.auth['loopback_token'],
+                                               status=status,
+                                               retailer_id=retailer_id,
+                                               dc_id=dc_id)
     return Response(shipments,
                     status=200,
                     mimetype='application/json')

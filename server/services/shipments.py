@@ -65,13 +65,14 @@ def add_query_filter(cur_query, filter_type, property_name, op, value):
 #         Services        #
 ###########################
 
-def get_shipments(token, retailer_id=None, status=None):
+def get_shipments(token, retailer_id=None, dc_id=None, status=None):
     """
     Get a list of shipments from the ERP system.
 
     :param token:       The ERP Loopback session token.
     :param status:      Status of the shipments to be retrieved.
     :param retailer_id: Retailer of the shipments to be retrieved.
+    :param dc_id:       Distribution center of the shipments to be retrieved.
 
     :return:         The list of existing shipments.
     """
@@ -82,6 +83,8 @@ def get_shipments(token, retailer_id=None, status=None):
         status_query = add_query_filter(status_query, "where", "status", "=", status)
     if retailer_id is not None:
         status_query = add_query_filter(status_query, "where", "toId", "=", retailer_id)
+    if dc_id is not None:
+        status_query = add_query_filter(status_query, "where", "fromId", "=", dc_id)
 
     # Create and format request to ERP
     url = Config.ERP + "Shipments?" + status_query

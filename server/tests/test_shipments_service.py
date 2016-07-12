@@ -16,6 +16,8 @@ def suite():
     test_suite.addTest(GetShipmentsTestCase('test_get_shipments_success'))
     test_suite.addTest(GetShipmentsTestCase('test_get_shipments_status_filter_success'))
     test_suite.addTest(GetShipmentsTestCase('test_get_shipments_retailer_id_filter_success'))
+    test_suite.addTest(GetShipmentsTestCase('test_get_shipments_distribution_center_id_filter_success'))
+    test_suite.addTest(GetShipmentsTestCase('test_get_shipments_multiple_filters_success'))
     test_suite.addTest(GetShipmentsTestCase('test_get_shipments_invalid_token'))
     test_suite.addTest(CreateShipmentTestCase('test_create_shipment_success'))
     test_suite.addTest(CreateShipmentTestCase('test_create_shipment_invalid_ids'))
@@ -108,6 +110,40 @@ class GetShipmentsTestCase(unittest.TestCase):
         # Check that the shipments have correct retailer ID (toId)
         for shipment_json in shipments_json:
             self.assertTrue(shipment_json.get('toId') == retailer_id_filter)
+
+    def test_get_shipments_distribution_center_id_filter_success(self):
+        """Are correct distribution center's shipments returned?"""
+
+        # Get shipments intended for specific distribution center
+        distribution_centers = distribution_center_service.get_distribution_centers(self.loopback_token)
+        dc_id_filter = loads(distribution_centers)[0].get('id')
+        shipments = shipment_service.get_shipments(self.loopback_token, dc_id=dc_id_filter)
+
+        # TODO: Update to use assertIsInstance(a,b)
+        # Check all expected object values are present
+        shipments_json = loads(shipments)
+        # Check that the shipments have correct retailer ID (toId)
+        for shipment_json in shipments_json:
+            self.assertTrue(shipment_json.get('fromId') == dc_id_filter)
+
+    def test_get_shipments_multiple_filters_success(self):
+        """Are correct shipments returned when using multiple filters?"""
+
+        # Get filter values applicable to at least one shipment
+        shipments = shipment_service.get_shipments(self.loopback_token)
+        shipment = loads(shipments)[0]
+        status_filter = shipment.get('status')
+        retailer_id_filter = shipment.get('toId')
+        dc_id_filter = shipment.get('fromId')
+        shipments = shipment_service.get_shipments(self.loopback_token, status=status_filter,
+                                                   retailer_id=retailer_id_filter, dc_id=dc_id_filter)
+
+        # Check that the shipments have correct values
+        shipments_json = loads(shipments)
+        for shipment_json in shipments_json:
+            self.assertTrue(shipment_json.get('status') == status_filter)
+            self.assertTrue(shipment_json.get('toId') == retailer_id_filter)
+            self.assertTrue(shipment_json.get('fromId') == dc_id_filter)
 
     def test_get_shipments_invalid_token(self):
         """With an invalid token, are correct errors thrown?"""
