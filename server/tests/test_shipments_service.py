@@ -1,5 +1,5 @@
 import unittest
-from json import loads
+from json import loads, dumps
 import server.tests.utils as utils
 import server.services.users as user_service
 import server.services.shipments as shipment_service
@@ -7,7 +7,8 @@ import server.services.retailers as retailer_service
 import server.services.distribution_centers as distribution_center_service
 from server.exceptions import (AuthenticationException,
                                ResourceDoesNotExistException,
-                               UnprocessableEntityException)
+                               UnprocessableEntityException,
+                               ValidationException)
 
 
 def suite():
@@ -26,14 +27,18 @@ def suite():
     test_suite.addTest(DeleteShipmentTestCase('test_delete_shipment_invalid_input'))
     test_suite.addTest(DeleteShipmentTestCase('test_delete_shipment_invalid_token'))
     test_suite.addTest(UpdateShipmentTestCase('test_update_shipment_success'))
+    test_suite.addTest(UpdateShipmentTestCase('test_update_invalid_status'))
     test_suite.addTest(UpdateShipmentTestCase('test_update_shipment_invalid_input'))
     test_suite.addTest(UpdateShipmentTestCase('test_update_shipment_invalid_token'))
     return test_suite
 
+# List of potential status values
+statuses = ['NEW', 'APPROVED', 'IN_TRANSIT', 'DELIVERED']
 
 ###########################
 #        Unit Tests       #
 ###########################
+
 
 class GetShipmentsTestCase(unittest.TestCase):
     """Tests for `services/shipments.py - get_shipments()`."""
@@ -328,40 +333,59 @@ class UpdateShipmentTestCase(unittest.TestCase):
         """With correct values, is the shipment updated?"""
 
         # Get a specific shipment
-        shipments = shipment_service.get_shipments(self.loopback_token, status="NEW")
+        shipments = shipment_service.get_shipments(self.loopback_token, status=statuses.pop(0))
         shipment_id = loads(shipments)[0].get('id')
 
-        # Change status of shipment
-        new_status = 'APPROVED'
+        # Iterate through shipment statuses and update shipment accordingly
         shipment = dict()
-        shipment['status'] = new_status
-        updated_shipment = shipment_service.update_shipment(self.loopback_token, shipment_id, shipment)
+        for status in statuses:
+            if isinstance(shipment, unicode):
+                shipment = loads(shipment)
+            shipment['status'] = status
+            shipment = shipment_service.update_shipment(self.loopback_token, shipment_id, shipment)
 
-        # TODO: Update to use assertIsInstance(a,b)
-        # Check all expected object values are present
-        shipment_json = loads(updated_shipment)
-        # Check that the shipments are valid
-        self.assertTrue(shipment_json.get('id'))
-        self.assertTrue(shipment_json.get('status') == new_status)
-        self.assertTrue(shipment_json.get('createdAt'))
-        self.assertTrue(shipment_json.get('estimatedTimeOfArrival'))
-        self.assertTrue(shipment_json.get('fromId'))
-        self.assertTrue(shipment_json.get('toId'))
+            # TODO: Update to use assertIsInstance(a,b)
+            # Check all expected object values are present
+            shipment_json = loads(shipment)
+            # Check that the shipments are valid
+            self.assertTrue(shipment_json.get('id'))
+            self.assertTrue(shipment_json.get('status') == status)
+            self.assertTrue(shipment_json.get('createdAt'))
+            self.assertTrue(shipment_json.get('estimatedTimeOfArrival'))
+            self.assertTrue(shipment_json.get('fromId'))
+            self.assertTrue(shipment_json.get('toId'))
 
-        # Check that shipment address is valid, if present
-        if shipment_json.get('currentLocation'):
-            self.assertTrue(shipment_json.get('currentLocation').get('city'))
-            self.assertTrue(shipment_json.get('currentLocation').get('state'))
-            self.assertTrue(shipment_json.get('currentLocation').get('country'))
-            self.assertTrue(shipment_json.get('currentLocation').get('latitude'))
-            self.assertTrue(shipment_json.get('currentLocation').get('longitude'))
+            # Check that shipment address is valid, if present
+            if shipment_json.get('currentLocation'):
+                self.assertTrue(shipment_json.get('currentLocation').get('city'))
+                self.assertTrue(shipment_json.get('currentLocation').get('state'))
+                self.assertTrue(shipment_json.get('currentLocation').get('country'))
+                self.assertTrue(shipment_json.get('currentLocation').get('latitude'))
+                self.assertTrue(shipment_json.get('currentLocation').get('longitude'))
+
+    def test_update_invalid_status(self):
+        """With incorrect status updates, is the correct exception sent?"""
+
+        # List of statuses progression
+        prev_status = statuses[-1]
+        for status in statuses:
+            # Get an existing shipment with the current status
+            shipments = shipment_service.get_shipments(self.loopback_token, status=status)
+            shipment = loads(shipments)[0]
+            shipment['status'] = prev_status
+
+            # Attempt to update the status to an invalid value
+            self.assertRaises(ValidationException,
+                              shipment_service.update_shipment,
+                              self.loopback_token, shipment.get('id'), shipment)
+            prev_status = status
 
     def test_update_shipment_invalid_input(self):
         """With invalid inputs, are correct errors thrown?"""
 
         # Invalid shipment id
         shipment = dict()
-        shipment['status'] = 'ACCEPTED'
+        shipment['status'] = 'APPROVED'
         self.assertRaises(ResourceDoesNotExistException,
                           shipment_service.update_shipment,
                           self.loopback_token, '123321', shipment)
@@ -375,7 +399,7 @@ class UpdateShipmentTestCase(unittest.TestCase):
 
         # Attempt to delete a shipment with invalid token
         shipment = dict()
-        shipment['status'] = 'ACCEPTED'
+        shipment['status'] = 'APPROVED'
         self.assertRaises(AuthenticationException,
                           shipment_service.update_shipment,
                           utils.get_bad_token(), shipment_id, shipment)

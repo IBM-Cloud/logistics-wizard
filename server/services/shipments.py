@@ -229,10 +229,13 @@ def update_shipment(token, shipment_id, shipment):
         raise APIException('ERP threw error updating shipment', internal_details=str(e))
 
     # Check for possible errors in response
-    if response.status_code == 401:
+    if response.status_code == 400:
+        raise ValidationException('Invalid update to shipment',
+                                  internal_details=json.loads(response.text).get('error').get('message'))
+    elif response.status_code == 401:
         raise AuthenticationException('ERP access denied',
                                       internal_details=json.loads(response.text).get('error').get('message'))
-    if response.status_code == 404:
+    elif response.status_code == 404:
         raise ResourceDoesNotExistException('Shipment does not exist',
                                             internal_details=json.loads(response.text).get('error').get('message'))
 
