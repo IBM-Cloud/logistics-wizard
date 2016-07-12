@@ -99,7 +99,7 @@ def get_retailer_inventory(retailer_id):
         "quantity": 10,
         "productId": "123",
         "locationId": "123",
-        "locationType": "DistributionCenter"
+        "locationType": "Retailer"
     }, {...}]
     """
     check_null_input(retailer_id, 'a retailer whose inventory you want to retrieve')

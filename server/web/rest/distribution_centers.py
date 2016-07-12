@@ -58,3 +58,28 @@ def get_distribution_center(dc_id):
     return Response(distribution_center,
                     status=200,
                     mimetype='application/json')
+
+
+@distribution_centers_v1_blueprint.route('/distribution-centers/<string:dc_id>/inventory', methods=['GET'])
+@logged_in
+def get_distribution_center_inventory(dc_id):
+    """
+    Retrieve all inventory at the specified distribution center.
+
+    :param dc_id:   The distribution center's id
+
+    :return: [{
+        "id": "123",
+        "quantity": 10,
+        "productId": "123",
+        "locationId": "123",
+        "locationType": "DistributionCenter"
+    }, {...}]
+    """
+    check_null_input(dc_id, 'a distribution center whose inventory you want to retrieve')
+
+    inventory = distribution_center_service.get_distribution_center_inventory(token=g.auth['loopback_token'],
+                                                                              dc_id=dc_id)
+    return Response(inventory,
+                    status=200,
+                    mimetype='application/json')
