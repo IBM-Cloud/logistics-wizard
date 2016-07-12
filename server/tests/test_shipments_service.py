@@ -140,6 +140,7 @@ class CreateShipmentTestCase(unittest.TestCase):
         shipment = dict()
         shipment['fromId'] = loads(distribution_centers)[0].get('id')
         shipment['toId'] = loads(retailers)[0].get('id')
+        shipment['estimatedTimeOfArrival'] = "2016-07-14"
         created_shipment = shipment_service.create_shipment(self.loopback_token, shipment)
 
         # TODO: Update to use assertIsInstance(a,b)
@@ -186,6 +187,7 @@ class CreateShipmentTestCase(unittest.TestCase):
         shipment = dict()
         shipment['fromId'] = loads(distribution_centers)[0].get('id')
         shipment['toId'] = loads(retailers)[0].get('id')
+        shipment['estimatedTimeOfArrival'] = "2016-07-14"
         created_shipment = shipment_service.create_shipment(self.loopback_token, shipment)
 
         # Attempt to create a shipment with invalid token
