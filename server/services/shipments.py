@@ -38,7 +38,7 @@ def shipment_to_dict(shipment):
     }
 
 
-def add_query_filter(cur_query, filter_type, property_name, op, value):
+def add_query_filter(cur_query, filter_type, op, value, property_name=None):
     """
     Add a query condition to an input query string
 
@@ -58,7 +58,10 @@ def add_query_filter(cur_query, filter_type, property_name, op, value):
     elif cur_query != "":
         cur_query += "&"
 
-    return cur_query + "filter[" + filter_type + "][" + property_name + "]" + op + str(value)
+    cur_query += "filter[" + filter_type + "]"
+    if property_name is not None:
+        cur_query += "[" + property_name + "]"
+    return cur_query + op + str(value)
 
 
 ###########################
@@ -80,11 +83,11 @@ def get_shipments(token, retailer_id=None, dc_id=None, status=None):
     # Add filters if corresponding inputs are present
     status_query = ""
     if status is not None:
-        status_query = add_query_filter(status_query, "where", "status", "=", status)
+        status_query = add_query_filter(status_query, "where", "=", status, property_name="status")
     if retailer_id is not None:
-        status_query = add_query_filter(status_query, "where", "toId", "=", retailer_id)
+        status_query = add_query_filter(status_query, "where", "=", retailer_id, property_name="toId")
     if dc_id is not None:
-        status_query = add_query_filter(status_query, "where", "fromId", "=", dc_id)
+        status_query = add_query_filter(status_query, "where", "=", dc_id, property_name="fromId")
 
     # Create and format request to ERP
     url = Config.ERP + "Shipments?" + status_query
@@ -106,18 +109,24 @@ def get_shipments(token, retailer_id=None, dc_id=None, status=None):
     return response.text
 
 
-def get_shipment(token, shipment_id):
+def get_shipment(token, shipment_id, include_items=None):
     """
     Get a shipment from the ERP system.
 
-    :param token:       The ERP Loopback session token.
-    :param shipment_id: The ID of the shipment to be retrieved.
+    :param token:           The ERP Loopback session token.
+    :param shipment_id:     The ID of the shipment to be retrieved.
+    :param include_items:   Indicates if items are to be returned with shipment.
 
     :return:         The retrieved shipment.
     """
 
+    # Add filters if corresponding inputs are present
+    status_query = ""
+    if include_items != "0":
+        status_query = add_query_filter(status_query, "include", "=", "items")
+
     # Create and format request to ERP
-    url = Config.ERP + "Shipments/" + str(shipment_id)
+    url = Config.ERP + "Shipments/" + str(shipment_id) + "?" + status_query
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -127,39 +136,6 @@ def get_shipment(token, shipment_id):
         response = requests.request("GET", url, headers=headers)
     except Exception as e:
         raise APIException('ERP threw error retrieving shipment', internal_details=str(e))
-
-    # Check for possible errors in response
-    if response.status_code == 401:
-        raise AuthenticationException('ERP access denied',
-                                      internal_details=json.loads(response.text).get('error').get('message'))
-    elif response.status_code == 404:
-        raise ResourceDoesNotExistException('Shipment does not exist',
-                                            internal_details=json.loads(response.text).get('error').get('message'))
-
-    return response.text
-
-
-def get_shipment_items(token, shipment_id):
-    """
-    Get a shipment's items from the ERP system.
-
-    :param token:       The ERP Loopback session token.
-    :param shipment_id: The ID of the shipment whose items are to be retrieved.
-
-    :return:         The retrieved shipment items.
-    """
-
-    # Create and format request to ERP
-    url = Config.ERP + "Shipments/" + str(shipment_id) + '/items'
-    headers = {
-        'cache-control': "no-cache",
-        'Authorization': token
-    }
-
-    try:
-        response = requests.request("GET", url, headers=headers)
-    except Exception as e:
-        raise APIException('ERP threw error retrieving shipment items', internal_details=str(e))
 
     # Check for possible errors in response
     if response.status_code == 401:

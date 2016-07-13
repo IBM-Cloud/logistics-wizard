@@ -5,12 +5,9 @@ import json
 
 import server.services.shipments as shipment_service
 from flask import g, request, Response, Blueprint
-from multiprocessing import Pool
 from server.web.utils import logged_in
-from server.utils import async_helper
 from server.web.utils import (get_json_data,
                               check_null_input)
-from server.exceptions import APIException
 
 shipments_v1_blueprint = Blueprint('shipments_v1_api', __name__)
 
@@ -108,27 +105,11 @@ def get_shipment(shipment_id):
     include_items = request.args.get('include_items')
     check_null_input(shipment_id, 'a shipment to retrieve')
 
-    # Set up calls to retrieve shipment data based on inputs
-    loopback_token = g.auth['loopback_token']
-    erp_calls = [(shipment_service.get_shipment, loopback_token, shipment_id)]
-    if include_items != "0":
-        erp_calls.append((shipment_service.get_shipment_items, loopback_token, shipment_id))
-    pool = Pool(processes=len(erp_calls))
+    shipment = shipment_service.get_shipment(token=g.auth['loopback_token'],
+                                             shipment_id=shipment_id,
+                                             include_items=include_items)
 
-    # Asynchronously make calls and then wait on all processes to finish
-    try:
-        results = [json.loads(x) for x in pool.map(async_helper, erp_calls)]
-    except Exception as e:
-        raise APIException('Error retrieving shipment data', internal_details=str(e))
-    pool.close()
-    pool.join()
-
-    # Retrieve results from ERP calls and return shipment object
-    shipment = results[0]
-    if len(results) > 1:
-        shipment['items'] = results[1]
-
-    return Response(json.dumps(shipment),
+    return Response(shipment,
                     status=200,
                     mimetype='application/json')
 
