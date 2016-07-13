@@ -25,6 +25,9 @@ def suite():
     test_suite.addTest(GetShipmentTestCase('test_get_shipment_success'))
     test_suite.addTest(GetShipmentTestCase('test_get_shipment_invalid_input'))
     test_suite.addTest(GetShipmentTestCase('test_get_shipment_invalid_token'))
+    test_suite.addTest(GetShipmentItemsTestCase('test_get_shipment_items_success'))
+    test_suite.addTest(GetShipmentItemsTestCase('test_get_shipment_items_invalid_input'))
+    test_suite.addTest(GetShipmentItemsTestCase('test_get_shipment_items_invalid_token'))
     test_suite.addTest(DeleteShipmentTestCase('test_delete_shipment_success'))
     test_suite.addTest(DeleteShipmentTestCase('test_delete_shipment_invalid_input'))
     test_suite.addTest(DeleteShipmentTestCase('test_delete_shipment_invalid_token'))
@@ -298,6 +301,61 @@ class GetShipmentTestCase(unittest.TestCase):
         # Attempt to get a shipment with invalid token
         self.assertRaises(AuthenticationException,
                           shipment_service.get_shipment,
+                          utils.get_bad_token(), shipment_id)
+
+    def tearDown(self):
+        utils.delete_demo(loads(self.demo).get('guid'))
+
+
+class GetShipmentItemsTestCase(unittest.TestCase):
+    """Tests for `services/shipments.py - get_shipment_items()`."""
+
+    def setUp(self):
+        # Create demo
+        self.demo = utils.create_demo()
+        demo_json = loads(self.demo)
+        demo_guid = demo_json.get('guid')
+        demo_user_id = demo_json.get('users')[0].get('id')
+
+        # Log in user
+        auth_data = user_service.login(demo_guid, demo_user_id)
+        self.loopback_token = auth_data.get('loopback_token')
+
+    def test_get_shipment_items_success(self):
+        """With correct values, are valid shipment items returned?"""
+
+        # Get shipment's items
+        shipments = shipment_service.get_shipments(self.loopback_token)
+        shipment_id = loads(shipments)[0].get('id')
+        items = shipment_service.get_shipment_items(self.loopback_token, shipment_id)
+
+        # TODO: Update to use assertIsInstance(a,b)
+        # Check all expected object values are present
+        items_json = loads(items)
+        for item_json in items_json:
+            # Check that the item is valid
+            self.assertTrue(item_json.get('id'))
+            self.assertTrue(item_json.get('shipmentId'))
+            self.assertTrue(item_json.get('productId'))
+            self.assertTrue(item_json.get('quantity'))
+
+    def test_get_shipment_items_invalid_input(self):
+        """With invalid inputs, are correct errors thrown?"""
+
+        self.assertRaises(ResourceDoesNotExistException,
+                          shipment_service.get_shipment_items,
+                          self.loopback_token, '123321')
+
+    def test_get_shipment_items_invalid_token(self):
+        """With an invalid token, are correct errors thrown?"""
+
+        # Get valid shipment ID
+        shipments = shipment_service.get_shipments(self.loopback_token)
+        shipment_id = loads(shipments)[0].get('id')
+
+        # Attempt to get a shipment's items with invalid token
+        self.assertRaises(AuthenticationException,
+                          shipment_service.get_shipment_items,
                           utils.get_bad_token(), shipment_id)
 
     def tearDown(self):

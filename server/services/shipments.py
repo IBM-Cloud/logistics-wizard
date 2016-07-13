@@ -139,6 +139,39 @@ def get_shipment(token, shipment_id):
     return response.text
 
 
+def get_shipment_items(token, shipment_id):
+    """
+    Get a shipment's items from the ERP system.
+
+    :param token:       The ERP Loopback session token.
+    :param shipment_id: The ID of the shipment whose items are to be retrieved.
+
+    :return:         The retrieved shipment items.
+    """
+
+    # Create and format request to ERP
+    url = Config.ERP + "Shipments/" + str(shipment_id) + '/items'
+    headers = {
+        'cache-control': "no-cache",
+        'Authorization': token
+    }
+
+    try:
+        response = requests.request("GET", url, headers=headers)
+    except Exception as e:
+        raise APIException('ERP threw error retrieving shipment items', internal_details=str(e))
+
+    # Check for possible errors in response
+    if response.status_code == 401:
+        raise AuthenticationException('ERP access denied',
+                                      internal_details=json.loads(response.text).get('error').get('message'))
+    elif response.status_code == 404:
+        raise ResourceDoesNotExistException('Shipment does not exist',
+                                            internal_details=json.loads(response.text).get('error').get('message'))
+
+    return response.text
+
+
 def create_shipment(token, shipment):
     """
     Create a shipment in the ERP system.

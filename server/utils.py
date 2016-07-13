@@ -4,7 +4,7 @@ interface) and should not have any dependency on Flask or request context.
 """
 import jwt
 import re
-
+from types import FunctionType
 from server.config import Config
 from server.exceptions import TokenException
 
@@ -67,3 +67,17 @@ def get_content_type_from_ext(ext):
     :return:       A MIME content type.
     """
     return _EXT_MAP.get(ext.replace('.', ''), None)
+
+
+def async_helper(args):
+    """
+    Calls the passed in function with the input arguments. Used to mitigate
+    calling different functions during multiprocessing
+
+    :param args:    Function and its arguments
+    :return:        Result of the called function
+    """
+
+    # Isolate function arguments in their own tuple and then call the function
+    func_args = tuple(y for y in args if type(y) != FunctionType)
+    return args[0](*func_args)

@@ -340,6 +340,11 @@ paths:
           description: ID of the shipment to be retrieved
           required: true
           type: string
+        - name: include_items
+          in: query
+          description: Boolean indicating whether to include LineItems in the returned shipment
+          required: false
+          type: string
       tags:
         - Shipment
       responses:
@@ -885,6 +890,10 @@ definitions:
       toId:
         type: integer
         format: int32
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/LineItem'
     required:
       - status
       - createdAt

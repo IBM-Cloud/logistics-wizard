@@ -13,11 +13,11 @@ from multiprocessing import Pool
 from server.exceptions import (TokenException,
                                ResourceDoesNotExistException,
                                APIException)
+from server.utils import async_helper
 from server.web.utils import (get_token_from_request,
                               get_json_data,
                               check_null_input,
-                              logged_in,
-                              async_helper)
+                              logged_in)
 
 demos_v1_blueprint = Blueprint('demos_v1_api', __name__)
 
