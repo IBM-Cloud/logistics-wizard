@@ -8,7 +8,7 @@ import server.services.users as user_service
 import server.services.shipments as shipment_service
 import server.services.distribution_centers as distribution_center_service
 import server.services.retailers as retailer_service
-from server.web.utils import async_helper
+from server.utils import async_helper
 from server.exceptions import (UnprocessableEntityException,
                                ResourceDoesNotExistException)
 

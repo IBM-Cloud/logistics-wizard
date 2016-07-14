@@ -95,3 +95,36 @@ def get_distribution_center(token, dc_id):
                                             internal_details=json.loads(response.text).get('error').get('message'))
 
     return response.text
+
+
+def get_distribution_center_inventory(token, dc_id):
+    """
+    Get a distribution center from the ERP system.
+
+    :param token:   The ERP Loopback session token.
+    :param dc_id:   The ID of the distribution center for which inventory is to be be retrieved.
+
+    :return:        The retrieved distribution center's inventory.
+    """
+
+    # Create and format request to ERP
+    url = Config.ERP + "DistributionCenters/" + str(dc_id) + "/inventories"
+    headers = {
+        'cache-control': "no-cache",
+        'Authorization': token
+    }
+
+    try:
+        response = requests.request("GET", url, headers=headers)
+    except Exception as e:
+        raise APIException('ERP threw error retrieving distribution center inventory', internal_details=str(e))
+
+    # Check for possible errors in response
+    if response.status_code == 401:
+        raise AuthenticationException('ERP access denied',
+                                      internal_details=json.loads(response.text).get('error').get('message'))
+    elif response.status_code == 404:
+        raise ResourceDoesNotExistException('Distribution center does not exist',
+                                            internal_details=json.loads(response.text).get('error').get('message'))
+
+    return response.text

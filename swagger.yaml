@@ -265,6 +265,16 @@ paths:
           description: Status of the shipments to be returned
           required: false
           type: string
+        - name: did
+          in: query
+          description: Distribution center ID of the shipments to be returned
+          required: false
+          type: string
+        - name: rid
+          in: query
+          description: Retailer ID of the shipments to be returned
+          required: false
+          type: string
       tags:
         - Shipment
       responses:
@@ -329,6 +339,11 @@ paths:
           in: path
           description: ID of the shipment to be retrieved
           required: true
+          type: string
+        - name: include_items
+          in: query
+          description: Boolean indicating whether to include LineItems in the returned shipment
+          required: false
           type: string
       tags:
         - Shipment
@@ -405,6 +420,10 @@ paths:
           description: Shipment updated successfully
           schema:
             $ref: '#/definitions/Shipment'
+        400:
+          description: Invalid update to shipment
+          schema:
+            $ref: '#/definitions/Error'
         401:
           description: Unauthorized
           schema:
@@ -466,6 +485,81 @@ paths:
           description: Distribution center retrieved successfully
           schema:
             $ref: '#/definitions/DistributionCenter'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Distribution center does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/distribution-centers/{id}/shipments':
+    get:
+      summary: Retrieve shipments for a specific distribution center
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the distribution center for which shipments are to be retrieved
+          required: true
+          type: string
+        - name: status
+          in: query
+          description: Status of the shipments to be returned
+          required: false
+          type: string
+      tags:
+        - DistributionCenter
+        - Shipment
+      responses:
+        200:
+          description: Shipments retrieved successfully
+          schema:
+            $ref: '#/definitions/Shipment'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Distribution center does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/distribution-centers/{id}/inventory':
+    get:
+      summary: Retrieve inventory for a specific distribution center
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the distribution center for which inventory is to be retrieved
+          required: true
+          type: string
+      tags:
+        - DistributionCenter
+        - Inventory
+      responses:
+        200:
+          description: Inventory retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Inventory'
         401:
           description: Unauthorized
           schema:
@@ -613,6 +707,42 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  '/retailers/{id}/inventory':
+    get:
+      summary: Retrieve inventory for a specific retailer
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: ID of the retailer for which inventory is to be retrieved
+          required: true
+          type: string
+      tags:
+        - Retailer
+        - Inventory
+      responses:
+        200:
+          description: Inventory retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Inventory'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: Retailer does not exist
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   '/products':
     get:
       summary: Retrieves products
@@ -716,21 +846,10 @@ definitions:
       - name
   AccessToken:
     properties:
-      id:
+      token:
         type: string
-      ttl:
-        default: 1209600
-        description: time to live in seconds (2 weeks by default)
-        type: number
-        format: double
-      created:
-        type: string
-        format: date
-      userId:
-        type: integer
-        format: int32
     required:
-      - id
+      - token
     additionalProperties: false
   Product:
     properties:
@@ -771,6 +890,10 @@ definitions:
       toId:
         type: integer
         format: int32
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/LineItem'
     required:
       - status
       - createdAt
@@ -787,9 +910,11 @@ definitions:
       productId:
         type: integer
         format: int32
-      dcId:
+      locationId:
         type: integer
         format: int32
+      locationType:
+        type: string
     additionalProperties: false
   LineItem:
     properties:
