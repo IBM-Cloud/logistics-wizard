@@ -30,4 +30,4 @@ for test in test_modules:
         # else, just load all the test cases from the module.
         suite.addTest(unittest.defaultTestLoader.loadTestsFromName(test))
 
-unittest.TextTestRunner().run(suite)
+unittest.TextTestRunner(failfast=True).run(suite)
