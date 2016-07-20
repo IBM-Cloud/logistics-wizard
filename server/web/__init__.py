@@ -26,6 +26,7 @@ def create_app():
     from server.web.rest.distribution_centers import distribution_centers_v1_blueprint
     from server.web.rest.retailers import retailers_v1_blueprint
     from server.web.rest.products import products_v1_blueprint
+    from server.services.service_discovery import register_service, get_services, heartbeat_service
 
     # Create the app
     logistics_wizard = Flask('logistics_wizard', static_folder=None)
@@ -90,5 +91,10 @@ def create_app():
     logistics_wizard.errorhandler(Exception)(exception_handler)
     logistics_wizard.errorhandler(400)(bad_request_handler)
     logistics_wizard.errorhandler(404)(not_found_handler)
+
+    # Register app with Service Discovery and initiate heartbeat cycle
+    if Config.ENVIRONMENT == 'PROD':
+        register_service('lw-controller', 300, 'UP',
+                         'logistics-wizard.mybluemix.net', 'http', tags=['logistics-wizard', 'front-end'])
 
     return logistics_wizard
