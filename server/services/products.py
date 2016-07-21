@@ -6,7 +6,7 @@ object and should just call into the service layer to act upon a product resourc
 """
 import requests
 import json
-from server.config import Config
+from server.utils import get_service_url
 from server.exceptions import (APIException,
                                AuthenticationException)
 
@@ -43,7 +43,7 @@ def get_products(token):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Products"
+    url = '%s/api/v1/Products' % get_service_url('lw-erp')
     headers = {
         'cache-control': "no-cache",
         'Authorization': token

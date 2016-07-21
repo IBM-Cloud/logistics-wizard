@@ -6,11 +6,10 @@ object and should just call into the service layer to act upon a distribution ce
 """
 import requests
 import json
-from server.config import Config
-from server.exceptions import (ResourceDoesNotExistException)
+from server.utils import get_service_url
 from server.exceptions import (APIException,
                                AuthenticationException,
-                               UnprocessableEntityException)
+                               ResourceDoesNotExistException)
 
 ###########################
 #         Utilities       #
@@ -45,7 +44,7 @@ def get_distribution_centers(token):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "DistributionCenters"
+    url = '%s/api/v1/DistributionCenters' % get_service_url('lw-erp')
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -75,7 +74,7 @@ def get_distribution_center(token, dc_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "DistributionCenters/" + str(dc_id)
+    url = '%s/api/v1/DistributionCenters/%s' % (get_service_url('lw-erp'), str(dc_id))
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -108,7 +107,7 @@ def get_distribution_center_inventory(token, dc_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "DistributionCenters/" + str(dc_id) + "/inventories"
+    url = '%s/api/v1/DistributionCenters/%s/inventories' % (get_service_url('lw-erp'), str(dc_id))
     headers = {
         'cache-control': "no-cache",
         'Authorization': token

@@ -7,11 +7,9 @@ object and should just call into the service layer to act upon a demo resource.
 import requests
 import json
 import server.services.messaging as messaging_service
-from server.config import Config
-from server.utils import validate_email
+from server.utils import validate_email, get_service_url
 from server.exceptions import (ResourceDoesNotExistException)
 from server.exceptions import (APIException,
-                               ValidationException,
                                UnprocessableEntityException)
 
 ###########################
@@ -54,7 +52,7 @@ def create_demo(demo_name, user_email=None):
         raise UnprocessableEntityException("Invalid email address")
 
     # Create and format request to ERP
-    url = Config.ERP + "Demos"
+    url = '%s/api/v1/Demos' % get_service_url('lw-erp')
     headers = {
         'content-type': "application/json",
         'cache-control': "no-cache"
@@ -91,10 +89,8 @@ def get_demo_by_guid(guid):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Demos/findByGuid/" + guid
-    headers = {
-        'cache-control': "no-cache"
-    }
+    url = '%s/api/v1/Demos/findByGuid/%s' % (get_service_url('lw-erp'), guid)
+    headers = {'cache-control': "no-cache"}
 
     try:
         response = requests.request("GET", url, headers=headers)
@@ -117,7 +113,7 @@ def delete_demo_by_guid(guid):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Demos/" + guid
+    url = '%s/api/v1/Demos/%s' % (get_service_url('lw-erp'), guid)
 
     try:
         response = requests.request("DELETE", url)
@@ -141,10 +137,8 @@ def get_demo_retailers(guid):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Demos/" + guid + "/retailers"
-    headers = {
-        'cache-control': "no-cache"
-    }
+    url = '%s/api/v1/Demos/%s/retailers' % (get_service_url('lw-erp'), guid)
+    headers = {'cache-control': "no-cache"}
 
     try:
         response = requests.request("GET", url, headers=headers)

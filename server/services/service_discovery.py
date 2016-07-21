@@ -6,7 +6,8 @@ import time
 import requests
 from threading import Thread
 from server.config import Config
-from server.exceptions import APIException, ValidationException, AuthenticationException
+from server.exceptions import (APIException, ValidationException,
+                               AuthenticationException, ResourceDoesNotExistException)
 
 ###########################
 #         Utilities       #
@@ -48,8 +49,8 @@ def get_services(fields=None, tags=None, service_name=None, status=None):
     """
     Returns all the currently registered services and their parameters.
 
-    :param fields       Comma separated list of fields to include in the response.
-    :param tags         Tags the returned instances must have.
+    :param fields       Comma separated list of fields to include in response.
+    :param tags         Comma separated list of tags that returned instances must have.
     :param service_name Name of instances to return.
     :param status       State of instances to be return.
 
@@ -68,13 +69,10 @@ def get_services(fields=None, tags=None, service_name=None, status=None):
         status_query = add_query_filter(status_query, "status", status)
 
     retrieve_services_url = '%s/api/v1/instances?%s' % (Config.SD_URL,status_query)
-    print retrieve_services_url
     headers = {'Authorization': 'Bearer %s' % Config.SD_AUTH}
 
     try:
         response = requests.request("GET", retrieve_services_url, headers=headers)
-        print response.status_code
-        print response.text
     except Exception as e:
         raise APIException('Error on service lookup', internal_details=str(e))
 
@@ -173,10 +171,40 @@ def heartbeat_service(service_id):
         raise AuthenticationException('Unauthorized service heartbeat: token is not valid',
                                       internal_details=json.loads(response.text).get('Error'))
     elif response.status_code == 404:
-        raise AuthenticationException('Service Discovery endpoint not found',
-                                      internal_details=json.loads(response.text).get('Error'))
+        raise ResourceDoesNotExistException('Service Discovery endpoint not found',
+                                            internal_details=json.loads(response.text).get('Error'))
     elif response.status_code == 410:
-        raise AuthenticationException('Service instance not found',
-                                      internal_details=json.loads(response.text).get('Error'))
+        raise ResourceDoesNotExistException('Service instance not found',
+                                            internal_details=json.loads(response.text).get('Error'))
 
-    return response.text
+
+def deregister_service(service_id):
+    """
+    De-register the service with the input id.
+
+    :param service_id:  The ID of the service to de-register.
+
+    :return response
+    """
+
+    heartbeat_url = '%s/api/v1/instances/%s' % (Config.SD_URL, service_id)
+    headers = {'Authorization': 'Bearer %s' % Config.SD_AUTH}
+
+    try:
+        response = requests.request("DELETE", heartbeat_url, headers=headers)
+    except Exception as e:
+        raise APIException('Error de-registering service', internal_details=str(e))
+
+    # Check for possible errors in response
+    if response.status_code == 400:
+        raise ValidationException('Bad request to service registry',
+                                  internal_details=json.loads(response.text).get('Error'))
+    elif response.status_code == 401:
+        raise AuthenticationException('Unauthorized service de-registration: token is not valid',
+                                      internal_details=json.loads(response.text).get('Error'))
+    elif response.status_code == 404:
+        raise ResourceDoesNotExistException('Service Discovery endpoint not found',
+                                            internal_details=json.loads(response.text).get('Error'))
+    elif response.status_code == 410:
+        raise ResourceDoesNotExistException('Service instance not found',
+                                            internal_details=json.loads(response.text).get('Error'))

@@ -26,7 +26,7 @@ def create_app():
     from server.web.rest.distribution_centers import distribution_centers_v1_blueprint
     from server.web.rest.retailers import retailers_v1_blueprint
     from server.web.rest.products import products_v1_blueprint
-    from server.services.service_discovery import register_service, get_services, heartbeat_service
+    from server.services.service_discovery import register_service
 
     # Create the app
     logistics_wizard = Flask('logistics_wizard', static_folder=None)

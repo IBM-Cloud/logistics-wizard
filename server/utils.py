@@ -5,8 +5,11 @@ interface) and should not have any dependency on Flask or request context.
 import jwt
 import re
 from types import FunctionType
+from os import environ as env
+from json import loads
 from server.config import Config
-from server.exceptions import TokenException
+from server.exceptions import APIException, TokenException
+from server.services.service_discovery import get_services
 
 
 def validate_email(email_address):
@@ -81,3 +84,29 @@ def async_helper(args):
     # Isolate function arguments in their own tuple and then call the function
     func_args = tuple(y for y in args if type(y) != FunctionType)
     return args[0](*func_args)
+
+
+def get_service_url(service_name):
+    """
+    Retrieves the URL of the service being called based on the environment
+    that the controller is currently being run.
+
+    :param service_name:    Name of the service being retrieved
+    :return:                The endpoint of the input service name
+    """
+
+    # In Prod, use the Service Discovery service
+    if Config.ENVIRONMENT == 'PROD':
+        try:
+            return loads(get_services(service_name=service_name, status='UP')).\
+                get('instances')[0].get('endpoint').get('value')
+        except Exception as e:
+            raise APIException('Dependent service is unavailable', internal_details=str(e))
+    # Otherwise, get the service endpoint from an env var
+    else:
+        if service_name == 'lw-erp':
+            return env['ERP_SERVICE']
+        elif service_name == 'lw-recommendation':
+            return env['RECOMMENDATION_SERVICE']
+        else:
+            raise APIException('Unrecognized service invocation')

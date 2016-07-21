@@ -3,8 +3,10 @@ Runs all unit tests by adding them to a test suite and then executes
 the test suite
 """
 import unittest
+from server.config import Config
 from os import environ as env
 
+# Required tests
 test_modules = [
     'server.tests.test_demos_service',
     'server.tests.test_distribution_centers_service',
@@ -14,9 +16,14 @@ test_modules = [
     'server.tests.test_users_service'
     ]
 
+# Optional tests
 # Test messaging service if email env vars populated
 if env['SMTP_USER_NAME']:
     test_modules.append('server.tests.test_messaging_service')
+
+# Test service_discovery service if sd env vars populated
+if Config.SD_URL:
+    test_modules.append('server.tests.test_service_discovery')
 
 suite = unittest.TestSuite()
 
