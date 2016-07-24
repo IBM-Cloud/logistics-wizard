@@ -100,10 +100,11 @@ def create_app():
         from sys import exit
 
         # Create service publisher and register service
+        creds = json.loads(env['VCAP_SERVICES'])['service_discovery'][0]['credentials']
         publisher = ServicePublisher('lw-controller', 30, 'UP',
                                      '%s.mybluemix.net' % json.loads(env['VCAP_APPLICATION'])['name'],
                                      'http', tags=['logistics-wizard', 'front-end'],
-                                     url=env['SD_URL'], auth_token=env['SD_AUTH'])
+                                     url=creds['url'], auth_token=creds['auth_token'])
         publisher.register_service(True)
 
         # Set up exit handlers for gracefully killing heartbeat thread
