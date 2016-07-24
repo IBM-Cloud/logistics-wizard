@@ -5,6 +5,7 @@ register app level error handlers.
 """
 import re
 import json
+import atexit
 
 from flask import Flask, current_app, Response
 from flask.ext.cors import CORS
@@ -19,6 +20,7 @@ def create_app():
     :return:         A flask object/wsgi callable.
     """
     from server.config import Config
+    from os import environ as env
     from server.exceptions import APIException
     from server.web.utils import request_wants_json
     from server.web.rest.demos import demos_v1_blueprint, setup_auth_from_request
@@ -26,7 +28,7 @@ def create_app():
     from server.web.rest.distribution_centers import distribution_centers_v1_blueprint
     from server.web.rest.retailers import retailers_v1_blueprint
     from server.web.rest.products import products_v1_blueprint
-    from server.services.service_discovery import register_service
+    from server.service_discovery import ServicePublisher
 
     # Create the app
     logistics_wizard = Flask('logistics_wizard', static_folder=None)
@@ -92,9 +94,44 @@ def create_app():
     logistics_wizard.errorhandler(400)(bad_request_handler)
     logistics_wizard.errorhandler(404)(not_found_handler)
 
-    # Register app with Service Discovery and initiate heartbeat cycle
-    if Config.ENVIRONMENT == 'PROD':
-        register_service('lw-controller', 300, 'UP',
-                         'logistics-wizard.mybluemix.net', 'http', tags=['logistics-wizard', 'front-end'])
+    # Register app with Service Discovery and initiate heartbeat cycle if running in PROD
+    if Config.ENVIRONMENT == 'PROD' and Config.SD_STATUS == 'ON' and env.get('VCAP_APPLICATION') is not None:
+        from signal import signal, SIGINT, SIGTERM
+        from sys import exit
+
+        # Create service publisher and register service
+        publisher = ServicePublisher('lw-controller', 30, 'UP',
+                                     '%s.mybluemix.net' % json.loads(env['VCAP_APPLICATION'])['name'],
+                                     'http', tags=['logistics-wizard', 'front-end'],
+                                     url=env['SD_URL'], auth_token=env['SD_AUTH'])
+        publisher.register_service(True)
+
+        # Set up exit handlers for gracefully killing heartbeat thread
+        def exit_app(*args):
+            deregister_app(publisher)
+            exit(0)
+        signal(SIGTERM, exit_app)
+        signal(SIGINT, exit_app)
+        atexit.register(destroy_app, publisher)
 
     return logistics_wizard
+
+
+def deregister_app(publisher):
+    """
+    Deregister the app and stop its heartbeat (if beating)
+
+    :param: publisher   Service Discovery publisher
+    """
+    if publisher is not None and publisher.registered:
+        print "Deregistering service from Service Discovery"
+        publisher.deregister_service()
+
+
+def destroy_app(publisher):
+    """
+    Gracefully shuts down the controller app
+
+    :param: publisher   Service Discovery publisher
+    """
+    deregister_app(publisher)

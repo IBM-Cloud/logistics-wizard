@@ -9,7 +9,7 @@ from os import environ as env
 from json import loads
 from server.config import Config
 from server.exceptions import APIException, TokenException
-from server.services.service_discovery import get_services
+from server.service_discovery import ServiceLocator
 
 
 def validate_email(email_address):
@@ -95,13 +95,19 @@ def get_service_url(service_name):
     :return:                The endpoint of the input service name
     """
 
-    # In Prod, use the Service Discovery service
-    if Config.ENVIRONMENT == 'PROD':
+    # Use the Service Discovery service if Prod and toggle is on
+    if Config.ENVIRONMENT == 'PROD' and Config.SD_STATUS == 'ON' and env.get('VCAP_SERVICES') is not None:
         try:
-            return loads(get_services(service_name=service_name, status='UP')).\
-                get('instances')[0].get('endpoint').get('value')
+            locator = ServiceLocator(loads(env['VCAP_SERVICES'])['service_discovery'][0]['credentials']['url'],
+                                     loads(env['VCAP_SERVICES'])['service_discovery'][0]['credentials']['auth_token'])
+            service_instances = loads(locator.get_services(service_name=service_name, status='UP'))['instances']
+            if len(service_instances) == 0:
+                raise APIException('Dependent service not available')
+            return service_instances[0]['endpoint']['value']
         except Exception as e:
-            raise APIException('Dependent service is unavailable', internal_details=str(e))
+            if isinstance(e, Exception):
+                e = e.message
+            raise APIException('Cannot get dependent service', user_details=str(e), internal_details=str(e))
     # Otherwise, get the service endpoint from an env var
     else:
         if service_name == 'lw-erp':
