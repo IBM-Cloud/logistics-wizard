@@ -6,7 +6,7 @@ object and should just call into the service layer to act upon a retailer resour
 """
 import requests
 import json
-from server.config import Config
+from server.utils import get_service_url
 from server.exceptions import (ResourceDoesNotExistException)
 from server.exceptions import (APIException,
                                AuthenticationException,
@@ -44,7 +44,7 @@ def get_retailers(token):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Retailers"
+    url = '%s/api/v1/Retailers' % get_service_url('lw-erp')
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -74,7 +74,7 @@ def get_retailer(token, retailer_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Retailers/" + str(retailer_id)
+    url = '%s/api/v1/Retailers/%s' % (get_service_url('lw-erp'), str(retailer_id))
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -107,7 +107,7 @@ def get_retailer_inventory(token, retailer_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Retailers/" + str(retailer_id) + "/inventories"
+    url = '%s/api/v1/Retailers/%s/inventories' % (get_service_url('lw-erp'), str(retailer_id))
     headers = {
         'cache-control': "no-cache",
         'Authorization': token

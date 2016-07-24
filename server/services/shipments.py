@@ -6,7 +6,7 @@ object and should just call into the service layer to act upon a shipment resour
 """
 import requests
 import json
-from server.config import Config
+from server.utils import get_service_url
 from server.exceptions import (APIException,
                                AuthenticationException,
                                UnprocessableEntityException,
@@ -53,9 +53,9 @@ def add_query_filter(cur_query, filter_type, op, value, property_name=None):
 
     # If the query string is null, initialize it
     # If it is non-empty, separate from new query with ampersand
-    if cur_query is None:
-        cur_query = ""
-    elif cur_query != "":
+    if cur_query is None or cur_query == "":
+        cur_query = "?"
+    else:
         cur_query += "&"
 
     cur_query += "filter[" + filter_type + "]"
@@ -90,7 +90,7 @@ def get_shipments(token, retailer_id=None, dc_id=None, status=None):
         status_query = add_query_filter(status_query, "where", "=", dc_id, property_name="fromId")
 
     # Create and format request to ERP
-    url = Config.ERP + "Shipments?" + status_query
+    url = '%s/api/v1/Shipments%s' % (get_service_url('lw-erp'), status_query)
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -126,7 +126,7 @@ def get_shipment(token, shipment_id, include_items=None):
         status_query = add_query_filter(status_query, "include", "=", "items")
 
     # Create and format request to ERP
-    url = Config.ERP + "Shipments/" + str(shipment_id) + "?" + status_query
+    url = '%s/api/v1/Shipments/%s%s' % (get_service_url('lw-erp'), str(shipment_id), status_query)
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -159,7 +159,7 @@ def create_shipment(token, shipment):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Shipments/"
+    url = '%s/api/v1/Shipments' % get_service_url('lw-erp')
     headers = {
         'content-type': "application/json",
         'cache-control': "no-cache",
@@ -195,7 +195,7 @@ def delete_shipment(token, shipment_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Shipments/" + str(shipment_id)
+    url = '%s/api/v1/Shipments/%s' % (get_service_url('lw-erp'), str(shipment_id))
     headers = {
         'cache-control': "no-cache",
         'Authorization': token
@@ -229,7 +229,7 @@ def update_shipment(token, shipment_id, shipment):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Shipments/" + str(shipment_id)
+    url = '%s/api/v1/Shipments/%s' % (get_service_url('lw-erp'), str(shipment_id))
     headers = {
         'cache-control': "no-cache",
         'Authorization': token

@@ -8,8 +8,7 @@ from datetime import datetime, timedelta
 import json
 import requests
 
-import server.services.demos as demo_service
-from server.config import Config
+from server.utils import get_service_url
 from server.exceptions import (ResourceDoesNotExistException,
                                AuthenticationException,
                                APIException,
@@ -54,7 +53,7 @@ def create_user(guid, retailer_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Demos/" + guid + "/createUser"
+    url = '%s/api/v1/Demos/%s/createUser' % (get_service_url('lw-erp'), guid)
     headers = {
         'content-type': "application/json",
         'cache-control': "no-cache"
@@ -76,40 +75,6 @@ def create_user(guid, retailer_id):
     return response.text
 
 
-"""
-def get_user_by_id(guid, user_id):
-
-    Retrieve a user from the ERP system by user_id.
-
-    :param guid:        The demo's guid
-    :param user_id:   The user's id.
-    :return:          An instance of the User.
-
-    try:
-        # TODO: Waiting for ERP API to implement this
-        roles = list()
-        roles.append({
-            "id": "2",
-            "name": "retailstoremanager",
-            "created": "2016-05-30T18:32:50.077Z",
-            "modified": "2016-05-30T18:32:50.077Z"
-        })
-        user = {
-            'id': user_id,
-            "demoId": "123",
-            'email': "test@example.com",
-            'username': "Retail Store Manager (test)",
-            'roles': roles
-        }
-    except ResourceDoesNotExistException as e:
-        raise ResourceDoesNotExistException('User does not exist', internal_details=str(e))
-    except ValidationException as e:
-        raise ValidationException('ERP threw error retrieving the user',
-                                  internal_details=str(e))
-    return user
-"""
-
-
 def login(guid, user_id):
     """
     Authenticate a user against the ERP system.
@@ -120,7 +85,7 @@ def login(guid, user_id):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Demos/" + guid + "/loginAs"
+    url = '%s/api/v1/Demos/%s/loginAs' % (get_service_url('lw-erp'), guid)
     headers = {
         'content-type': "application/json",
         'cache-control': "no-cache"
@@ -154,7 +119,7 @@ def logout(token):
     """
 
     # Create and format request to ERP
-    url = Config.ERP + "Users/logout"
+    url = '%s/api/v1/Users/logout' % get_service_url('lw-erp')
     headers = {
         'content-type': "application/json",
         'Authorization': token

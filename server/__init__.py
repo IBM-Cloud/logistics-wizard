@@ -3,8 +3,7 @@ Parent application that loads any child applications at their proper
 paths. If we end up doing the static parts completely separately, this can
 just load the API app directly.
 """
-from werkzeug.wsgi import DispatcherMiddleware
-from flask import Flask
+from server.exceptions import AuthenticationException
 
 
 def create_app():

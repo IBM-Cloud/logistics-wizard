@@ -5,6 +5,7 @@ the test suite
 import unittest
 from os import environ as env
 
+# Required tests
 test_modules = [
     'server.tests.test_demos_service',
     'server.tests.test_distribution_centers_service',

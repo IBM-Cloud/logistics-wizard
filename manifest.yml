@@ -1,9 +1,15 @@
+---
+declared-services:
+  lw-service-discovery:
+    label: service_discovery
+    plan: free
 applications:
 - path: .
   memory: 256M
   instances: 1
   name: logistics-wizard
   host: logistics-wizard
+  buildpack: python_buildpack
   env:
     LOGISTICS_WIZARD_ENV: PROD
     ERP_SERVICE: XXX
@@ -11,3 +17,6 @@ applications:
     SMTP_SERVER_PORT: 587
     SMTP_USER_NAME: XXX
     SMTP_PASSWORD: XXX
+    SD_STATUS: OFF
+  services:
+  - lw-service-discovery

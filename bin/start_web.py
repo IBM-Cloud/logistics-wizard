@@ -16,22 +16,8 @@ TOKEN_SECRET     The secret to be used for creating JSON Web Tokens, should
 
 """
 import os
-from flask_failsafe import failsafe
-from werkzeug.serving import run_simple
-
-
-# importable wsgi application
-application = None
-
-
-@failsafe
-def create_app():
-    """
-    Wires the flask applications together into one wsgi app
-    :return: A flask/wsgi app that is composed of multiple sub apps
-    """
-    from server import create_app
-    return create_app()
+from server import create_app
+from server.exceptions import APIException
 
 
 def start_app():
@@ -39,11 +25,12 @@ def start_app():
     Run in development mode, never used in production.
     """
     port = int(os.getenv("PORT", 5000))
-    app = create_app()
-    app.run(host='0.0.0.0', port=port)
+    try:
+        app = create_app()
+        app.run(host='0.0.0.0', port=port)
+    except APIException as e:
+        print "Application failed to register with Service Discovery"
 
 
 if __name__ == "__main__":
     start_app()
-else:
-    application = create_app()
