@@ -34,25 +34,21 @@ def load_credentials(url=None, auth_token=None):
         }
 
 
-def add_query_filter(cur_query, param, value):
+def add_query_string(*filters):
     """
-    Add a query condition to an input query string
+    Compose a query string from input filters
 
-    :param cur_query:   Current query string.
-    :param param:       Filter to apply.
-    :param value:       Value to filter on.
+    :param filters: List of (filter, value) tuples
 
-    :return:            The updated query string.
+    :return:        Query string
     """
+    status_query = ''
+    for fil in filters:
+        if fil[1] is not None and fil[1] != '':
+            status_query = '?' if status_query == '' else status_query + '&'
+            status_query += '%s=%s' % (fil[0], fil[1])
 
-    # If the query string is null, initialize it
-    # If it is non-empty, separate from new query with ampersand
-    if cur_query is None:
-        cur_query = ""
-    elif cur_query != "":
-        cur_query += "&"
-
-    return '%s%s=%s' % (cur_query, param, value)
+    return status_query
 
 ###########################
 #         Classes         #
@@ -92,6 +88,7 @@ class ServicePublisher:
         # Uninitialized vars
         self.heartbeats = []
         self.heartbeat_thread = None
+        self.heartbeat_url = None
         self.id = None
 
         # Flags
@@ -136,9 +133,12 @@ class ServicePublisher:
             raise Exception('Unauthorized service registration: token is not valid',
                             json.loads(response.text).get('Error'))
 
-        # Spawn thread responsible for sending heartbeat
+        # Set instance values based on returned object
         self.registered = True
-        self.id = json.loads(response.text).get('id')
+        self.id = json.loads(response.text)['id']
+        self.heartbeat_url = json.loads(response.text)['links']['heartbeat']
+
+        # Spawn thread responsible for sending heartbeat
         if heartbeat:
             self.heartbeat_thread = Thread(target=self._heartbeater,
                                            kwargs={'interval': round(self.ttl*.5)})
@@ -158,7 +158,7 @@ class ServicePublisher:
         # Call Service Discovery /instances/XXX/heartbeat to heartbeat the service
         try:
             response = requests.request("PUT",
-                                        '%s/api/v1/instances/%s/heartbeat' % (self.url, self.id),
+                                        self.heartbeat_url,
                                         headers={'Authorization': 'Bearer %s' % self.token})
         except Exception as e:
             raise Exception('Error heartbeating service', str(e))
@@ -262,18 +262,11 @@ class ServiceLocator:
         :return response
         """
 
-        # Add filters if corresponding inputs are present
-        status_query = ""
-        if fields is not None:
-            status_query = add_query_filter(status_query, "fields", fields)
-        if tags is not None:
-            status_query = add_query_filter(status_query, "tags", tags)
-        if service_name is not None:
-            status_query = add_query_filter(status_query, "service_name", service_name)
-        if status is not None:
-            status_query = add_query_filter(status_query, "status", status)
+        # Add filters to query
+        status_query = add_query_string(('fields', fields), ('tags', tags),
+                                        ('service_name', service_name), ('status', status))
 
-        retrieve_services_url = '%s/api/v1/instances?%s' % (self.url, status_query)
+        retrieve_services_url = '%s/api/v1/instances%s' % (self.url, status_query)
         headers = {'Authorization': 'Bearer %s' % self.token}
 
         try:
