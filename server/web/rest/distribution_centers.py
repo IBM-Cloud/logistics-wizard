@@ -1,13 +1,10 @@
 """
 The REST interface for ERP distribution center resources.
 """
-import json
-
 import server.services.distribution_centers as distribution_center_service
 import server.services.shipments as shipment_service
 from flask import g, request, Response, Blueprint
-from server.web.utils import logged_in
-from server.web.utils import check_null_input
+from server.web.utils import logged_in, check_null_input
 
 distribution_centers_v1_blueprint = Blueprint('distribution_centers_v1_api', __name__)
 
@@ -47,7 +44,7 @@ def get_distribution_center(dc_id):
     }
 
     """
-    check_null_input(dc_id, 'a distribution center to retrieve')
+    check_null_input((dc_id, 'distribution center to retrieve'))
 
     distribution_center = distribution_center_service.get_distribution_center(token=g.auth['loopback_token'],
                                                                               dc_id=dc_id)
@@ -77,7 +74,7 @@ def get_distribution_centers_shipments(dc_id):
     }, {...}]
 
     """
-    check_null_input(dc_id, 'a distribution center whose shipments you want to retrieve')
+    check_null_input((dc_id, 'distribution center whose shipments you want to retrieve'))
     status = request.args.get('status')
 
     shipments = shipment_service.get_shipments(token=g.auth['loopback_token'],
@@ -104,7 +101,7 @@ def get_distribution_center_inventory(dc_id):
         "locationType": "DistributionCenter"
     }, {...}]
     """
-    check_null_input(dc_id, 'a distribution center whose inventory you want to retrieve')
+    check_null_input((dc_id, 'distribution center whose inventory you want to retrieve'))
 
     inventory = distribution_center_service.get_distribution_center_inventory(token=g.auth['loopback_token'],
                                                                               dc_id=dc_id)

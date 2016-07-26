@@ -1,9 +1,11 @@
 import unittest
 from json import loads
-import server.tests.utils as utils
+from datetime import datetime, timedelta
+import server.tests.utils as test_utils
+import server.web.utils as web_utils
 import server.services.demos as demo_service
 import server.services.users as user_service
-from server.exceptions import (ResourceDoesNotExistException)
+from server.exceptions import ResourceDoesNotExistException
 
 
 def suite():
@@ -27,7 +29,7 @@ class CreateUserTestCase(unittest.TestCase):
 
     def setUp(self):
         # Create demo
-        self.demo = utils.create_demo()
+        self.demo = test_utils.create_demo()
         self.retailers = demo_service.get_demo_retailers(loads(self.demo).get('guid'))
 
     def test_user_create_success(self):
@@ -59,7 +61,7 @@ class CreateUserTestCase(unittest.TestCase):
                           loads(self.demo).get('guid'), '123321')
 
     def tearDown(self):
-        utils.delete_demo(loads(self.demo).get('guid'))
+        test_utils.delete_demo(loads(self.demo).get('guid'))
 
 
 class UserLoginTestCase(unittest.TestCase):
@@ -67,7 +69,7 @@ class UserLoginTestCase(unittest.TestCase):
 
     def setUp(self):
         # Create demo
-        self.demo = utils.create_demo()
+        self.demo = test_utils.create_demo()
 
     def test_user_login_success(self):
         """With correct values, is a valid user logged in?"""
@@ -107,7 +109,7 @@ class UserLoginTestCase(unittest.TestCase):
                           demo_json.get('guid'), '123321')
 
     def tearDown(self):
-        utils.delete_demo(loads(self.demo).get('guid'))
+        test_utils.delete_demo(loads(self.demo).get('guid'))
 
 
 class UserLogoutTestCase(unittest.TestCase):
@@ -115,7 +117,7 @@ class UserLogoutTestCase(unittest.TestCase):
 
     def setUp(self):
         # Create demo
-        self.demo = utils.create_demo()
+        self.demo = test_utils.create_demo()
         demo_json = loads(self.demo)
         demo_guid = demo_json.get('guid')
         demo_user_id = demo_json.get('users')[0].get('id')
@@ -134,10 +136,10 @@ class UserLogoutTestCase(unittest.TestCase):
 
         self.assertRaises(ResourceDoesNotExistException,
                           user_service.logout,
-                          utils.get_bad_token())
+                          test_utils.get_bad_token())
 
     def tearDown(self):
-        utils.delete_demo(loads(self.demo).get('guid'))
+        test_utils.delete_demo(loads(self.demo).get('guid'))
 
 
 class TokenizeTestCase(unittest.TestCase):
@@ -147,17 +149,18 @@ class TokenizeTestCase(unittest.TestCase):
         """Is auth data correctly tokenized and later detokenized?"""
 
         # Create demo
-        demo = utils.create_demo()
+        demo = test_utils.create_demo()
         demo_json = loads(demo)
         demo_guid = demo_json.get('guid')
         demo_user_id = demo_json.get('users')[0].get('id')
 
         # Log in user and tokenize auth data
         auth_data = user_service.login(demo_guid, demo_user_id)
-        token = user_service.get_token_for_user(auth_data, expire_days=14)
+        auth_data['exp'] = datetime.utcnow() + timedelta(days=14)
+        token = web_utils.tokenize(auth_data)
 
         # Detokenize auth data
-        decrypted_auth_data = user_service.get_auth_from_token(token)
+        decrypted_auth_data = web_utils.detokenize(token)
 
         # Check that decrypted data is equivalent to auth data
         self.assertTrue(auth_data.get('loopback_token') ==
@@ -168,7 +171,7 @@ class TokenizeTestCase(unittest.TestCase):
                         decrypted_auth_data.get('user').get('id'))
 
         # Destroy demo
-        utils.delete_demo(demo_guid)
+        test_utils.delete_demo(demo_guid)
 
 if __name__ == '__main__':
     unittest.main()

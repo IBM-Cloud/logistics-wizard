@@ -6,8 +6,7 @@ import json
 import server.services.shipments as shipment_service
 from flask import g, request, Response, Blueprint
 from server.web.utils import logged_in
-from server.web.utils import (get_json_data,
-                              check_null_input)
+from server.web.utils import get_json_data, check_null_input
 
 shipments_v1_blueprint = Blueprint('shipments_v1_api', __name__)
 
@@ -103,7 +102,7 @@ def get_shipment(shipment_id):
 
     """
     include_items = request.args.get('include_items')
-    check_null_input(shipment_id, 'a shipment to retrieve')
+    check_null_input((shipment_id, 'shipment to retrieve'))
 
     shipment = shipment_service.get_shipment(token=g.auth['loopback_token'],
                                              shipment_id=shipment_id,
@@ -124,7 +123,7 @@ def delete_shipment(shipment_id):
     :return:
 
     """
-    check_null_input(shipment_id, 'a shipment to delete')
+    check_null_input((shipment_id, 'shipment to delete'))
 
     shipment_service.delete_shipment(token=g.auth['loopback_token'], shipment_id=shipment_id)
     return '', 204
@@ -162,7 +161,7 @@ def update_shipment(shipment_id):
     }
 
     """
-    check_null_input(shipment_id, 'a shipment to update')
+    check_null_input((shipment_id, 'shipment to update'))
 
     updated_shipment = get_json_data(request)
     shipment = shipment_service.update_shipment(token=g.auth['loopback_token'],

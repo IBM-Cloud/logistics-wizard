@@ -2,22 +2,19 @@
 The REST interface for demo session resources.
 """
 import json
-
+from datetime import datetime, timedelta
+from flask import g, request, Response, Blueprint
+from multiprocessing import Pool
 import server.services.demos as demo_service
 import server.services.users as user_service
 import server.services.shipments as shipment_service
 import server.services.distribution_centers as distribution_center_service
 import server.services.retailers as retailer_service
-from flask import g, request, Response, Blueprint
-from multiprocessing import Pool
+import server.web.utils as web_utils
 from server.exceptions import (TokenException,
                                ResourceDoesNotExistException,
                                APIException)
 from server.utils import async_helper
-from server.web.utils import (get_token_from_request,
-                              get_json_data,
-                              check_null_input,
-                              logged_in)
 
 demos_v1_blueprint = Blueprint('demos_v1_api', __name__)
 
@@ -28,9 +25,9 @@ def setup_auth_from_request():
     object for later use.
     """
     try:
-        token = get_token_from_request()
+        token = web_utils.get_token_from_request()
         if token is not None:
-            g.auth = user_service.get_auth_from_token(token)
+            g.auth = web_utils.detokenize(token)
     except (TokenException, ResourceDoesNotExistException):
         g.auth = None
 
@@ -56,10 +53,10 @@ def create_demo():
     """
 
     # Get inputs and make sure required params are not null
-    data = get_json_data(request)
+    data = web_utils.get_json_data(request)
     demo_name = data.get('name')
     user_email = data.get('email')
-    check_null_input(demo_name, 'a demo name for the new demo session')
+    web_utils.check_null_input((demo_name, 'demo name for the new demo session'))
 
     demo = demo_service.create_demo(demo_name, user_email)
     return Response(demo,
@@ -82,7 +79,7 @@ def get_demo(guid):
         "users": [{User}...{User}]
     }
     """
-    check_null_input(guid, 'a demo to retrieve')
+    web_utils.check_null_input((guid, 'demo to retrieve'))
 
     demo = demo_service.get_demo_by_guid(guid)
     return Response(demo,
@@ -98,7 +95,7 @@ def delete_demo(guid):
     :param guid:   The demo's guid
     :return:
     """
-    check_null_input(guid, 'a demo to delete')
+    web_utils.check_null_input((guid, 'demo to delete'))
 
     demo_service.delete_demo_by_guid(guid)
     return '', 204
@@ -123,7 +120,7 @@ def get_demo_retailers(guid):
         "managerId": "123"
     }, {...}]
     """
-    check_null_input(guid, 'a demo for which to retrieve retailers')
+    web_utils.check_null_input((guid, 'demo for which to retrieve retailers'))
 
     retailers = demo_service.get_demo_retailers(guid)
     return Response(retailers,
@@ -150,43 +147,15 @@ def create_demo_user(guid):
     """
 
     # Get inputs and make sure required params are not null
-    data = get_json_data(request)
+    data = web_utils.get_json_data(request)
     retailer_id = data.get('retailerId')
-    check_null_input(guid, 'a demo for which to create a user')
-    check_null_input(retailer_id, 'a retailer to make a user for the demo')
+    web_utils.check_null_input((guid, 'demo for which to create a user'),
+                               (retailer_id, 'retailer to make a user for the demo'))
 
     user = user_service.create_user(guid, retailer_id)
     return Response(user,
                     status=201,
                     mimetype='application/json')
-
-
-"""
-@demos_v1_blueprint.route('/demos/<string:guid>/users/<string:user_id>', methods=['GET'])
-def get_demo_user(guid, user_id):
-
-    Gets a user of a single demo
-
-    :param guid:   The demo's guid
-    :param user_id:   The user being retrieved
-
-    :return: {
-        "id": "123",
-        "demoId": "123",
-        "username": "Retail Store Manager (XXX)",
-        "email": "ruth.XXX@acme.com"
-    }
-
-    if guid is None:
-        raise ValidationException('You must specify a demo for which to retrieve a user')
-    if user_id is None:
-        raise ValidationException('You must specify a user ID to retrieve')
-
-    user = user_service.get_user_by_id(guid, user_id)
-    return Response(jsonify(user, user_service.user_to_dict),
-                    status=200,
-                    mimetype='application/json')
-"""
 
 
 @demos_v1_blueprint.route('/demos/<string:guid>/login', methods=['POST'])
@@ -204,12 +173,13 @@ def demo_login(guid):
     """
     data = request.get_json()
     user_id = data.get('userId')
-    check_null_input(user_id, 'a username when logging in')
-    check_null_input(guid, 'a demo guid when logging in')
+    web_utils.check_null_input((user_id, 'username when logging in'),
+                               (guid, 'demo guid when logging in'))
 
     # Login through the ERP system and create a JWT valid for 2 weeks
     auth_data = user_service.login(guid, user_id)
-    token = user_service.get_token_for_user(auth_data, expire_days=14)
+    auth_data['exp'] = datetime.utcnow() + timedelta(days=14)
+    token = web_utils.tokenize(auth_data)
     resp = Response(json.dumps({'token': token}),
                     status=200,
                     mimetype='application/json')
@@ -225,7 +195,7 @@ def deauthenticate(token):
     :param token  Current web token
     :return:
     """
-    request_token = get_token_from_request()
+    request_token = web_utils.get_token_from_request()
     # Only allow deletion of a web token if the token belongs to the current user
     if request_token == token:
         user_service.logout(token=g.auth['loopback_token'])
@@ -233,7 +203,7 @@ def deauthenticate(token):
 
 
 @demos_v1_blueprint.route('/admin', methods=['GET'])
-@logged_in
+@web_utils.logged_in
 def load_admin_data():
     """
     Load all data relative to the currently logged in user
@@ -257,9 +227,9 @@ def load_admin_data():
         results = pool.map(async_helper, erp_calls)
     except Exception as e:
         raise APIException('Error retrieving admin data view', internal_details=str(e))
-
     pool.close()
     pool.join()
+
     # Send back serialized results to client
     return Response(json.dumps({
                         "shipments": json.loads(results[0]),

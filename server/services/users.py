@@ -4,16 +4,10 @@ the calls get routed to the ERP service appropriately. As much as possible,
 the interface layer should have no knowledge of the properties of the user
 object and should just call into the service layer to act upon a user resource.
 """
-from datetime import datetime, timedelta
 import json
 import requests
-
 from server.utils import get_service_url
-from server.exceptions import (ResourceDoesNotExistException,
-                               AuthenticationException,
-                               APIException,
-                               ValidationException)
-from server.utils import tokenize, detokenize
+from server.exceptions import ResourceDoesNotExistException, APIException
 
 
 ###########################
@@ -136,29 +130,3 @@ def logout(token):
                                             internal_details=json.loads(response.text).get('error').get('message'))
 
     return
-
-
-def get_token_for_user(auth_data, expire_days=None):
-    """
-    Generates an auth token for the given user.
-
-    :param auth_data:     The auth data to be used for the token.
-    :param expire_days:   The number of days until the token expires.
-    :return:              A JSON Web Token.
-    """
-
-    # Generate token expiration data and add to dict
-    auth_data['exp'] = datetime.utcnow() + timedelta(days=expire_days)
-    return tokenize(auth_data)
-
-
-def get_auth_from_token(token):
-    """
-    Retrieve the Auth data associated with this token. May raise a
-    TokenException if there are any issues parsing the token.
-
-    :param token:  A JWT token that includes the Loopback token and user data
-    :return:       An auth object.
-    """
-    data = detokenize(token)
-    return data

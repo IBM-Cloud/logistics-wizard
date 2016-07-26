@@ -1,13 +1,10 @@
 """
 The REST interface for ERP retailer resources.
 """
-import json
-
 import server.services.retailers as retailer_service
 import server.services.shipments as shipment_service
 from flask import g, request, Response, Blueprint
-from server.web.utils import logged_in
-from server.web.utils import check_null_input
+from server.web.utils import logged_in, check_null_input
 
 retailers_v1_blueprint = Blueprint('retailers_v1_api', __name__)
 
@@ -45,7 +42,7 @@ def get_retailer(retailer_id):
     }
 
     """
-    check_null_input(retailer_id, 'a retailer to retrieve')
+    check_null_input((retailer_id, 'retailer to retrieve'))
 
     retailer = retailer_service.get_retailer(token=g.auth['loopback_token'],
                                              retailer_id=retailer_id)
@@ -75,7 +72,7 @@ def get_retailer_shipments(retailer_id):
     }, {...}]
 
     """
-    check_null_input(retailer_id, 'a retailer whose shipments you want to retrieve')
+    check_null_input((retailer_id, 'retailer whose shipments you want to retrieve'))
     status = request.args.get('status')
 
     shipments = shipment_service.get_shipments(token=g.auth['loopback_token'],
@@ -102,7 +99,7 @@ def get_retailer_inventory(retailer_id):
         "locationType": "Retailer"
     }, {...}]
     """
-    check_null_input(retailer_id, 'a retailer whose inventory you want to retrieve')
+    check_null_input((retailer_id, 'retailer whose inventory you want to retrieve'))
 
     inventory = retailer_service.get_retailer_inventory(token=g.auth['loopback_token'],
                                                         retailer_id=retailer_id)
