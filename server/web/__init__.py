@@ -19,6 +19,7 @@ def create_app():
 
     :return:         A flask object/wsgi callable.
     """
+    import cf_deployment_tracker
     from server.config import Config
     from os import environ as env
     from server.exceptions import APIException
@@ -29,6 +30,9 @@ def create_app():
     from server.web.rest.retailers import retailers_v1_blueprint
     from server.web.rest.products import products_v1_blueprint
     from server.service_discovery import ServicePublisher
+
+    # Record the deployment event if deploying to CF
+    cf_deployment_tracker.track()
 
     # Create the app
     logistics_wizard = Flask('logistics_wizard', static_folder=None)
@@ -125,7 +129,7 @@ def deregister_app(publisher):
     :param: publisher   Service Discovery publisher
     """
     if publisher is not None and publisher.registered:
-        print "Deregistering service from Service Discovery"
+        print ("Deregistering service from Service Discovery")
         publisher.deregister_service()
 
 

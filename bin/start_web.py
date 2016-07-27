@@ -29,7 +29,7 @@ def start_app():
         app = create_app()
         app.run(host='0.0.0.0', port=port)
     except APIException as e:
-        print "Application failed to register with Service Discovery"
+        print ("Application failed to register with Service Discovery")
 
 
 if __name__ == "__main__":
