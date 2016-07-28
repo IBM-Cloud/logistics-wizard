@@ -60,3 +60,6 @@ target/
 
 # Local environment
 .env.local
+
+# Client
+client-src/node_modules
