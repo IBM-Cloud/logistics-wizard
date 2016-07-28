@@ -62,4 +62,5 @@ target/
 .env.local
 
 # Client
+!client-src/build
 client-src/node_modules

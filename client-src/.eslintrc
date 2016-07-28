@@ -20,6 +20,7 @@
   },
   "rules": {
     "new-cap": [2, { "capIsNew": false }],
-    "max-len": 0
+    "max-len": [0],
+    "global-require": [0]
   }
 }
