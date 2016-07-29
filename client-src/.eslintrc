@@ -21,6 +21,8 @@
   "rules": {
     "new-cap": [2, { "capIsNew": false }],
     "max-len": [0],
-    "global-require": [0]
+    "global-require": [0],
+    "no-param-reassign": [1],
+    "import/no-unresolved": [0]
   }
 }

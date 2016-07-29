@@ -7,7 +7,7 @@ export const Zen = (props) => (
       <h2 className={classes.zenHeader}>
         {props.zen ? props.zen.value : ''}
       </h2>
-      <button className="btn btn-default" onClick={props.fetchZen}>
+      <button className="btn btn-default" onClick={props.requestZen}>
         Fetch a wisdom
       </button>
       {' '}
@@ -35,7 +35,7 @@ export const Zen = (props) => (
 Zen.propTypes = {
   zen: React.PropTypes.object,
   saved: React.PropTypes.array.isRequired,
-  fetchZen: React.PropTypes.func.isRequired,
+  requestZen: React.PropTypes.func.isRequired,
   saveCurrentZen: React.PropTypes.func.isRequired,
 };
 

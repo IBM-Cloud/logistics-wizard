@@ -62,5 +62,8 @@ target/
 .env.local
 
 # Client
+.DS_STORE
 !client-src/build
 client-src/node_modules
+client-src/dist
+client-src/coverage

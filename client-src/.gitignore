@@ -1,9 +1,6 @@
+# Client
 .DS_STORE
-*.log
-
+!build
 node_modules
-
 dist
 coverage
-
-.idea/
