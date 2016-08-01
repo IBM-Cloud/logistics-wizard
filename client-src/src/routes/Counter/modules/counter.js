@@ -1,3 +1,4 @@
+import { delay } from 'redux-saga';
 import { take, put, select } from 'redux-saga/effects';
 // ------------------------------------
 // Constants
@@ -44,17 +45,12 @@ export default counterReducer;
 // Sagas
 // ------------------------------------
 
-// Simulate an async call
-const asyncWait = () => new Promise((resolve) => {
-  setTimeout(() => resolve(), 200);
-});
-
 export function *doubleAsync() {
   while (true) {
     yield take(COUNTER_DOUBLE);
     const state = yield select();
-    yield asyncWait();
-    yield put(increment(state.counter));
+    yield delay(200); // Simulate an async call
+    yield put(actions.increment(state.counter));
   }
 }
 

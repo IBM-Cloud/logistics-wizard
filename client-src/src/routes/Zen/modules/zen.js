@@ -1,4 +1,4 @@
-import { take, put } from 'redux-saga/effects';
+import { call, take, put } from 'redux-saga/effects';
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -40,7 +40,6 @@ const ZEN_ACTION_HANDLERS = {
     ...state,
     zens: state.zens.concat(action.payload),
     current: action.payload.id,
-    fetching: false,
   }),
   [SAVE_CURRENT_ZEN]: (state) => (
     state.current != null
@@ -53,7 +52,6 @@ const ZEN_ACTION_HANDLERS = {
 // Reducer
 // ------------------------------------
 const initialState = {
-  fetching: false,
   current: null,
   zens: [],
   saved: [],
@@ -70,16 +68,15 @@ export default zenReducer;
 // Sagas
 // ------------------------------------
 
-const fetchZen = () => new Promise((resolve) => {
+const fetchZen = () =>
   fetch('https://api.github.com/zen')
-    .then(data => resolve(data.text()));
-});
+    .then(data => data.text());
 
 export function *fetchZenAsync() {
   while (true) {
     yield take(REQUEST_ZEN);
-    const text = yield fetchZen();
-    yield put(receiveZen(text));
+    const text = yield call(fetchZen);
+    yield put(actions.receiveZen(text));
   }
 }
 
