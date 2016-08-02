@@ -30,7 +30,7 @@ export const Styles = () => (
       <li>Third item</li>
     </ul>
 
-    <a href="#">Link text!</a>
+    <a href="">Link text!</a>
 
     <blockquote>
       This is an example of text within a blockquote tag.

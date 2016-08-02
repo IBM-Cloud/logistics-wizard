@@ -1,15 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import { useRouterHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import createStore from './store/createStore';
 import AppContainer from './containers/AppContainer';
 
-// Needed for onTouchTap
-// http://stackoverflow.com/a/34015469/988941
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
 
 // ========================================================
 // Browser History Setup
@@ -43,6 +40,7 @@ if (__DEBUG__) {
 // ========================================================
 // Render Setup
 // ========================================================
+injectTapEventPlugin();
 const MOUNT_NODE = document.getElementById('root');
 
 let render = () => {

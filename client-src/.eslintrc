@@ -25,6 +25,8 @@
     "no-param-reassign": [1],
     "no-confusing-arrow": [1],
     "import/no-extraneous-dependencies": [0],
+    "import/no-named-as-default": [0],
+    "generator-star-spacing": ["error", {"before": true, "after": false}],
     "import/no-unresolved": [0]
   }
 }

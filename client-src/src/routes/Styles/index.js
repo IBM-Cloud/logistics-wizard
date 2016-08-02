@@ -5,6 +5,7 @@ export default () => ({
       './components/Styles',
     ], (require) => {
       const Styles = require('./components/Styles').default;
+
       cb(null, Styles);
     }, 'styles');
   },
