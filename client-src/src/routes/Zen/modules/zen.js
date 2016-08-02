@@ -68,16 +68,19 @@ export default zenReducer;
 // Sagas
 // ------------------------------------
 
-const fetchZen = () =>
-  // fetch('https://api.github.com/zen')
-  fetch('http://quotes.rest/qod.json?category=inspire')
-    .then(data => data.text());
+const fetchQuote = (zen = true) =>
+  zen
+  ? fetch('https://api.github.com/zen')
+    .then(response => response.text())
+  : fetch('http://quotes.rest/qod.json?category=inspire')
+    .then(response => response.json())
+    .then(json => json.contents.quotes[0].quote);
 
 export function *fetchZenAsync() {
   while (true) {
     yield take(REQUEST_ZEN);
-    const text = yield call(fetchZen);
-    yield put(actions.receiveZen(JSON.parse(text).contents.quotes[0].quote));
+    const quote = yield call(fetchQuote);
+    yield put(actions.receiveZen(quote));
   }
 }
 

@@ -1,7 +1,6 @@
 import React from 'react';
-import { IndexLink, Link } from 'react-router';
 import { push } from 'react-router-redux';
-import classes from './Header.scss';
+// import classes from './Header.scss';
 import AppBar from 'material-ui/AppBar';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
