@@ -69,14 +69,15 @@ export default zenReducer;
 // ------------------------------------
 
 const fetchZen = () =>
-  fetch('https://api.github.com/zen')
+  // fetch('https://api.github.com/zen')
+  fetch('http://quotes.rest/qod.json?category=inspire')
     .then(data => data.text());
 
 export function *fetchZenAsync() {
   while (true) {
     yield take(REQUEST_ZEN);
     const text = yield call(fetchZen);
-    yield put(actions.receiveZen(text));
+    yield put(actions.receiveZen(JSON.parse(text).contents.quotes[0].quote));
   }
 }
 

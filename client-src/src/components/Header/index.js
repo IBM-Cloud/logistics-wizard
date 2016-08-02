@@ -1,3 +1,8 @@
-import Header from './Header'
+import { connect } from 'react-redux';
+import Header from './Header';
 
-export default Header
+const mapStateToProps = (state) => ({
+  currentPath: state.router.locationBeforeTransitions.pathname,
+});
+
+export default connect(mapStateToProps)(Header);

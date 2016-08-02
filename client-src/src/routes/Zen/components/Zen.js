@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from './Zen.scss';
+import RaisedButton from 'material-ui/RaisedButton';
 
 export const Zen = (props) => (
   <div>
@@ -7,13 +8,9 @@ export const Zen = (props) => (
       <h2 className={classes.zenHeader}>
         {props.zen ? props.zen.value : ''}
       </h2>
-      <button className="btn btn-default" onClick={props.requestZen}>
-        Fetch a wisdom
-      </button>
+      <RaisedButton label="Fetch a wisdom" onClick={props.requestZen} />
       {' '}
-      <button className="btn btn-default" onClick={props.saveCurrentZen}>
-        Save
-      </button>
+      <RaisedButton label="Save" onClick={props.saveCurrentZen} />
     </div>
     {props.saved.length
       ? <div className={classes.savedWisdoms}>

@@ -1,22 +1,43 @@
 import React from 'react';
 import { IndexLink, Link } from 'react-router';
+import { push } from 'react-router-redux';
 import classes from './Header.scss';
+import AppBar from 'material-ui/AppBar';
+import { Tabs, Tab } from 'material-ui/Tabs';
 
-export const Header = () => (
+const styles = {
+  title: {
+    cursor: 'pointer',
+  },
+};
+
+const clickTitle = () => (
+  <span style={styles.title}>
+    Logistics Wizard Demo
+  </span>
+);
+
+export const Header = (props) => (
   <div>
-    <h1>Logistics Wizard Demo</h1>
-    <IndexLink to="/" activeClassName={classes.activeRoute}>
-      Home
-    </IndexLink>
-    {' · '}
-    <Link to="/counter" activeClassName={classes.activeRoute}>
-      Counter
-    </Link>
-    {' · '}
-    <Link to="/zen" activeClassName={classes.activeRoute}>
-      Zen
-    </Link>
+    <AppBar
+      title={clickTitle()}
+      showMenuIconButton={false}
+      onTitleTouchTap={() => props.dispatch(push('/'))}
+    />
+    <Tabs
+      onChange={(value) => props.dispatch(push(value))}
+      value={props.currentPath}
+    >
+      <Tab label="Styles" value="/styles" />
+      <Tab label="Counter" value="/counter" />
+      <Tab label="Zen" value="/zen" />
+    </Tabs>
   </div>
 );
+
+Header.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
+  currentPath: React.PropTypes.string.isRequired,
+};
 
 export default Header;
