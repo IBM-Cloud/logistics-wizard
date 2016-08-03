@@ -135,6 +135,7 @@
     "yargs": "^4.0.0"
   },
   "devDependencies": {
+    "@kadira/react-storybook-decorator-centered": "^1.0.0",
     "@kadira/storybook": "^2.1.0",
     "babel-eslint": "^6.0.0-beta.6",
     "chai": "^3.4.1",

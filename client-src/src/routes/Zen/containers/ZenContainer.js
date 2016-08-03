@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
+
+import Zen from 'components/Zen';
 import { requestZen, saveCurrentZen } from '../modules/zen';
 
-import Zen from '../components/Zen';
 
 const mapActionCreators = {
   requestZen,

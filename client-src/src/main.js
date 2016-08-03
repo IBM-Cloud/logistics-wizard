@@ -47,7 +47,7 @@ let render = () => {
   const routes = require('./routes/index').default(store);
 
   ReactDOM.render(
-    <AppContainer
+    <AppContainer //eslint-disable-line
       store={store}
       history={history}
       routes={routes}

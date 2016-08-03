@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Styles = () => (
+export const StylesView = () => (
   <div>
     <h1>Styles Showcase</h1>
     <hr />
@@ -43,4 +43,4 @@ export const Styles = () => (
   </div>
 );
 
-export default Styles;
+export default StylesView;

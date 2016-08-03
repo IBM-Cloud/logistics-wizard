@@ -2,11 +2,11 @@ export default () => ({
   path: 'styles',
   getComponent(nextState, cb) {
     require.ensure([
-      './components/Styles',
+      './components/StylesView',
     ], (require) => {
-      const Styles = require('./components/Styles').default;
+      const StylesView = require('./components/StylesView').default;
 
-      cb(null, Styles);
+      cb(null, StylesView);
     }, 'styles');
   },
 });
