@@ -3,9 +3,9 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { shallow } from 'enzyme';
-import { Counter } from './Counter';
+import { <%= pascalEntityName %> } from './<%= pascalEntityName %>';
 
-describe('(Component) Counter', () => {
+describe('(Component) <%= pascalEntityName %>', () => {
   let props;
   let spies;
   let wrapper;
@@ -19,7 +19,7 @@ describe('(Component) Counter', () => {
         increment: (spies.increment = sinon.spy()),
       }, spies.dispatch = sinon.spy()),
     };
-    wrapper = shallow(<Counter {...props} />);
+    wrapper = shallow(<<%= pascalEntityName %> {...props} />);
   });
 
   it('Should render as a <div>.', () => {
@@ -37,18 +37,14 @@ describe('(Component) Counter', () => {
   });
 
   it('Should render exactly two buttons.', () => {
-    expect(wrapper.find('button')).to.have.length(2);
+    expect(wrapper.find('RaisedButton')).to.have.length(2);
   });
 
   describe('An increment button...', () => {
     let button;
 
     beforeEach(() => {
-      button = wrapper.find('button').filterWhere(a => a.text() === 'Increment');
-    });
-
-    it('has bootstrap classes', () => {
-      expect(button.hasClass('btn btn-default')).to.be.true;
+      button = wrapper.find('RaisedButton').filterWhere(a => a.props().label === 'Increment');
     });
 
     it('Should dispatch a `increment` action when clicked', () => {
@@ -65,11 +61,7 @@ describe('(Component) Counter', () => {
     let button;
 
     beforeEach(() => {
-      button = wrapper.find('button').filterWhere(a => a.text() === 'Double (Async)');
-    });
-
-    it('has bootstrap classes', () => {
-      expect(button.hasClass('btn btn-default')).to.be.true;
+      button = wrapper.find('RaisedButton').filterWhere(a => a.props().label === 'Double (Async)');
     });
 
     it('Should dispatch a `doubleAsync` action when clicked', () => {

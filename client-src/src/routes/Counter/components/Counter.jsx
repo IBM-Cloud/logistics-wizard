@@ -2,7 +2,7 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import classes from './Counter.scss';
 
-const Counter = (props) => (
+export const Counter = (props) => (
   <div>
     <h2 className={classes.counterContainer}>
       Counter:

@@ -21,7 +21,6 @@ export const Header = (props) => (
       onChange={(value) => props.dispatch(push(value))}
       value={props.currentPath}
     >
-      <Tab label="Styles" value="/styles" />
       <Tab label="Counter" value="/counter" />
       <Tab label="Zen" value="/zen" />
     </Tabs>

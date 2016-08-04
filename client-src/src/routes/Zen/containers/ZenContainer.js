@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import Zen from 'components/Zen';
+import Zen from '../components/Zen';
 import { requestZen, saveCurrentZen } from '../modules/zen';
 
 

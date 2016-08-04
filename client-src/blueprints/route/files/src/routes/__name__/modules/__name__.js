@@ -1,55 +1,89 @@
+import { delay } from 'redux-saga';
+import { call, take, put, select } from 'redux-saga/effects';
+
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const COUNTER_INCREMENT = '<%= pascalEntityName %>.COUNTER_INCREMENT'
+export const UPDATE_TITLE = '<%= pascalEntityName %>/UPDATE_TITLE';
+export const GET_QUOTE = '<%= pascalEntityName %>/GET_QUOTE';
+export const RECEIVE_QUOTE = '<%= pascalEntityName %>/RECEIVE_QUOTE';
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-export function increment (value = 1) {
-  return {
-    type: COUNTER_INCREMENT,
-    payload: value
-  }
-}
+export const updateTitle = (value) => ({
+  type: UPDATE_TITLE,
+  payload: value,
+});
 
-/*  This is a thunk, meaning it is a function that immediately
-    returns a function for lazy evaluation. It is incredibly useful for
-    creating async actions, especially when combined with redux-thunk!
+export const getQuote = () => ({
+  type: GET_QUOTE,
+});
 
-    NOTE: This is solely for demonstration purposes. In a real application,
-    you'd probably want to dispatch an action of COUNTER_DOUBLE and let the
-    reducer take care of this logic.  */
-
-export const doubleAsync = () => {
-  return (dispatch, getState) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        dispatch(increment(getState().counter))
-        resolve()
-      }, 200)
-    })
-  }
-}
+export const receiveQuote = (quote) => ({
+  type: RECEIVE_QUOTE,
+  payload: quote,
+});
 
 export const actions = {
-  increment,
-  doubleAsync
-}
+  updateTitle,
+  getQuote,
+  receiveQuote,
+};
 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [COUNTER_INCREMENT]: (state, action) => state + action.payload
-}
+  [UPDATE_TITLE]: (state, action) => ({
+    ...state,
+    title: action.payload,
+  }),
+  [RECEIVE_QUOTE]: (state, action) => ({
+    ...state,
+    quote: action.payload,
+  }),
+};
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = 0
-export default function counterReducer (state = initialState, action) {
-  const handler = ACTION_HANDLERS[action.type]
+const initialState = {
+  title: 'A Title Stored in global state.',
+};
+export const <%= pascalEntityName %>Reducer = (state = initialState, action) => {
+  const handler = ACTION_HANDLERS[action.type];
 
-  return handler ? handler(state, action) : state
+  return handler ? handler(state, action) : state;
+};
+export default <%= pascalEntityName %>Reducer;
+
+// ------------------------------------
+// Sagas
+// ------------------------------------
+
+const fetchQuote = () =>
+  fetch('http://quotes.rest/qod.json?category=inspire')
+    .then(response => response.json())
+    .then(json => json.contents.quotes[0].quote);
+
+export function *watchGetQuote() {
+  while (true) {
+    yield take(GET_QUOTE);
+    const state = yield select();
+    if (!state.<%= camelEntityName %>.quote) {
+      yield put(actions.updateTitle('You dispatched an action!'));
+      yield put(actions.receiveQuote('Fetching Quote...'));
+      const quote = yield call(fetchQuote);
+      yield delay(1000); // simulate a long load time since this call is pretty quick.
+      yield put(actions.receiveQuote(quote));
+    }
+    else {
+      yield put(actions.updateTitle('You already have a quote.'));
+    }
+  }
 }
+
+export const sagas = [
+  watchGetQuote,
+];

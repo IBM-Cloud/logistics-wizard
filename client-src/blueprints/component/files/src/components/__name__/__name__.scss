@@ -1,2 +1,12 @@
-.<%= pascalEntityName %> {
+.counter {
+  font-weight: bold;
+}
+
+.counter--green {
+  composes: counter;
+  color: rgb(25,200,25);
+}
+
+.counterContainer {
+  margin: 1em auto;
 }

@@ -4,7 +4,7 @@
     component - in this case, the counter:   */
 
 import { connect } from 'react-redux';
-import Counter from 'components/Counter';
+import Counter from '../components/Counter';
 import { increment, double } from '../modules/counter';
 
 /*  Object of action creators (can also be function that returns object).
