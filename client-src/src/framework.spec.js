@@ -1,28 +1,26 @@
+/* eslint-disable no-unused-expressions */
+
 import assert from 'assert';
 import React from 'react';
 import { mount, render, shallow } from 'enzyme';
 
-class Fixture extends React.Component {
-  render() {
-    return (
-      <div>
-        <input id="checked" defaultChecked />
-        <input id="not" defaultChecked={false} />
-      </div>
-    );
-  }
-}
+const Fixture = () => (
+  <div>
+    <input id="checked" defaultChecked />
+    <input id="not" defaultChecked={false} />
+  </div>
+);
 
-describe('(Framework) Karma Plugins', function () {
-  it('Should expose "expect" globally.', function () {
+describe('(Framework) Karma Plugins', () => {
+  it('Should expose "expect" globally.', () => {
     assert.ok(expect);
   });
 
-  it('Should expose "should" globally.', function () {
+  it('Should expose "should" globally.', () => {
     assert.ok(should);
   });
 
-  it('Should have chai-as-promised helpers.', function () {
+  it('Should have chai-as-promised helpers.', () => {
     const pass = new Promise(res => res('test'));
     const fail = new Promise((res, rej) => rej());
 
@@ -32,7 +30,7 @@ describe('(Framework) Karma Plugins', function () {
     ]);
   });
 
-  it('should have chai-enzyme working', function () {
+  it('should have chai-enzyme working', () => {
     let wrapper = shallow(<Fixture />);
     expect(wrapper.find('#checked')).to.be.checked();
 

@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-expressions */
+
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import { Counter } from 'components/Counter/Counter';
 import { shallow } from 'enzyme';
+import { Counter } from './Counter';
 
 describe('(Component) Counter', () => {
   let props;

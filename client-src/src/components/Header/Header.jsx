@@ -1,17 +1,11 @@
 import React from 'react';
 import { push } from 'react-router-redux';
-// import classes from './Header.scss';
 import AppBar from 'material-ui/AppBar';
 import { Tabs, Tab } from 'material-ui/Tabs';
-
-const styles = {
-  title: {
-    cursor: 'pointer',
-  },
-};
+import classes from './Header.scss';
 
 const clickTitle = () => (
-  <span style={styles.title}>
+  <span className={classes.title}>
     Logistics Wizard Demo
   </span>
 );

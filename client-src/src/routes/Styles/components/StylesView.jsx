@@ -2,7 +2,7 @@ import React from 'react';
 
 export const StylesView = () => (
   <div>
-    <h1>Styles Showcase</h1>
+    <h1>Styles Showcase <small><em>base/_typography.scss</em></small></h1>
     <hr />
     <h1>Heading 1 .h1 <small>small text</small></h1>
     <h2>Heading 2 .h2 <small>small text</small></h2>

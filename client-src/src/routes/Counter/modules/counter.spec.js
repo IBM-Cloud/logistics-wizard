@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+
+import { take, select } from 'redux-saga/effects';
 import {
   COUNTER_INCREMENT,
   COUNTER_DOUBLE,
@@ -5,8 +8,7 @@ import {
   double,
   doubleAsync,
   default as counterReducer,
-} from 'routes/Counter/modules/counter';
-import { take, select } from 'redux-saga/effects';
+} from './counter';
 
 describe('(Redux Module) Counter', () => {
   it('Should export a constant COUNTER_INCREMENT.', () => {
