@@ -1,4 +1,4 @@
-import { call, take, put } from 'redux-saga/effects';
+import { call, take, put, select } from 'redux-saga/effects';
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -68,18 +68,20 @@ export default zenReducer;
 // Sagas
 // ------------------------------------
 
-const fetchQuote = (zen = true) =>
-  zen
+const fetchQuote = (currentZen) => (
+  currentZen !== null
   ? fetch('https://api.github.com/zen')
     .then(response => response.text())
   : fetch('http://quotes.rest/qod.json?category=inspire')
     .then(response => response.json())
-    .then(json => json.contents.quotes[0].quote);
+    .then(json => json.contents.quotes[0].quote)
+);
 
 export function *fetchZenAsync() {
   while (true) {
     yield take(REQUEST_ZEN);
-    const quote = yield call(fetchQuote);
+    const state = yield select();
+    const quote = yield call(fetchQuote, state.zen.current);
     yield put(actions.receiveZen(quote));
   }
 }

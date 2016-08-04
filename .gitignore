@@ -63,8 +63,8 @@ target/
 
 # Client
 .DS_STORE
-!client-src/build/
-!client-src/server/lib/
+!client-src/build
+!client-src/server/lib
 client-src/node_modules
-client-src/dist/
+client-src/dist
 client-src/coverage

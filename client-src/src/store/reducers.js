@@ -9,7 +9,7 @@ export const makeRootReducer = (asyncReducers) =>
   });
 
 export const injectReducer = (store, { key, reducer }) => {
-  store.asyncReducers[key] = reducer;
+  store.asyncReducers[key] = reducer; //eslint-disable-line
   store.replaceReducer(makeRootReducer(store.asyncReducers));
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "logistics-wizard",
-  "version": "3.0.0-alpha.1",
+  "version": "0.1.0",
   "description": "Front end UI for Logistics Wizard demo",
   "main": "index.js",
   "engines": {
@@ -12,6 +12,7 @@
     "compile": "better-npm-run compile",
     "lint": "eslint src tests server",
     "lint:fix": "npm run lint -- --fix",
+    "lint:fixc": "eslint",
     "start": "better-npm-run start",
     "dev": "better-npm-run dev",
     "dev:no-debug": "npm run dev -- --no_debug",
@@ -147,6 +148,7 @@
     "eslint": "^3.1.1",
     "eslint-config-airbnb": "^10.0.0",
     "eslint-plugin-babel": "^3.2.0",
+    "eslint-plugin-ejs": "0.0.2",
     "eslint-plugin-import": "^1.11.1",
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-promise": "^2.0.0",

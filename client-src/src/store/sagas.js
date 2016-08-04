@@ -8,7 +8,7 @@ export const injectSagas = (store, { key, sagas }) => {
   if (store.asyncSagas[key]) {
     return;
   }
-  store.asyncSagas[key] = sagas;
+  store.asyncSagas[key] = sagas; //eslint-disable-line
   store.runSaga(makeRootSaga(sagas));
 };
 

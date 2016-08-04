@@ -19,14 +19,15 @@
     "__BASENAME__" : false
   },
   "rules": {
-    "new-cap": [2, { "capIsNew": false }],
-    "max-len": [0],
     "global-require": [0],
-    "no-param-reassign": [1],
-    "no-confusing-arrow": [1],
+    "import/no-unresolved": [0],
+    "new-cap": [2, { "capIsNew": false }],
+    "max-len": [1],
+    "no-confusing-arrow": [2, {"allowParens": true}],
     "import/no-extraneous-dependencies": [0],
     "import/no-named-as-default": [0],
-    "generator-star-spacing": ["error", {"before": true, "after": false}],
-    "import/no-unresolved": [0]
+    "generator-star-spacing": [0],
+    "babel/generator-star-spacing": [2, {"before": true, "after": false}],
+    "no-constant-condition": [2, {"checkLoops": false}]
   }
 }

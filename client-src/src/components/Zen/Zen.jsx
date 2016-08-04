@@ -1,7 +1,6 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import classes from './Zen.scss';
-console.log(classes);
 
 export const Zen = (props) => (
   <div>
