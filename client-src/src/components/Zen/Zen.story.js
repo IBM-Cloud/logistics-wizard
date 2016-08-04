@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import Zen from 'components/Zen';
+import Zen from './Zen';
 
 storiesOf('Zen', module)
   .add('No Zens', () => (

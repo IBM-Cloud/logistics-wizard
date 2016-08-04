@@ -9,14 +9,18 @@
     "promise"
   ],
   "env"     : {
-    "browser" : true
+    "browser" : true,
+    "mocha" : true
   },
   "globals" : {
     "__DEV__"      : false,
     "__PROD__"     : false,
     "__DEBUG__"    : false,
     "__COVERAGE__" : false,
-    "__BASENAME__" : false
+    "__BASENAME__" : false,
+    "expect" : false,
+    "should" : false,
+    "sinon"  : false
   },
   "rules": {
     "global-require": [0],
@@ -28,6 +32,7 @@
     "import/no-named-as-default": [0],
     "generator-star-spacing": [0],
     "babel/generator-star-spacing": [2, {"before": true, "after": false}],
-    "no-constant-condition": [2, {"checkLoops": false}]
+    "no-constant-condition": [2, {"checkLoops": false}],
+    "react/jsx-filename-extension": [0]
   }
 }

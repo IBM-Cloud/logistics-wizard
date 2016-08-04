@@ -5,13 +5,16 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import centered from '@kadira/react-storybook-decorator-centered';
 import '../src/styles/core.scss';
 
+const rootStories = require.context('./stories/', true, /\.js$/);
+const srcStories = require.context('../src/', true, /\.story\.js$/);
 function loadStories() {
-  require('./stories/Zen');
+  rootStories.keys().forEach(rootStories);
+  srcStories.keys().forEach(srcStories);
 }
 
 addDecorator(centered);
 addDecorator((story) => (
-  <MuiThemeProvider muiTheme={getMuiTheme()}> 
+  <MuiThemeProvider muiTheme={getMuiTheme()}>
     {story()}
   </MuiThemeProvider>
 ));

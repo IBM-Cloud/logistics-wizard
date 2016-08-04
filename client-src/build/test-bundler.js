@@ -28,14 +28,15 @@ const __karmaWebpackManifest__ = new Array() // eslint-disable-line
 const inManifest = (path) => ~__karmaWebpackManifest__.indexOf(path);
 
 // require all `tests/**/*.spec.js`
-const testsContext = require.context('./', true, /\.spec\.js$/);
+// const testsContext = require.context('./', true, /\.spec\.js$/);
+const testsContext = require.context('../src/', true, /\.spec\.js$/);
 
 // only run tests that have changed after the first pass.
 const testsToRun = testsContext.keys().filter(inManifest)
 ;(testsToRun.length ? testsToRun : testsContext.keys()).forEach(testsContext);
 
-// require all `src/**/*.js` except for `main.js` (for isparta coverage reporting)
+// require all `src/**/*.jsx?` except for spec files, stories, and `main.js` (for isparta coverage reporting)
 if (__COVERAGE__) {
-  const componentsContext = require.context('../src/', true, /^((?!main).)*\.js$/);
+  const componentsContext = require.context('../src/', true, /^((?!main\.)(?!\.story\.)(?!\.spec\.).)*\.jsx?$/);
   componentsContext.keys().forEach(componentsContext);
 }
