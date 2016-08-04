@@ -11,7 +11,7 @@ function loadStories() {
 
 addDecorator(centered);
 addDecorator((story) => (
-  <MuiThemeProvider muiTheme={getMuiTheme()}>
+  <MuiThemeProvider muiTheme={getMuiTheme()}> 
     {story()}
   </MuiThemeProvider>
 ));
