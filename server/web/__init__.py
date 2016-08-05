@@ -31,7 +31,7 @@ def create_app():
     from server.web.rest.products import products_v1_blueprint
     from server.service_discovery import ServicePublisher
 
-    # Record the deployment event if deploying to CF
+    # Emit Bluemix deployment event
     cf_deployment_tracker.track()
 
     # Create the app
