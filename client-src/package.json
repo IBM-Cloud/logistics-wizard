@@ -21,7 +21,9 @@
     "deploy:dev": "better-npm-run deploy:dev",
     "deploy:prod": "better-npm-run deploy:prod",
     "storybook": "start-storybook -p 9001",
-    "codecov": "cat coverage/*/lcov.info | codecov"
+    "codecov": "cat coverage/lcov.info | codecov",
+    "cover": "nyc npm run test",
+    "check-coverage": "nyc check-coverage --statements 100 --branches 100 --functions 100 --lines 100"
   },
   "betterScripts": {
     "compile": {
@@ -64,7 +66,7 @@
       }
     },
     "test": {
-      "command": "node --harmony-proxies ./node_modules/.bin/ava --verbose",
+      "command": "node_modules/.bin/nyc node --harmony-proxies ./node_modules/.bin/ava --verbose",
       "env": {
         "NODE_ENV": "test",
         "DEBUG": "app:*"
@@ -137,7 +139,6 @@
     "@kadira/storybook": "^2.1.0",
     "ava": "^0.15.2",
     "babel-eslint": "^6.0.0-beta.6",
-    "codecov": "^1.0.1",
     "enzyme": "^2.0.0",
     "eslint": "^3.1.1",
     "eslint-config-airbnb": "^10.0.0",
@@ -147,7 +148,6 @@
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-promise": "^2.0.0",
     "eslint-plugin-react": "^6.0.0",
-    "isparta-loader": "^2.0.0",
     "mock-css-modules": "^1.0.0",
     "nodemon": "^1.8.1",
     "nyc": "^7.1.0",
@@ -172,6 +172,25 @@
       "**/*.{js,jsx}",
       "!**/*.spec.js",
       "!**/*.story.js"
+    ]
+  },
+  "nyc": {
+    "extension": [
+      ".jsx"
+    ],
+    "include": [
+      "src/**/*.{js,jsx}"
+    ],
+    "exclude": [
+      "src/**/*.spec.js",
+      "src/**/*.test.js",
+      "src/**/*.story.js",
+      "src/store/*"
+    ],
+    "reporter": [
+      "lcov",
+      "text",
+      "html"
     ]
   }
 }
