@@ -20,6 +20,7 @@ def create_app():
     :return:         A flask object/wsgi callable.
     """
     import cf_deployment_tracker
+    from bluemix_service_discovery.service_publisher import ServicePublisher
     from server.config import Config
     from os import environ as env
     from server.exceptions import APIException
@@ -29,7 +30,6 @@ def create_app():
     from server.web.rest.distribution_centers import distribution_centers_v1_blueprint
     from server.web.rest.retailers import retailers_v1_blueprint
     from server.web.rest.products import products_v1_blueprint
-    from server.service_discovery import ServicePublisher
 
     # Emit Bluemix deployment event
     cf_deployment_tracker.track()
@@ -106,7 +106,7 @@ def create_app():
         # Create service publisher and register service
         creds = json.loads(env['VCAP_SERVICES'])['service_discovery'][0]['credentials']
         publisher = ServicePublisher('lw-controller', 300, 'UP',
-                                     'https://%s.mybluemix.net' % json.loads(env['VCAP_APPLICATION'])['name'],
+                                     '%s.mybluemix.net' % json.loads(env['VCAP_APPLICATION'])['name'],
                                      'http', tags=['logistics-wizard', 'front-end'],
                                      url=creds['url'], auth_token=creds['auth_token'])
         publisher.register_service(True)
