@@ -1,6 +1,6 @@
 import WebpackDevMiddleware from 'webpack-dev-middleware';
 import _debug from 'debug';
-import applyExpressMiddleware from '../lib/apply-express-middleware';
+import applyExpressMiddleware from '../libs/apply-express-middleware';
 import config from '../../config';
 
 const paths = config.utils_paths;

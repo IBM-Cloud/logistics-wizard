@@ -2,13 +2,5 @@
   "extends" : "../.eslintrc",
   "plugins": [
     "ejs"
-  ],
-  "env"     : {
-    "mocha" : true
-  },
-  "globals" : {
-    "expect" : false,
-    "should" : false,
-    "sinon"  : false
-  }
+  ]
 }

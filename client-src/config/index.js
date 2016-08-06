@@ -1,4 +1,6 @@
 /* eslint key-spacing:0 spaced-comment:0 */
+/* eslint-disable quote-props */
+
 import path from 'path';
 import _debug from 'debug';
 import { argv } from 'yargs';
@@ -21,7 +23,6 @@ const config = {
   dir_client : 'src',
   dir_dist   : 'dist',
   dir_server : 'server',
-  dir_test   : 'tests',
 
   // ----------------------------------
   // Server Configuration
@@ -76,7 +77,7 @@ Edit at Your Own Risk
 // N.B.: globals added here must _also_ be added to .eslintrc
 config.globals = {
   'process.env'  : {
-    'NODE_ENV' : JSON.stringify(config.env)
+    'NODE_ENV' : JSON.stringify(config.env),
   },
   'NODE_ENV'     : config.env,
   '__DEV__'      : config.env === 'development',
@@ -84,49 +85,50 @@ config.globals = {
   '__TEST__'     : config.env === 'test',
   '__DEBUG__'    : config.env === 'development' && !argv.no_debug,
   '__COVERAGE__' : !argv.watch && config.env === 'test',
-  '__BASENAME__' : JSON.stringify(process.env.BASENAME || '')
-}
+  '__BASENAME__' : JSON.stringify(process.env.BASENAME || ''),
+};
 
 // ------------------------------------
 // Validate Vendor Dependencies
 // ------------------------------------
-const pkg = require('../package.json')
+const pkg = require('../package.json');
 
 config.compiler_vendor = config.compiler_vendor
   .filter((dep) => {
-    if (pkg.dependencies[dep]) return true
+    if (pkg.dependencies[dep]) return true;
 
     debug(
       `Package "${dep}" was not found as an npm dependency in package.json; ` +
       `it won't be included in the webpack vendor bundle.
        Consider removing it from vendor_dependencies in ~/config/index.js`
-    )
-  })
+    );
+  });
 
 // ------------------------------------
 // Utilities
 // ------------------------------------
-const resolve = path.resolve
+const resolve = path.resolve;
 const base = (...args) =>
-  Reflect.apply(resolve, null, [config.path_base, ...args])
+  Reflect.apply(resolve, null, [config.path_base, ...args]);
 
 config.utils_paths = {
   base   : base,
   client : base.bind(null, config.dir_client),
-  dist   : base.bind(null, config.dir_dist)
-}
+  dist   : base.bind(null, config.dir_dist),
+};
 
 // ========================================================
 // Environment Configuration
 // ========================================================
-debug(`Looking for environment overrides for NODE_ENV "${config.env}".`)
-const environments = require('./environments').default
-const overrides = environments[config.env]
+debug(`Looking for environment overrides for NODE_ENV "${config.env}".`);
+const environments = require('./environments').default;
+const overrides = environments[config.env];
 if (overrides) {
-  debug('Found overrides, applying to default configuration.')
-  Object.assign(config, overrides(config))
-} else {
-  debug('No environment overrides found, defaults will be used.')
+  debug('Found overrides, applying to default configuration.');
+  Object.assign(config, overrides(config));
+}
+else {
+  debug('No environment overrides found, defaults will be used.');
 }
 
-export default config
+export default config;

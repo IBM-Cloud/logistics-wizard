@@ -71,7 +71,8 @@ if (__DEV__) {
     render = () => {
       try {
         renderApp();
-      } catch (error) {
+      }
+      catch (error) {
         renderError(error);
       }
     };

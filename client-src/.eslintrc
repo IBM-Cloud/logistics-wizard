@@ -9,18 +9,14 @@
     "promise"
   ],
   "env"     : {
-    "browser" : true,
-    "mocha" : true
+    "browser" : true
   },
   "globals" : {
     "__DEV__"      : false,
     "__PROD__"     : false,
     "__DEBUG__"    : false,
     "__COVERAGE__" : false,
-    "__BASENAME__" : false,
-    "expect" : false,
-    "should" : false,
-    "sinon"  : false
+    "__BASENAME__" : false
   },
   "rules": {
     "global-require": [0],

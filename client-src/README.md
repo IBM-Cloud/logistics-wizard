@@ -39,7 +39,7 @@ Finally, This project wouldn't be possible without the help of our many contribu
 * [react-router-redux](https://github.com/rackt/react-router-redux)
 * [webpack](https://github.com/webpack/webpack)
 * [babel](https://github.com/babel/babel)
-* [karma](https://github.com/karma-runner/karma)
+* [ava](https://github.com/avajs/ava)
 * [eslint](http://eslint.org)
 
 ## Requirements
@@ -86,8 +86,8 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 |`compile`|Compiles the application to disk (`~/dist` by default).|
 |`dev`|Same as `npm start`, but enables nodemon for the server as well.|
 |`dev:no-debug`|Same as `npm run dev` but disables devtool instrumentation.|
-|`test`|Runs unit tests with Karma and generates a coverage report.|
-|`test:dev`|Runs Karma and watches for changes to re-run tests; does not generate coverage reports.|
+|`test`|Runs unit tests with Ava and generates a coverage report.|
+|`test:dev`|Runs Ava and watches for changes to re-run tests; does not generate coverage reports.|
 |`deploy`|Runs linter, tests, and then, on success, compiles your application to disk.|
 |`deploy:dev`|Same as `deploy` but overrides `NODE_ENV` to "development".|
 |`deploy:prod`|Same as `deploy` but overrides `NODE_ENV` to "production".|
@@ -107,29 +107,28 @@ The application structure presented in this boilerplate is **fractal**, where fu
 ├── config                   # Project configuration settings
 ├── server                   # Koa application (uses webpack middleware)
 │   └── main.js              # Server application entry point
-├── src                      # Application source code
-│   ├── index.html           # Main HTML page container for app
-│   ├── main.js              # Application bootstrap and rendering
-│   ├── components           # Reusable Presentational Components
-│   ├── containers           # Reusable Container Components
-│   ├── layouts              # Components that dictate major page structure
-│   ├── redux                # "Ducks" location...
-│   │   └── modules          # reducer, action, creators not part of a route
-│   ├── routes               # Main route definitions and async split points
-│   │   ├── index.js         # Bootstrap main application routes with store
-│   │   └── Home             # Fractal route
-│   │       ├── index.js     # Route definitions and async split points
-│   │       ├── assets       # Assets required to render components
-│   │       ├── components   # Presentational React Components
-│   │       ├── container    # Connect components to actions and store
-│   │       ├── modules      # Collections of reducers/constants/actions
-│   │       └── routes **    # Fractal sub-routes (** optional)
-│   ├── static               # Static assets (not imported anywhere in source code)
-│   ├── store                # Redux-specific pieces
-│   │   ├── createStore.js   # Create and instrument redux store
-│   │   └── reducers.js      # Reducer registry and injection
-│   └── styles               # Application-wide styles (generally settings)
-└── tests                    # Unit tests
+└── src                      # Application source code
+    ├── index.html           # Main HTML page container for app
+    ├── main.js              # Application bootstrap and rendering
+    ├── components           # Reusable Presentational Components
+    ├── containers           # Reusable Container Components
+    ├── layouts              # Components that dictate major page structure
+    ├── redux                # "Ducks" location...
+    │   └── modules          # reducer, action, creators not part of a route
+    ├── routes               # Main route definitions and async split points
+    │   ├── index.js         # Bootstrap main application routes with store
+    │   └── Home             # Fractal route
+    │       ├── index.js     # Route definitions and async split points
+    │       ├── assets       # Assets required to render components
+    │       ├── components   # Presentational React Components
+    │       ├── container    # Connect components to actions and store
+    │       ├── modules      # Collections of reducers/constants/actions
+    │       └── routes **    # Fractal sub-routes (** optional)
+    ├── static               # Static assets (not imported anywhere in source code)
+    ├── store                # Redux-specific pieces
+    │   ├── createStore.js   # Create and instrument redux store
+    │   └── reducers.js      # Reducer registry and injection
+    └── styles               # Application-wide styles (generally settings)
 ```
 
 ## Development
@@ -156,9 +155,13 @@ npm install redux-cli --save-dev
 ### Routing
 We use `react-router` [route definitions](https://github.com/reactjs/react-router/blob/master/docs/API.md#plainroute) (`<route>/index.js`) to define units of logic within our application. See the [application structure](#application-structure) section for more information.
 
-## Testing
-To add a unit test, simply create a `.spec.js` file anywhere in `~/tests`. Karma will pick up on these files automatically, and Mocha and Chai will be available within your test without the need to import them. If you are using `redux-cli`, test files should automatically be generated when you create a component or redux module.
+## Storybook
+TODO - add some info about storybook
 
+## Testing
+To add a unit test, simply create a `.test.js` file anywhere in `~/src`. Ava will pick up on these files automatically. If you are using `redux-cli`, test files should automatically be generated when you create a component or route.
+
+TODO - update coverage details
 Coverage reports will be compiled to `~/coverage` by default. If you wish to change what reporters are used and where reports are compiled, you can do so by modifying `coverage_reporters` in `~/config/index.js`.
 
 ## Deployment
@@ -167,6 +170,7 @@ Out of the box, this starter kit is deployable by serving the `~/dist` folder ge
 ### Static Deployments
 If you are serving the application via a web server such as nginx, make sure to direct incoming routes to the root `~/dist/index.html` file and let react-router take care of the rest. If you are unsure of how to do this, you might find [this documentation](https://github.com/reactjs/react-router/blob/master/docs/guides/Histories.md#configuring-your-server) helpful. The Koa server that comes with the starter kit is able to be extended to serve as an API or whatever else you need, but that's entirely up to you.
 
+TODO - Add instructions for deployment on Bluemix
 ### Heroku
 
 Heroku has `nodejs buildpack` script that does the following when you deploy your app to Heroku.
