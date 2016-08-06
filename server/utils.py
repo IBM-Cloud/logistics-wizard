@@ -8,7 +8,7 @@ from os import environ as env
 from json import loads
 from server.config import Config
 from server.exceptions import APIException
-from server.service_discovery import ServiceLocator
+from bluemix_service_discovery.service_locator import ServiceLocator
 
 
 def validate_email(email_address):
@@ -58,7 +58,7 @@ def get_service_url(service_name):
             service_instances = loads(locator.get_services(service_name=service_name, status='UP'))['instances']
             if len(service_instances) == 0:
                 raise APIException('Dependent service not available')
-            return service_instances[0]['endpoint']['value']
+            return 'https://%s' % service_instances[0]['endpoint']['value']
         except Exception as e:
             if isinstance(e, Exception):
                 e = e.message
