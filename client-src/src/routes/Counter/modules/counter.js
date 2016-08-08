@@ -1,5 +1,5 @@
 import { delay } from 'redux-saga';
-import { take, put, select } from 'redux-saga/effects';
+import { call, take, put, select } from 'redux-saga/effects';
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -9,9 +9,9 @@ export const COUNTER_DOUBLE = 'COUNTER_DOUBLE';
 // ------------------------------------
 // Actions
 // ------------------------------------
-export const increment = (value = 1) => ({
+export const increment = (value) => ({
   type: COUNTER_INCREMENT,
-  payload: value,
+  payload: Math.floor(Number(value)) || 1,
 });
 
 export const double = () => ({
@@ -48,8 +48,8 @@ export default counterReducer;
 export function *doubleAsync() {
   while (true) {
     yield take(COUNTER_DOUBLE);
-    const state = yield select();
-    yield delay(200); // Simulate an async call
+    const state = yield select(); // is undefined in test
+    yield call(delay, 200); // Simulate an async call
     yield put(actions.increment(state.counter));
   }
 }

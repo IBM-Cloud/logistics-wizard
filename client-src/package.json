@@ -69,6 +69,7 @@
       "command": "node_modules/.bin/nyc node --harmony-proxies ./node_modules/.bin/ava --verbose",
       "env": {
         "NODE_ENV": "test",
+        "NODE_PATH": "src",
         "DEBUG": "app:*"
       }
     }
@@ -154,6 +155,7 @@
     "react-addons-test-utils": "^15.0.0",
     "redbox-react": "^1.2.10",
     "redux-ava": "^2.1.0",
+    "redux-saga-test": "0.0.3",
     "sinon": "^1.17.3",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.6.0"
