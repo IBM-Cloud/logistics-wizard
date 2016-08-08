@@ -17,6 +17,7 @@
     "dev:no-debug": "npm run dev -- --no_debug",
     "test": "better-npm-run test",
     "test:dev": "npm run test -- --watch",
+    "test:dev-verbose": "npm run test -- --verbose --watch",
     "deploy": "better-npm-run deploy",
     "deploy:dev": "better-npm-run deploy:dev",
     "deploy:prod": "better-npm-run deploy:prod",
@@ -66,7 +67,7 @@
       }
     },
     "test": {
-      "command": "node_modules/.bin/nyc node --harmony-proxies ./node_modules/.bin/ava --verbose",
+      "command": "node_modules/.bin/nyc node --harmony-proxies ./node_modules/.bin/ava",
       "env": {
         "NODE_ENV": "test",
         "NODE_PATH": "src",
@@ -144,12 +145,13 @@
     "eslint": "^3.1.1",
     "eslint-config-airbnb": "^10.0.0",
     "eslint-plugin-babel": "^3.2.0",
-    "eslint-plugin-ejs": "0.0.2",
     "eslint-plugin-import": "^1.11.1",
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-promise": "^2.0.0",
     "eslint-plugin-react": "^6.0.0",
+    "isomorphic-fetch": "^2.2.1",
     "mock-css-modules": "^1.0.0",
+    "nock": "^8.0.0",
     "nodemon": "^1.8.1",
     "nyc": "^7.1.0",
     "react-addons-test-utils": "^15.0.0",
@@ -171,9 +173,9 @@
       "src/**/*.test.js"
     ],
     "source": [
-      "**/*.{js,jsx}",
-      "!**/*.spec.js",
-      "!**/*.story.js"
+      "src/**/*.{js,jsx}",
+      "!src/**/*.spec.js",
+      "!src/**/*.story.js"
     ]
   },
   "nyc": {

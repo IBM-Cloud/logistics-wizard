@@ -7,6 +7,9 @@ import fs from 'fs';
 const mockCssModules = require('mock-css-modules');
 mockCssModules.register(['.sass', '.scss']);
 
+// Since fetch doesn't work in node, this is needed for testing api calls
+require('isomorphic-fetch');
+
 // Ignore assets
 require.extensions['.jpg'] = noop => noop;
 require.extensions['.jpeg'] = noop => noop;

@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './<%= pascalEntityName %>.scss';
 
 export const <%= pascalEntityName %> = (props) => (
-  <div className={classes.<%= pascalEntityName %>}>
+  <div className={classes.<%= camelEntityName %>}>
     <h4><%= pascalEntityName %> - {props.title}</h4>
     <button onClick={props.actionAndSaga}>Click Me!</button>
     <h4>{props.quote || 'Click button to receive a quote.'}</h4>

@@ -2,7 +2,6 @@ import test from 'ava';
 import { delay } from 'redux-saga';
 import { call, put, take, select } from 'redux-saga/effects';
 import { reducerTest, actionTest } from 'redux-ava';
-import fromGenerator from 'redux-saga-test';
 import {
   COUNTER_INCREMENT,
   COUNTER_DOUBLE,
@@ -61,13 +60,6 @@ test('(Reducer) returns previous state if action is not matched.', reducerTest(
 test('(Saga) doubleAsync: Double the value of the current state.', t => {
   const state = { counter: 5 };
   const generator = doubleAsync();
-  const saga = fromGenerator(t, doubleAsync());
-
-  // saga.next().take(COUNTER_DOUBLE);
-  // saga.next().select();
-  // saga.next(state).call(delay, 200);
-  // saga.next().put(increment(state.counter));
-  // saga.next().take(COUNTER_DOUBLE);
 
   t.deepEqual(generator.next().value, take(COUNTER_DOUBLE),
     'listens for COUNTER_DOUBLE action.');

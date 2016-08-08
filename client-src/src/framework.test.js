@@ -1,6 +1,12 @@
 import React from 'react';
 import test from 'ava';
+import nock from 'nock';
+// import sinon from 'sinon';
+// import { reducerTest, actionTest } from 'redux-ava';
 import { mount, render, shallow } from 'enzyme';
+
+// This file is a "cheat sheet" of the various apis used for testing in this project
+// It also will help surface if anything isn't working as expected.
 
 // Ava api: https://github.com/avajs/ava#api
 test('(Ava) api works as expected.', t => {
@@ -59,4 +65,25 @@ test('(Enzyme) render', t => {
   t.is(wrapper.find('input').length, 2);
   t.is(wrapper.find('#checked').attr('checked'), 'checked');
   t.is(wrapper.find('#not').attr('checked'), undefined);
+});
+
+
+// Nock is used to mock and test actual api calls
+// Docs for nock api: https://github.com/node-nock/nock
+test('(Nock) properly mocks an api call.', t => {
+  const apiUrl = 'http://quotes.rest';
+  const endpoint = '/qod.json?category=inspire';
+  const apiCall = () =>
+    fetch(`${apiUrl}${endpoint}`)
+      .then(response => response.json())
+      .then(json => json.contents.quotes[0].quote);
+
+  const mockReply = { contents: { quotes: [{ quote: 'Quote of the day.' }] } };
+  nock(apiUrl)
+    .get(endpoint)
+    .reply(200, mockReply);
+
+  return apiCall().then(response => {
+    t.deepEqual(response, mockReply.contents.quotes[0].quote);
+  });
 });
