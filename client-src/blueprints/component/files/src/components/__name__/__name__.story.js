@@ -3,10 +3,14 @@ import { storiesOf, action } from '@kadira/storybook';
 import <%= pascalEntityName %> from './<%= pascalEntityName %>';
 
 storiesOf('<%= pascalEntityName %>', module)
-  .add('zero', () => (
+  .add('default', () => (
     <<%= pascalEntityName %>
-      counter={0}
-      doubleAsync={action('Double')}
-      increment={action('Increment')}
+      clicky={action('You clicked the button.')}
+    />
+  ))
+  .add('custom prop', () => (
+    <<%= pascalEntityName %>
+      customProp="What a fancy example!"
+      clicky={action('You clicked the button.')}
     />
   ));
