@@ -1,9 +1,16 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
+import Paper from 'material-ui/Paper';
 import classes from './Zen.scss';
 
+const styles = {
+  paper: {
+    padding: '1rem',
+  },
+};
+
 export const Zen = (props) => (
-  <div>
+  <Paper style={styles.paper} zDepth={1}>
     <div>
       <h2 className={classes.zenHeader}>
         {props.zen ? props.zen.value : ''}
@@ -27,7 +34,7 @@ export const Zen = (props) => (
       </div>
       : null
     }
-  </div>);
+  </Paper>);
 
 Zen.propTypes = {
   zen: React.PropTypes.object,

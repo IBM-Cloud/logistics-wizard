@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux';
 import { routerReducer as router } from 'react-router-redux';
+// import exampleReducer from 'modules/exampleModule';
 
 export const makeRootReducer = (asyncReducers) =>
   combineReducers({
-    // Add sync reducers here
+    // menu: exampleReducer,
     router,
     ...asyncReducers,
   });

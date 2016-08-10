@@ -9,4 +9,11 @@ storiesOf('Counter', module)
       doubleAsync={action('Double')}
       increment={action('Increment')}
     />
+  ))
+  .add('10', () => (
+    <Counter
+      counter={10}
+      doubleAsync={action('Double')}
+      increment={action('Increment')}
+    />
   ));

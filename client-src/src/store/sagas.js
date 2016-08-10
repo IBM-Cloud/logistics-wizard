@@ -1,7 +1,12 @@
 import { fork } from 'redux-saga/effects';
 
-export const makeRootSaga = (sagas) => function *rootSaga() {
-  yield sagas.map(saga => fork(saga));
+// const exampleModuleSagas = require('modules/exampleModule').sagas;
+
+export const makeRootSaga = (asyncSagas) => function *rootSaga() {
+  yield [
+    // ...exampleModuleSagas,
+    ...asyncSagas,
+  ].map(saga => fork(saga));
 };
 
 export const injectSagas = (store, { key, sagas }) => {
