@@ -51,11 +51,12 @@ def get_service_url(service_name):
     """
 
     # Use the Service Discovery service if Prod and toggle is on
-    if Config.ENVIRONMENT == 'PROD' and Config.SD_STATUS == 'ON' and env.get('VCAP_SERVICES') is not None:
+    if Config.SD_STATUS == 'ON' and env.get('VCAP_SERVICES') is not None:
         try:
             creds = loads(env['VCAP_SERVICES'])['service_discovery'][0]['credentials']
             locator = ServiceLocator(creds['url'], creds['auth_token'])
-            service_instances = loads(locator.get_services(service_name=service_name, status='UP'))['instances']
+            service_instances = loads(locator.get_services(service_name=service_name, status='UP',
+                                                           tags=env['LOGISTICS_WIZARD_ENV']))['instances']
             if len(service_instances) == 0:
                 raise APIException('Dependent service not available')
             return 'https://%s' % service_instances[0]['endpoint']['value']
