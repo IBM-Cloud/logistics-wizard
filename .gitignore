@@ -60,3 +60,10 @@ target/
 
 # Local environment
 .env.local
+
+# Client
+.DS_STORE
+client-src/node_modules
+client-src/dist
+client-src/coverage/
+client-src/.nyc_output/
