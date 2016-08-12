@@ -106,7 +106,7 @@ def create_app():
         # Create service publisher and register service
         creds = json.loads(env['VCAP_SERVICES'])['service_discovery'][0]['credentials']
         publisher = ServicePublisher('lw-controller', 300, 'UP',
-                                     '%s.mybluemix.net' % json.loads(env['VCAP_APPLICATION'])['name'],
+                                     json.loads(env['VCAP_APPLICATION'])['application_uris'][0],
                                      'http', tags=['logistics-wizard', 'front-end', env['LOGISTICS_WIZARD_ENV']],
                                      url=creds['url'], auth_token=creds['auth_token'])
         publisher.register_service(True)
