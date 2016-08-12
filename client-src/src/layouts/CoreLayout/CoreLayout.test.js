@@ -9,9 +9,8 @@ const props = {
 };
 const wrapper = shallow(<CoreLayout {...props} />);
 
-test('should render header and nested containers', t => {
+test('should render nested containers', t => {
   t.is(wrapper.find('div').length, 2);
-  t.is(wrapper.find('Connect(Header)').length, 1);
 });
 
 test('children render inside mainContainer div', t => {

@@ -37,6 +37,7 @@ Finally, This project wouldn't be possible without the help of our many contribu
 * [redux-saga](https://github.com/yelouafi/redux-saga)
 * [react-router](https://github.com/rackt/react-router)
 * [react-router-redux](https://github.com/rackt/react-router-redux)
+* [react-storybook](https://github.com/kadirahq/react-storybook)
 * [webpack](https://github.com/webpack/webpack)
 * [babel](https://github.com/babel/babel)
 * [ava](https://github.com/avajs/ava)
@@ -83,11 +84,13 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 |`npm run <script>`|Description|
 |------------------|-----------|
 |`start`|Serves your app at `localhost:3000`. HMR will be enabled in development.|
+|`storybook`|Opens React Storybook at `localhost:9001`.|
 |`compile`|Compiles the application to disk (`~/dist` by default).|
 |`dev`|Same as `npm start`, but enables nodemon for the server as well.|
 |`dev:no-debug`|Same as `npm run dev` but disables devtool instrumentation.|
 |`test`|Runs unit tests with Ava and generates a coverage report.|
 |`test:dev`|Runs Ava and watches for changes to re-run tests; does not generate coverage reports.|
+|`test:dev-verbose`|Same as test:dev but with verbose test output.|
 |`check-coverage`|Returns true or false based on successful code coverage|
 |`deploy`|Runs linter, tests, and then, on success, compiles your application to disk.|
 |`deploy:dev`|Same as `deploy` but overrides `NODE_ENV` to "development".|
@@ -113,8 +116,7 @@ The application structure presented in this boilerplate is **fractal**, where fu
     ├── components           # Reusable Presentational Components
     ├── containers           # Reusable Container Components
     ├── layouts              # Components that dictate major page structure
-    ├── redux                # "Ducks" location...
-    │   └── modules          # reducer, action, creators not part of a route
+    ├── modules              # reducer, action, creators not part of a route
     ├── routes               # Main route definitions and async split points
     │   ├── index.js         # Bootstrap main application routes with store
     │   └── Home             # Fractal route
@@ -138,19 +140,12 @@ The application structure presented in this boilerplate is **fractal**, where fu
 **We recommend using the [Redux DevTools Chrome Extension](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd).**
 Using the chrome extension allows your monitors to run on a separate thread and affords better performance and functionality. It comes with several of the most popular monitors, is easy to configure, filters actions, and doesn’t require installing any packages.
 
-However, adding the DevTools components to your project is simple. First, grab the packages from npm:
-
-```bash
-npm i --save-dev redux-devtools redux-devtools-log-monitor redux-devtools-dock-monitor
-```
-
-Then follow the [manual integration walkthrough](https://github.com/gaearon/redux-devtools/blob/master/docs/Walkthrough.md).
-
 #### `redux-cli`
 
 ```bash
 npm install redux-cli --save-dev
 ```
+TODO: Describe generating various components and routes with redux-cli
 
 ### Routing
 We use `react-router` [route definitions](https://github.com/reactjs/react-router/blob/master/docs/API.md#plainroute) (`<route>/index.js`) to define units of logic within our application. See the [application structure](#application-structure) section for more information.
@@ -169,51 +164,8 @@ Out of the box, this starter kit is deployable by serving the `~/dist` folder ge
 ### Static Deployments
 If you are serving the application via a web server such as nginx, make sure to direct incoming routes to the root `~/dist/index.html` file and let react-router take care of the rest. If you are unsure of how to do this, you might find [this documentation](https://github.com/reactjs/react-router/blob/master/docs/guides/Histories.md#configuring-your-server) helpful. The Koa server that comes with the starter kit is able to be extended to serve as an API or whatever else you need, but that's entirely up to you.
 
+### Bluemix
 TODO - Add instructions for deployment on Bluemix
-### Heroku
-
-Heroku has `nodejs buildpack` script that does the following when you deploy your app to Heroku.
-1. Find `packages.json` in the root directory.
-2. Install `nodejs` and `npm` packages.
-3. Run `npm postinstall script`
-4. Run `npm start`
-
-Therefore, you need to modify `package.json` before deploying to Heroku. Make the following changes in the `scripts` section of `package.json`.
-
-```
-...
-"start": "better-npm-run start:prod",
-"serve": "better-npm-run start",
-"postinstall": "npm run deploy:prod",
-"betterScripts": {
-  ...
-  "start:prod": {
-    "command": "babel-node bin/server",
-    "env": {
-      "NODE_ENV": "production"
-    }
-  }
-  ...
-},
-```
-
-It's also important to tell Heroku to install all `devDependencies` to successfully compile your app on Heroku's environment. Run the following in your terminal.
-
-```bash
-$ heroku config:set NPM_CONFIG_PRODUCTION=false
-```
-
-With this setup, you will install all the necessray packages, build your app, and start the webserver (e.g. koa) everytime you push your app to Heroku. Try to deploy to Heroku by running the following commands.
-
-```bash
-$ git add .
-$ git commit -m 'My awesome commit'
-$ git push heroku master
-```
-
-If you fail to deploy for an unknown reason, try [this helpful comment](https://github.com/davezuko/react-redux-starter-kit/issues/730#issuecomment-213997120) by [DonHansDampf](https://github.com/DonHansDampf) addressing Heroku deployments.
-
-Have more questions? Feel free to submit an issue or join the Gitter chat!
 
 ## Build System
 
