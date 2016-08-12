@@ -9,6 +9,7 @@ const Headings = () => (
     <h4>Heading 4 .h4 <small>small text</small></h4>
     <h5>Heading 5 .h5 <small>small text</small></h5>
     <h6>Heading 6 .h6 <small>small text</small></h6>
+    <span className="subheading">Subheading .subheading</span>
   </div>
 );
 
