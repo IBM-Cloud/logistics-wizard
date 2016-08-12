@@ -1,3 +1,26 @@
 .createDemo {
 
 }
+
+$section-padding: 1.5rem;
+
+.infoSection {
+  padding: $section-padding;
+  background-color: rgb(136, 137, 148);
+  color: white;
+  flex-basis: 33%;
+}
+
+.subInfo {
+
+}
+
+.leftBar {
+  width: 0.5rem;
+  background-color: rgb(67, 231, 73);
+}
+
+.mainSection {
+  padding: $section-padding;
+  flex: 1 0 auto;
+}
