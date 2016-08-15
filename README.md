@@ -10,6 +10,8 @@ Logistics Wizard is a reimagined supply chain optimization system for the 21st c
 
 [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/IBM-Bluemix/logistics-wizard.git)
 
+![Bluemix Deployments](https://deployment-tracker.mybluemix.net/stats/8e7fa74ef3a53ba599bf51db09e77553/badge.svg)
+
 The following services are leveraged in the overall Logistics Wizard solution, yet are built to be extensible for other purposes:
 
 * [logistics-wizard-erp][erp_github_url]

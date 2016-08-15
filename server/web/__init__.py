@@ -99,15 +99,15 @@ def create_app():
     logistics_wizard.errorhandler(404)(not_found_handler)
 
     # Register app with Service Discovery and initiate heartbeat cycle if running in PROD
-    if Config.ENVIRONMENT == 'PROD' and Config.SD_STATUS == 'ON' and env.get('VCAP_APPLICATION') is not None:
+    if Config.SD_STATUS == 'ON' and env.get('VCAP_APPLICATION') is not None:
         from signal import signal, SIGINT, SIGTERM
         from sys import exit
 
         # Create service publisher and register service
         creds = json.loads(env['VCAP_SERVICES'])['service_discovery'][0]['credentials']
         publisher = ServicePublisher('lw-controller', 300, 'UP',
-                                     '%s.mybluemix.net' % json.loads(env['VCAP_APPLICATION'])['name'],
-                                     'http', tags=['logistics-wizard', 'front-end'],
+                                     json.loads(env['VCAP_APPLICATION'])['application_uris'][0],
+                                     'http', tags=['logistics-wizard', 'front-end', env['LOGISTICS_WIZARD_ENV']],
                                      url=creds['url'], auth_token=creds['auth_token'])
         publisher.register_service(True)
 
