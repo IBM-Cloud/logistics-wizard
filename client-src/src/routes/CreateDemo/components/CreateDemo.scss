@@ -2,17 +2,19 @@
 
 }
 
-$section-padding: 1.5rem;
-
 .infoSection {
-  padding: $section-padding;
+  padding: 1.5rem;
   background-color: rgb(136, 137, 148);
   color: white;
-  flex-basis: 33%;
+  flex: 1 0 100%;
+
+  &.full {
+    flex: 1 0 33%;
+  }
 }
 
-.subInfo {
-
+.title {
+  margin-top: 0;
 }
 
 .leftBar {
@@ -21,6 +23,6 @@ $section-padding: 1.5rem;
 }
 
 .mainSection {
-  padding: $section-padding;
+  padding: 1rem;
   flex: 1 0 auto;
 }

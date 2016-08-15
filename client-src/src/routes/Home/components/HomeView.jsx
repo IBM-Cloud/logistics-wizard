@@ -1,6 +1,7 @@
 import React from 'react';
-import classes from './HomeView.scss';
 import CreateDemo from 'routes/CreateDemo/components/CreateDemo';
+
+import classes from './HomeView.scss';
 
 export const HomeView = () => (
   <div className={classes.homeView}>
