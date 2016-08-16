@@ -27,7 +27,7 @@ const query = {
   },
 };
 
-class CreateDemo extends React.Component {
+export class CreateDemo extends React.Component {
   render() {
     const { full } = this.props.containerQuery;
 

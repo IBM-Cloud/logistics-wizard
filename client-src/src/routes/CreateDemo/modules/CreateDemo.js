@@ -1,56 +1,40 @@
-import { delay } from 'redux-saga';
 import { call, take, put, select } from 'redux-saga/effects';
+import { push } from 'react-router-redux';
 
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const UPDATE_TITLE = 'CreateDemo/UPDATE_TITLE';
-export const GET_QUOTE = 'CreateDemo/GET_QUOTE';
-export const RECEIVE_QUOTE = 'CreateDemo/RECEIVE_QUOTE';
+export const CREATE_DEMO = 'CreateDemo/CREATE_DEMO';
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-export const updateTitle = (value) => ({
-  type: UPDATE_TITLE,
-  payload: value,
-});
-
-export const getQuote = () => ({
-  type: GET_QUOTE,
-});
-
-export const receiveQuote = (quote) => ({
-  type: RECEIVE_QUOTE,
-  payload: quote,
+export const createDemo = () => ({
+  type: CREATE_DEMO,
 });
 
 export const actions = {
-  updateTitle,
-  getQuote,
-  receiveQuote,
+  createDemo,
 };
 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [UPDATE_TITLE]: (state, action) => ({
-    ...state,
-    title: action.payload,
-  }),
-  [RECEIVE_QUOTE]: (state, action) => ({
-    ...state,
-    quote: action.payload,
-  }),
+  // [UPDATE_TITLE]: (state, action) => ({
+  //   ...state,
+  //   title: action.payload,
+  // }),
+  // [RECEIVE_QUOTE]: (state, action) => ({
+  //   ...state,
+  //   quote: action.payload,
+  // }),
 };
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = {
-  title: 'A Title Stored in global state.',
-};
+const initialState = { };
 export const createDemoReducer = (state = initialState, action) => {
   const handler = ACTION_HANDLERS[action.type];
 
@@ -65,30 +49,15 @@ export default createDemoReducer;
 // This is set up in `../index.js` as the key in  `injectSagas(store, { key: 'createDemo', sagas });`
 export const createDemoSelector = state => state.createDemo;
 
-// This call would normally be stored somewhere like `api.fetchQuote` from `src/services/`
-// but since this is just an example we are writing it here.
-export const fetchQuote = () =>
-  fetch('http://quotes.rest/qod.json?category=inspire')
-    .then(response => response.json())
-    .then(json => json.contents.quotes[0].quote);
-
-export function *watchGetQuote() {
+export function *watchCreateDemo() {
   while (true) {
-    yield take(GET_QUOTE);
-    const state = yield select(createDemoSelector);
-    if (!state.quote) {
-      yield put(actions.updateTitle('You dispatched an action!'));
-      yield put(actions.receiveQuote('Fetching Quote...'));
-      const quote = yield call(fetchQuote);
-      yield call(delay, 1000); // simulate a long load time since this call is pretty quick.
-      yield put(actions.receiveQuote(quote));
-    }
-    else {
-      yield put(actions.updateTitle('You already have a quote.'));
-    }
+    yield take(CREATE_DEMO);
+    // const state = yield select(createDemoSelector);
+    console.log('Creating Demo');
+    yield put(push('/dashboard'));
   }
 }
 
 export const sagas = [
-  watchGetQuote,
+  watchCreateDemo,
 ];
