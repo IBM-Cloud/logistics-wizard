@@ -1,4 +1,5 @@
 import React from 'react';
+import RoleItem from './RoleItem';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import classes from './GlobalNav.scss';
@@ -37,23 +38,40 @@ const styles = {
     lineHeight: '32px',
     marginLeft: '2px',
   },
-  menuItem: {
-    width: '300px',
+  menuPlus: {
+    fontSize: 24,
+    marginLeft: '2px',
+  },
+  menuLabel: {
+    margin: 0,
+    padding: 0,
+    textTransform: 'uppercase',
+    fontSize: 14,
+  },
+  menuSublabel: {
+    margin: 0,
+    padding: 0,
+    lineHeight: '10px',
+    marginTop: '-5px',
   },
   listStyle: {
     marginTop: '0px',
-  },
-  menuPlus: {
-    fontSize: 24,
+    padding: '0px',
   },
   innerListItem: {
     background: 'rgb(255, 255, 255)',
+    margin: '10px 0px',
+    verticalAlign: 'center',
+    height: '60px',
+    lineHeight: '50px',
   },
 };
 
 // Try to figure out how to move the menus down. If you can't figure it out, skip for now. =)
 export const RoleSwitcher = (props) => (
   <IconMenu
+    style={{ padding: '0px' }}
+    innerDivStyle={{ padding: '0px' }}
     menuStyle={styles.listStyle}
     open={props.open || null}
     anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
@@ -64,37 +82,9 @@ export const RoleSwitcher = (props) => (
       </span>
     }
   >
-    <MenuItem
-      innerDivStyle={styles.innerListItem}
-      leftIcon={
-        <span className="fa-stack">
-          <i className="fa fa-circle fa-stack-2x" style={styles.menuCircle} />
-          <i className="fa fa-user fa-stack-1x" style={styles.menuUser} />
-        </span>
-      }
-    >
-      <p className="roleSwitcherLabel"><strong>Supply Chain Manager</strong></p>
-    </MenuItem>
-    <MenuItem
-      innerDivStyle={styles.innerListItem}
-      leftIcon={
-        <span className="fa-stack">
-          <i className="fa fa-circle fa-stack-2x" style={styles.menuCircle} />
-          <i className="fa fa-user fa-stack-1x" style={styles.menuUser} />
-        </span>
-      }
-    >
-      <p className="roleSwitcherLabel"><strong>Retail Manager</strong></p>
-      <p className="roleSwitcherLabel"><em><small>Austin, Texas</small></em></p>
-    </MenuItem>
-    <MenuItem
-      innerDivStyle={styles.innerListItem}
-      leftIcon={
-        <i className="fa fa-plus" style={styles.menuPlus} />
-      }
-    >
-      <p>CREATE NEW RETAIL MANAGER</p>
-    </MenuItem>
+    <RoleItem roleLabel="Supply Chain Manager" />
+    <RoleItem roleLabel="Retail Manager" location="Austin, Texas" />
+    <RoleItem roleLabel="Retail Manager" location="Chino, California" />
   </IconMenu>
 );
 

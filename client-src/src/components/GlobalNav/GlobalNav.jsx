@@ -46,7 +46,7 @@ const styles = {
 export const GlobalNav = (props) => (
   <div className={classes.globalNav}>
 
-    <h1>{props.customProp ? props.customProp : ''}</h1>
+    {/* <h1>{props.customProp ? props.customProp : ''}</h1> */}
 
     <Toolbar style={styles.toolbar}>
       <ToolbarGroup firstChild>
