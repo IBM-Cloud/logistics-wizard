@@ -9,7 +9,7 @@ const props = {
 };
 const wrapper = shallow(<CoreLayout {...props} />);
 
-test('should render header and nested containers', t => {
+test('should render nested containers', t => {
   t.is(wrapper.find('div').length, 2);
   t.is(wrapper.find('GlobalNav').length, 1);
 });

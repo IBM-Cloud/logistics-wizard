@@ -8,13 +8,14 @@ $primary-font: 'LibreFranklin', sans-serif !default;
 $link-color: rgb(161, 65, 207);
 $link-hover: rgb(205, 148, 226);
 
-//Heading scale
-$h1-scale: 2.50 !default;
-$h2-scale: 2.00 !default;
-$h3-scale: 1.50 !default;
-$h4-scale: 1.25 !default;
-$h5-scale: 1.00 !default;
-$h6-scale: 0.80 !default;
+//Heading scale (will be multiplied by $base-font-size)
+$h1-scale: 4.50 !default;
+$h2-scale: 3.00 !default;
+$h3-scale: 2.50 !default;
+$h4-scale: 1.5 !default;
+$h5-scale: 1.125 !default;
+$h6-scale: 0.875 !default;
+$subheading-scale: 0.75 !default;
 
 // Flow Text
 $range : 1140px - 600px !default;

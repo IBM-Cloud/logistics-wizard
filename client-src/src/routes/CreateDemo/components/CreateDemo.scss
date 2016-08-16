@@ -1,0 +1,28 @@
+.createDemo {
+
+}
+
+.infoSection {
+  padding: 1.5rem;
+  background-color: rgb(136, 137, 148);
+  color: white;
+  flex: 1 0 100%;
+
+  &.full {
+    flex: 1 0 33%;
+  }
+}
+
+.title {
+  margin-top: 0;
+}
+
+.leftBar {
+  width: 0.5rem;
+  background-color: rgb(67, 231, 73);
+}
+
+.mainSection {
+  padding: 1rem;
+  flex: 1 0 auto;
+}

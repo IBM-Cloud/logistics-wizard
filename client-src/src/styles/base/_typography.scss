@@ -7,7 +7,7 @@ html, body {
   line-height: $base-line-height;
 
   @media only screen and (min-width: 0) {
-    font-size: $base-font-size * 0.8;
+    font-size: $base-font-size * 0.9;
   }
 
   @media only screen and (min-width: $medium-screen) {
@@ -52,17 +52,19 @@ $h3s: $base-font-size * $h3-scale;
 $h4s: $base-font-size * $h4-scale;
 $h5s: $base-font-size * $h5-scale;
 $h6s: $base-font-size * $h6-scale;
+$shs: $base-font-size * $h6-scale;
 h1, .h1 { font-size: $h1s; margin: ($h1s / 1.5) 0 ($h1s / 2.5) 0; }
 h2, .h2 { font-size: $h2s; margin: ($h2s / 1.5) 0 ($h2s / 2.5) 0; }
 h3, .h3 { font-size: $h3s; margin: ($h3s / 1.5) 0 ($h3s / 2.5) 0; }
 h4, .h4 { font-size: $h4s; margin: ($h4s / 2) 0 ($h4s / 2.5) 0; font-weight: 500; }
 h5, .h5 { font-size: $h5s; margin: ($h5s / 2) 0 ($h5s / 2.5) 0; font-weight: 600; }
 h6, .h6 { font-size: $h6s; margin: ($h6s / 2) 0 ($h6s / 2.5) 0; font-weight: 600; }
+.subheading { font-size: $shs; margin: ($shs / 2) 0 ($shs / 2.5) 0; font-weight: 600; letter-spacing: 0.5; }
 // margin: ($h1-fontsize / 2) 0 ($h1-fontsize / 2.5) 0;
 
 em, .em { font-style: italic; }
 strong, .strong { font-weight: 600; }
-small, .small { font-size: 75% }
+small, .small { font-size: 75%; }
 .light { font-weight: 300; }
 .thin { font-weight: 200; }
 
