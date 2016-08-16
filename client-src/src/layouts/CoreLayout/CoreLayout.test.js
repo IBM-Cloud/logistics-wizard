@@ -11,6 +11,7 @@ const wrapper = shallow(<CoreLayout {...props} />);
 
 test('should render nested containers', t => {
   t.is(wrapper.find('div').length, 2);
+  t.is(wrapper.find('GlobalNav').length, 1);
 });
 
 test('children render inside mainContainer div', t => {
