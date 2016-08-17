@@ -82,10 +82,10 @@ export const RoleSwitcher = (props) => (
       </span>
     }
   >
-    <RoleItem roleLabel="Supply Chain Manager" />
-    <RoleItem roleLabel="Retail Manager" location="Austin, Texas" />
-    <RoleItem roleLabel="Retail Manager" location="Chino, California" />
-    <RoleItem roleLabel="Create New Retail Manager" type="button" />
+    <RoleItem label="Supply Chain Manager" />
+    <RoleItem label="Retail Manager" location="Austin, Texas" />
+    <RoleItem label="Retail Manager" location="Chino, California" />
+    <RoleItem label="Create New Retail Manager" type="button" />
   </IconMenu>
 );
 

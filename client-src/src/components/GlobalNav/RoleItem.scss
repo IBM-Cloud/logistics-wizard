@@ -39,6 +39,10 @@
   font-weight: 600;
   text-transform: uppercase;
   padding-right: 20px;
+
+  &.padTop {
+    padding-top: 10px;
+  }
 }
 
 .sublabel {
@@ -50,4 +54,23 @@
 .label,
 .sublabel {
   margin: 0;
+}
+
+.circle {
+  font-size: 36;
+  color: rgb(72, 85, 102);
+  line-height: 26px;
+}
+
+.user {
+  font-size: 28;
+  color: rgb(255, 255, 255);
+  line-height: 34px;
+}
+
+.plus {
+  font-size: 24;
+  color: rgb(72, 85, 102);
+  line-height: 24px;
+  padding-left: 10px;
 }
