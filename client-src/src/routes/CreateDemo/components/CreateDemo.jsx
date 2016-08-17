@@ -28,6 +28,27 @@ const query = {
 };
 
 export class CreateDemo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      demoName: '',
+      email: '',
+    };
+  }
+
+  handleInput = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value,
+    });
+  }
+
+  handleClick = () => {
+    this.props.createDemo({
+      name: this.state.demoName,
+      email: this.state.email,
+    });
+  }
+
   render() {
     const { full } = this.props.containerQuery;
 
@@ -46,11 +67,23 @@ export class CreateDemo extends React.Component {
         </div>
         <div className={classes.mainSection}>
           <p>Give your project a name</p>
-          <TextField style={styles.fields} hintText="Supply Chain Logistics" />
+          <TextField
+            id="demoName"
+            value={this.state.demoName}
+            style={styles.fields}
+            hintText="Supply Chain Logistics"
+            onChange={this.handleInput}
+          />
           <p>Enter your email address (Optional)</p>
-          <TextField style={styles.fields} hintText="UserName@business.com" />
+          <TextField
+            id="email"
+            value={this.state.email}
+            style={styles.fields}
+            hintText="UserName@business.com"
+            onChange={this.handleInput}
+          />
           <br />
-          <RaisedButton style={styles.button} label="LET'S GO" onClick={this.props.createDemo} />
+          <RaisedButton style={styles.button} label="CREATE DEMO" onClick={this.handleClick} />
         </div>
       </Paper>
     );
