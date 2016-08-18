@@ -7,8 +7,11 @@ export class RoleItem extends React.Component {
     if (this.props.type === 'button') {
       return (
         <p
-          className={classes.label}
-          style={{ paddingTop: '10px', fontWeight: '500', paddingBottom: '12px', cursor: 'pointer' }}
+          className={classNames({
+            [classes.label]: true,
+            [classes.center]: true,
+            [classes.button]: true,
+          })}
         >
             {this.props.label}
         </p>
@@ -27,7 +30,7 @@ export class RoleItem extends React.Component {
       <p
         className={classNames({
           [classes.label]: true,
-          [classes.padTop]: true,
+          [classes.center]: true,
         })}
       >
         {this.props.label}
@@ -36,72 +39,46 @@ export class RoleItem extends React.Component {
   }
   render() {
     return (
-      <div className={classes.roleItem}>
-        <div className={classes.roleIcon}>
+      <button
+        className={classNames({
+          [classes.item]: true,
+          [classes.selected]: this.props.selected,
+        })}
+      >
+        <div className={classes.iconContainer}>
           {this.props.type === 'button'
             ? <i
               className={classNames({
-                [classes.plus]: true,
+                [classes.icon]: true,
+                [classes.small]: true,
+                [this.props.icon]: true,
                 fa: true,
-                'fa-plus': true,
               })}
             />
-            : <span className="fa-stack">
-              <i
-                className={classNames({
-                  [classes.circle]: true,
-                  fa: true,
-                  'fa-circle': true,
-                  'fa-stack-2x': true,
-                })}
-              />
-              <i
-                className={classNames({
-                  [classes.user]: true,
-                  fa: true,
-                  'fa-user': true,
-                  'fa-stack-1x': true,
-                })}
-              />
-            </span>
+            : <i
+              className={classNames({
+                [classes.icon]: true,
+                [this.props.icon]: true,
+                fa: true,
+              })}
+            />
           }
         </div>
 
-        <div className="roleText">
+        <div className={classes.textContainer}>
           {this.getItemType()}
         </div>
-      </div>
+      </button>
     );
   }
-
-  // someMethod(type, label, location) {
-  //   let jsx;
-  //   if (type && type === 'button') {
-  //     jsx = (
-  //       <p className={classes.label} style={{ paddingTop: '10px', fontWeight: '500' }}>{label}</p>
-  //     );
-  //   } else if (location) {
-  //     jsx = (
-  //       <div className="roleText">
-  //         <p className={classes.label}>{label}</p>
-  //         <p className={classes.sublabel}>{location}</p>
-  //       </div>
-  //     );
-  //   } else {
-  //     jsx = (
-  //       <p className={classes.label} style={{ paddingTop: '10px' }}>{label}</p>
-  //     );
-  //   }
-  //
-  //   return jsx;
-  // }
 }
 
 RoleItem.propTypes = {
-  // open: React.PropTypes.bool,
+  selected: React.PropTypes.bool,
   type: React.PropTypes.string,
-  label: React.PropTypes.string.isRequired,
   location: React.PropTypes.string,
+  icon: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string.isRequired,
 };
 
 export default RoleItem;

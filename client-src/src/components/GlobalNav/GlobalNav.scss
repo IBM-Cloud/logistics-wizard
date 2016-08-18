@@ -1,5 +1,46 @@
+/* GlobalNav Styles */
 .globalNav {
   p {
-    color: #FFF;
+    color: rgb(255, 255, 255);
+  }
+}
+
+.title {
+  padding-left: 2rem;
+}
+
+.separator {
+  background-color: rgb(184, 222, 228);
+}
+
+.github:hover {
+  color: rgb(255, 255, 255);
+
+  &:hover {
+    color: rgb(255, 255, 255);
+  }
+}
+
+/* RoleSwitcher Styles */
+.stack {
+  position: relative;
+  cursor: pointer;
+
+  .user {
+    font-size: 1.2rem;
+    color: rgb(15, 147, 166);
+    line-height: 3.3rem;
+  }
+
+  &:hover {
+    .circle {
+      color: rgb(255, 255, 255);
+    }
+  }
+
+  .circle {
+    font-size: 2rem;
+    color: rgb(184, 222, 228);
+    line-height: 3.3rem;
   }
 }

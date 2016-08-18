@@ -1,76 +1,76 @@
-.roleItem {
+.item {
+  min-height: 65px;
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  padding: 15px 0px 7px 0px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border: none;
   border-bottom: 1px solid rgb(219, 222, 224);
-  border-left: 5px solid transparent;
+  background: rgb(255, 255, 255);
+  color: rgb(72, 85, 102);
+  margin: 0;
+  padding: 0;
+  padding-left: 5px;
+  outline: none;
 
-  &:hover {
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.selected {
+    padding-left: 0px;
     border-left: 5px solid rgb(145, 195, 131);
   }
 }
 
-.roleItem:first-child {
-  padding-top: 7px;
-}
+/* Menu Icon Styles */
+.iconContainer {
+  border-left: 5px solid transparent;
+  align-self: center;
 
-.roleItem:last-child {
-  border-bottom: none;
-  padding-bottom: 2px;
-}
-
-.roleText {
-  p {
-    padding: 0;
-    margin: 0;
+  .icon {
+    font-size: 1.5rem;
     color: rgb(72, 85, 102);
+    line-height: 2.6rem;
+    margin: 0px 1rem;
+  }
+
+  .small {
+    font-size: 0.8rem;
+    margin-left: 1.2rem;
   }
 }
 
-.roleIcon {
-  width: 60px;
-  margin: 8px 0px 0px 20px;
-}
+/* Menu Item Text Styles */
+.textContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
 
-.label {
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  padding-right: 20px;
-
-  &.padTop {
-    padding-top: 10px;
+  p {
+    margin: 0;
   }
-}
 
-.sublabel {
-  font-size: 13px;
-  font-style: italic;
-  line-height: 11px;
-}
+  .label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    align-self: center;
+  }
 
-.label,
-.sublabel {
-  margin: 0;
-}
+  .label.center {
+    align-self: flex-start;
+  }
 
-.circle {
-  font-size: 36;
-  color: rgb(72, 85, 102);
-  line-height: 26px;
-}
+  .sublabel {
+    font-size: 0.7rem;
+    line-height: 0.7rem;
+    font-style: italic;
+    align-self: flex-end;
+  }
 
-.user {
-  font-size: 28;
-  color: rgb(255, 255, 255);
-  line-height: 34px;
-}
-
-.plus {
-  font-size: 24;
-  color: rgb(72, 85, 102);
-  line-height: 24px;
-  padding-left: 10px;
+  .button {
+    font-weight: 500;
+  }
 }
