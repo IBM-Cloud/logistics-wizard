@@ -1,47 +1,30 @@
-import { delay } from 'redux-saga';
-import { call, take, put, select } from 'redux-saga/effects';
+// import { delay } from 'redux-saga';
+// import { call, take, put, select } from 'redux-saga/effects';
 
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const UPDATE_TITLE = 'Dashboard/UPDATE_TITLE';
-export const GET_QUOTE = 'Dashboard/GET_QUOTE';
-export const RECEIVE_QUOTE = 'Dashboard/RECEIVE_QUOTE';
+export const ADMIN_DATA_RECEIVED = 'Dashboard/ADMIN_DATA_RECEIVED';
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-export const updateTitle = (value) => ({
-  type: UPDATE_TITLE,
+export const adminDataReceived = (value) => ({
+  type: ADMIN_DATA_RECEIVED,
   payload: value,
 });
 
-export const getQuote = () => ({
-  type: GET_QUOTE,
-});
-
-export const receiveQuote = (quote) => ({
-  type: RECEIVE_QUOTE,
-  payload: quote,
-});
-
 export const actions = {
-  updateTitle,
-  getQuote,
-  receiveQuote,
+  adminDataReceived,
 };
 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [UPDATE_TITLE]: (state, action) => ({
+  [ADMIN_DATA_RECEIVED]: (state, action) => ({
     ...state,
-    title: action.payload,
-  }),
-  [RECEIVE_QUOTE]: (state, action) => ({
-    ...state,
-    quote: action.payload,
+    ...action.payload,
   }),
 };
 
@@ -49,7 +32,6 @@ const ACTION_HANDLERS = {
 // Reducer
 // ------------------------------------
 const initialState = {
-  title: 'A Title Stored in global state.',
 };
 export const dashboardReducer = (state = initialState, action) => {
   const handler = ACTION_HANDLERS[action.type];
@@ -65,30 +47,5 @@ export default dashboardReducer;
 // This is set up in `../index.js` as the key in  `injectSagas(store, { key: 'dashboard', sagas });`
 export const dashboardSelector = state => state.dashboard;
 
-// This call would normally be stored somewhere like `api.fetchQuote` from `src/services/`
-// but since this is just an example we are writing it here.
-export const fetchQuote = () =>
-  fetch('http://quotes.rest/qod.json?category=inspire')
-    .then(response => response.json())
-    .then(json => json.contents.quotes[0].quote);
-
-export function *watchGetQuote() {
-  while (true) {
-    yield take(GET_QUOTE);
-    const state = yield select(dashboardSelector);
-    if (!state.quote) {
-      yield put(actions.updateTitle('You dispatched an action!'));
-      yield put(actions.receiveQuote('Fetching Quote...'));
-      const quote = yield call(fetchQuote);
-      yield call(delay, 1000); // simulate a long load time since this call is pretty quick.
-      yield put(actions.receiveQuote(quote));
-    }
-    else {
-      yield put(actions.updateTitle('You already have a quote.'));
-    }
-  }
-}
-
 export const sagas = [
-  watchGetQuote,
 ];

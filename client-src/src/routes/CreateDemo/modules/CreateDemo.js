@@ -2,7 +2,8 @@ import { call, take, put, select } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import api from 'services';
 
-import { createDemoSuccess } from 'modules/demos';
+import { loginSuccess, createDemoSuccess, demoSelector } from 'modules/demos';
+import { adminDataReceived } from 'routes/Dashboard/modules/Dashboard';
 
 // ------------------------------------
 // Constants
@@ -25,10 +26,6 @@ export const actions = {
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  // [UPDATE_TITLE]: (state, action) => ({
-  //   ...state,
-  //   title: action.payload,
-  // }),
 };
 
 // ------------------------------------
@@ -51,9 +48,14 @@ export function *watchCreateDemo() {
   while (true) {
     const { payload } = yield take(CREATE_DEMO);
     try {
-      const demoSession = yield call(api.createDemo, payload);
+      const demoSession = yield call(api.createDemo, payload.name, payload.email);
       yield put(push('/dashboard'));
       yield put(createDemoSuccess(demoSession));
+      const demoState = yield select(demoSelector);
+      const token = yield call(api.login, demoState.id, demoState.guid);
+      yield put(loginSuccess(token));
+      const adminData = yield call(api.getAdminData, token.token);
+      yield put(adminDataReceived(adminData));
     }
     catch (error) {
       console.log(error);

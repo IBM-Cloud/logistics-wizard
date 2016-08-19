@@ -5,6 +5,7 @@
 // Constants
 // ------------------------------------
 export const CREATE_DEMO_SUCCESS = 'demos/CREATE_DEMO_SUCCESS';
+export const LOGIN_SUCCESS = 'demos/LOGIN_SUCCESS';
 
 // ------------------------------------
 // Actions
@@ -14,8 +15,14 @@ export const createDemoSuccess = (value) => ({
   payload: value,
 });
 
+export const loginSuccess = (value) => ({
+  type: LOGIN_SUCCESS,
+  payload: value,
+});
+
 export const actions = {
   createDemoSuccess,
+  loginSuccess,
 };
 
 // ------------------------------------
@@ -31,6 +38,10 @@ const ACTION_HANDLERS = {
       username: action.payload.users[0].username,
       type: action.payload.users[0].roles[0].name,
     }],
+  }),
+  [LOGIN_SUCCESS]: (state, action) => ({
+    ...state,
+    token: action.payload.token,
   }),
 };
 
@@ -49,7 +60,7 @@ export default demosReducer;
 // ------------------------------------
 // Sagas
 // ------------------------------------
-export const demosSelector = state => state.demoSession;
+export const demoSelector = state => state.demoSession;
 
 export const sagas = [
 ];
