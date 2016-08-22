@@ -14,7 +14,8 @@
 }
 
 .github {
-  color: rgb(255, 255, 255);
+  font-size: 1.9rem;
+  color: rgb(184, 222, 228);
 
   &:hover {
     color: rgb(255, 255, 255);
@@ -25,11 +26,13 @@
 .stack {
   position: relative;
   cursor: pointer;
+  margin-right: 30px;
 
   .user {
     font-size: 1.2rem;
     color: rgb(15, 147, 166);
     line-height: 3.3rem;
+    margin-left: .3rem;
   }
 
   &:hover {
@@ -39,7 +42,7 @@
   }
 
   .circle {
-    font-size: 2rem;
+    font-size: 1.9rem;
     color: rgb(184, 222, 228);
     line-height: 3.3rem;
   }
