@@ -1,12 +1,16 @@
-.createDemo {
-
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  overflow: hidden;
 }
 
 .infoSection {
   padding: 1.5rem;
-  background-color: rgb(136, 137, 148);
+  background-color: #485566;
   color: white;
   flex: 1 0 100%;
+  border-left: 0.5rem solid #91C383;
 
   &.full {
     flex: 1 0 33%;
@@ -17,12 +21,23 @@
   margin-top: 0;
 }
 
-.leftBar {
-  width: 0.5rem;
-  background-color: rgb(67, 231, 73);
-}
-
 .mainSection {
   padding: 1rem;
   flex: 1 0 auto;
+
+  display: flex;
+  flex-direction: column;
+}
+.inputs {
+  flex: 1 0 auto;
+}
+
+.buttonWrapper {
+  flex: 0 1 auto;
+  align-items: flex-end;
+}
+
+.button {
+  float: right;
+  margin-top: 1rem;
 }

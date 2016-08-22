@@ -6,34 +6,32 @@ import classNames from 'classnames';
 import { applyContainerQuery } from 'react-container-query';
 import classes from './CreateDemo.scss';
 
-const styles = {
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'stretch',
-  },
-  button: {
-    float: 'right',
-    marginTop: '2rem',
-  },
-  fields: {
-    width: '100%',
-  },
-};
-
-const query = {
-  full: {
-    minWidth: 773,
-  },
-};
-
 export class CreateDemo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      demoName: '',
+      email: '',
+    };
+  }
+
+  handleInput = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value,
+    });
+  }
+
+  handleClick = () => {
+    const body = { name: this.state.demoName };
+    if (this.state.email !== '') body.email = this.state.email;
+    this.props.createDemo(body);
+  }
+
   render() {
     const { full } = this.props.containerQuery;
 
     return (
-      <Paper style={styles.container} rounded>
-        <div className={full ? classes.leftBar : ''} />
+      <Paper className={classes.container}>
         <div
           className={classNames({
             [classes.infoSection]: true,
@@ -45,12 +43,34 @@ export class CreateDemo extends React.Component {
           <p className="thin">Already created a project? You can access a previous created session using the link sent to the email provided to us.</p>
         </div>
         <div className={classes.mainSection}>
-          <p>Give your project a name</p>
-          <TextField style={styles.fields} hintText="Supply Chain Logistics" />
-          <p>Enter your email address (Optional)</p>
-          <TextField style={styles.fields} hintText="UserName@business.com" />
-          <br />
-          <RaisedButton style={styles.button} label="LET'S GO" onClick={this.props.createDemo} />
+          <div className={classes.inputs}>
+            <TextField
+              id="demoName"
+              fullWidth
+              value={this.state.demoName}
+              floatingLabelText="Give your project a name"
+              floatingLabelFixed
+              hintText="Supply Chain Logistics"
+              onChange={this.handleInput}
+            />
+            <TextField
+              id="email"
+              fullWidth
+              value={this.state.email}
+              floatingLabelText="Enter your email address (optional)"
+              floatingLabelFixed
+              hintText="UserName@business.com"
+              onChange={this.handleInput}
+            />
+          </div>
+          <div className={classes.buttonWrapper}>
+            <RaisedButton
+              primary
+              className={classes.button}
+              label="CREATE DEMO"
+              onClick={this.handleClick}
+            />
+          </div>
         </div>
       </Paper>
     );
@@ -59,7 +79,13 @@ export class CreateDemo extends React.Component {
 
 CreateDemo.propTypes = {
   createDemo: React.PropTypes.func.isRequired,
-  containerQuery: React.PropTypes.object.isRequired,
+  containerQuery: React.PropTypes.object,
+};
+
+const query = {
+  full: {
+    minWidth: 773,
+  },
 };
 
 export default applyContainerQuery(CreateDemo, query);
