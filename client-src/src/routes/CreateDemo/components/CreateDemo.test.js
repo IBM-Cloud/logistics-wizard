@@ -22,7 +22,8 @@ const setup = (quote) => {
   return { spies, props, component };
 };
 
-test.todo('Write tests for CreateDemo Component elements');
+test.todo('Write tests for CreateDemo Component elements.');
+test.todo('Move hard coded colors to reference a colors style object.');
 test('(Component) Renders with expected elements', t => {
   // const { props, component } = setup();
   t.pass();
