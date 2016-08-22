@@ -26,7 +26,7 @@ Before diving in, consider that the Logistics Wizard codebase is more than just 
 
 There are so many ways to lend a hand I would run out of fingers counting them on my two hands. This section will walk you through the ways in which you can contribute.
 
-First thing's first, download and install [ZenHub for GitHub](https://www.zenhub.io/). This is the tool we use for managing our GitHub Issues and moving them along the pipeline, from Backlog to Closed. It really is a great tool and we recommend using it in any of your projects. Plus, it is free for OSS!
+First thing's first, download and install [ZenHub for GitHub](https://www.zenhub.io/). This is the tool we use for managing our GitHub Issues and moving them along the pipeline, from Backlog to Closed. It really is a great tool and we recommend using it in any of your projects. Plus, it is free for public repos!
 
 We use four different scopes for managing project work: bugs, enhancements, stories, and epics. Now that you've got the tools, there are three main ways that you can contribute by filing a bug report, a request for enhancement, or making updates and creating a pull request (our favorite). They are each outlined in more detail below.
 
@@ -109,8 +109,8 @@ If you see an issue you would like to tackle yourself, we certainly welcome code
 
 1. Make sure the issue is not already being worked on. You can ensure this by checking if the issue has been moved to the `To Do` pipeline and beyond.
 2. Comment on the issue to let the delivery team know you are addressing it.
-3. Fork the repo and make your code changes.
-4. Create a pull request, making sure to include the following:
+3. Fork the repo from the `dev` branch and make your code changes.
+4. Create a pull request on `dev`, making sure to include the following:
 	- reference to the issue(s) your PR addresses
 	- screenshots and animated GIFs whenever possible
 
