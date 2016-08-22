@@ -6,12 +6,6 @@ import classNames from 'classnames';
 import { applyContainerQuery } from 'react-container-query';
 import classes from './CreateDemo.scss';
 
-const query = {
-  full: {
-    minWidth: 773,
-  },
-};
-
 export class CreateDemo extends React.Component {
   constructor(props) {
     super(props);
@@ -86,6 +80,12 @@ export class CreateDemo extends React.Component {
 CreateDemo.propTypes = {
   createDemo: React.PropTypes.func.isRequired,
   containerQuery: React.PropTypes.object,
+};
+
+const query = {
+  full: {
+    minWidth: 773,
+  },
 };
 
 export default applyContainerQuery(CreateDemo, query);
