@@ -1,6 +1,7 @@
 import React from 'react';
 import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
+import RoleItem from './RoleItem';
+import classNames from 'classnames';
 import classes from './GlobalNav.scss';
 
 const styles = {
@@ -18,88 +19,46 @@ const styles = {
     color: 'rgb(255, 255, 255)',
     lineHeight: '56px',
   },
-  left: {
-    width: '32px',
-    margin: 0,
-    padding: 0,
-    display: 'inline-block',
-    float: 'left',
-    marginRight: '20px',
-  },
-  menuCircle: {
-    fontSize: 34,
-    color: 'rgb(72, 85, 102)',
-    lineHeight: '24px',
-  },
-  menuUser: {
-    fontSize: 26,
-    color: 'rgb(255, 255, 255)',
-    lineHeight: '32px',
-    marginLeft: '2px',
-  },
-  menuItem: {
-    width: '300px',
-  },
-  listStyle: {
-    marginTop: '0px',
-  },
-  menuPlus: {
-    fontSize: 24,
-  },
-  innerListItem: {
-    background: 'rgb(255, 255, 255)',
-  },
 };
 
-// Try to figure out how to move the menus down. If you can't figure it out, skip for now. =)
-export const RoleSwitcher = (props) => (
+// Props have been removed since they are not currently needed.
+// To add props back in, simply change the line below to: ...RoleSwitcher = (props) => (...
+export const RoleSwitcher = () => (
   <IconMenu
-    menuStyle={styles.listStyle}
-    open={props.open || null}
-    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+    // anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
     iconButtonElement={
-      <span className="fa-stack" style={styles.stack}>
-        <i className="fa fa-circle fa-stack-2x" style={styles.circle} />
-        <i className="fa fa-user fa-stack-1x" style={styles.user} />
+      <span
+        className={classNames({
+          'fa-stack': true,
+          [classes.stack]: true,
+        })}
+      >
+        <i
+          className={classNames({
+            fa: true,
+            'fa-circle': true,
+            'fa-stack-2x': true,
+            [classes.circle]: true,
+          })}
+        />
+        <i
+          className={classNames({
+            fa: true,
+            'fa-user': true,
+            'fa-stack-1x': true,
+            [classes.user]: true,
+          })}
+        />
       </span>
     }
   >
-    <MenuItem
-      innerDivStyle={styles.innerListItem}
-      leftIcon={
-        <span className="fa-stack">
-          <i className="fa fa-circle fa-stack-2x" style={styles.menuCircle} />
-          <i className="fa fa-user fa-stack-1x" style={styles.menuUser} />
-        </span>
-      }
-    >
-      <p className="roleSwitcherLabel"><strong>Supply Chain Manager</strong></p>
-    </MenuItem>
-    <MenuItem
-      innerDivStyle={styles.innerListItem}
-      leftIcon={
-        <span className="fa-stack">
-          <i className="fa fa-circle fa-stack-2x" style={styles.menuCircle} />
-          <i className="fa fa-user fa-stack-1x" style={styles.menuUser} />
-        </span>
-      }
-    >
-      <p className="roleSwitcherLabel"><strong>Retail Manager</strong></p>
-      <p className="roleSwitcherLabel"><em><small>Austin, Texas</small></em></p>
-    </MenuItem>
-    <MenuItem
-      innerDivStyle={styles.innerListItem}
-      leftIcon={
-        <i className="fa fa-plus" style={styles.menuPlus} />
-      }
-    >
-      <p>CREATE NEW RETAIL MANAGER</p>
-    </MenuItem>
+    <RoleItem label="Supply Chain Manager" icon="fa-user" />
+    <RoleItem label="Retail Manager" location="Austin, Texas" icon="fa-user" selected="true" />
+    <RoleItem label="Retail Manager" location="Chino, California" icon="fa-user" />
+    <RoleItem label="Create New Retail Manager" type="button" icon="fa-plus" />
   </IconMenu>
 );
 
-RoleSwitcher.propTypes = {
-  open: React.PropTypes.bool,
-};
+RoleSwitcher.propTypes = {};
 
 export default RoleSwitcher;
