@@ -2,7 +2,6 @@ import React from 'react';
 import IconButton from 'material-ui/IconButton';
 import { Toolbar, ToolbarGroup, ToolbarTitle, ToolbarSeparator } from 'material-ui/Toolbar';
 import { Icon } from 'react-fa';
-import classNames from 'classnames';
 import RoleSwitcher from './RoleSwitcher';
 import classes from './GlobalNav.scss';
 
@@ -40,15 +39,6 @@ export const GlobalNav = () => (
             className={classes.github}
           />
         </IconButton>
-        {/* <FontIcon
-          className={classNames({
-            fa: true,
-            'fa-github': true,
-            [classes.github]: true,
-          })}
-          style={styles.github}
-          hoverColor="rgb(255, 255, 255)"
-        /> */}
         <p className="flow-text" style={styles.paragraph}>Demo Settings</p>
       </ToolbarGroup>
     </Toolbar>

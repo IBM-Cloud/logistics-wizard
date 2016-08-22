@@ -1,27 +1,34 @@
 import test from 'ava';
-import sinon from 'sinon';
 import React from 'react';
 import { shallow } from 'enzyme';
+import { Icon } from 'react-fa';
 import GlobalNav from './GlobalNav';
 
-const setup = () => {
-  const spies = {
-    clicky: sinon.spy(),
-  };
-  const props = {
-    customProp: 'Test',
-    clicky: spies.clicky,
-  };
-  const component = shallow(<GlobalNav {...props} />);
 
-  return { spies, props, component };
+const setup = () => {
+  // const spies = {
+  //   clicky: sinon.spy(),
+  // };
+  // const props = {
+  //   customProp: 'Test',
+  //   clicky: spies.clicky,
+  // };
+  const component = shallow(<GlobalNav />);
+
+  return { component };
 };
 
 test('(Component) Has expected elements.', t => {
-  const { props, component } = setup();
+  const { component } = setup();
 
-  t.true(component.is('div'),
-    'is wrapped by a div.');
-  t.true(component.hasClass('globalNav'),
-    'wrapper uses proper class.');
+  // t.is(component.find('Icon'), 1,
+  //   'contains React-FA Github Icons.');
+  // t.true(component.contains('<RoleSwitcher />'),
+  //   'contains RoleSwitcher component.');
+  // t.true(component.contains('<Toolbar />'),
+  //   'contains Toolbar component.');
+
+  t.is(component.find('Icon').length, 1);
+  t.is(component.find('RoleSwitcher').length, 1);
+  t.is(component.find('Toolbar').length, 1);
 });
