@@ -1,0 +1,115 @@
+html, body {
+  font-family: $primary-font;
+  font-weight: normal;
+  color: color("black");
+
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+
+  @media only screen and (min-width: 0) {
+    font-size: $base-font-size * 0.9;
+  }
+
+  @media only screen and (min-width: $medium-screen) {
+    font-size: $base-font-size;
+  }
+
+  @media only screen and (min-width: $large-screen) {
+    font-size: $base-font-size * 1.1;
+  }
+}
+
+fieldset,
+p,
+table,
+pre,
+hr {
+  margin-bottom: $base-font-size * $base-line-height;
+}
+
+h1, .h1,
+h2, .h2,
+h3, .h3 {
+  font-weight: 400;
+  line-height: $heading-line-height;
+
+  small, .small { font-size: 65%; color: color("black", "secondary"); }
+
+  &+hr { margin-top: -$base-spacing/4; }
+}
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  line-height: $heading-line-height;
+
+  small, .small { font-size: 75%; color: color("black", "secondary"); }
+  &+hr { margin-top: -$base-spacing/4; }
+}
+
+$h1s: $base-font-size * $h1-scale;
+$h2s: $base-font-size * $h2-scale;
+$h3s: $base-font-size * $h3-scale;
+$h4s: $base-font-size * $h4-scale;
+$h5s: $base-font-size * $h5-scale;
+$h6s: $base-font-size * $h6-scale;
+$shs: $base-font-size * $h6-scale;
+h1, .h1 { font-size: $h1s; margin: ($h1s / 1.5) 0 ($h1s / 2.5) 0; }
+h2, .h2 { font-size: $h2s; margin: ($h2s / 1.5) 0 ($h2s / 2.5) 0; }
+h3, .h3 { font-size: $h3s; margin: ($h3s / 1.5) 0 ($h3s / 2.5) 0; }
+h4, .h4 { font-size: $h4s; margin: ($h4s / 2) 0 ($h4s / 2.5) 0; font-weight: 500; }
+h5, .h5 { font-size: $h5s; margin: ($h5s / 2) 0 ($h5s / 2.5) 0; font-weight: 600; }
+h6, .h6 { font-size: $h6s; margin: ($h6s / 2) 0 ($h6s / 2.5) 0; font-weight: 600; }
+.subheading { font-size: $shs; margin: ($shs / 2) 0 ($shs / 2.5) 0; font-weight: 600; letter-spacing: 0.5; }
+// margin: ($h1-fontsize / 2) 0 ($h1-fontsize / 2.5) 0;
+
+em, .em { font-style: italic; }
+strong, .strong { font-weight: 600; }
+small, .small { font-size: 75%; }
+.light { font-weight: 300; }
+.thin { font-weight: 200; }
+
+a {
+  transition: color 0.3s;
+  text-decoration: none;
+  color: $link-color;
+  &:active,
+  &:focus,
+  &:hover {
+    transition: color 0.0s;
+    color: $link-hover;
+  }
+}
+
+hr {
+  border-bottom: 1px solid color("black", "disabled");
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  margin: $base-spacing 0;
+}
+
+blockquote {
+  border-left: 4px solid color("primary", "base");
+  color: color("black", "secondary");
+  font-style: italic;
+  $bq-space: $base-font-size * $base-line-height;
+  margin: $bq-space 0 $bq-space 0;
+  padding-left: $base-font-size;
+}
+
+// Auto resizes text to be more readable
+.flow-text {
+  font-weight: 300;
+  $i: 0;
+  @while $i <= $intervals {
+    @media only screen and (min-width : 360 + ($i * $interval-size)) {
+      font-size: $base-font-size * (1 + (.02 * $i));
+    }
+    $i: $i + 1;
+  }
+
+  // Handle below 360px screen
+  @media only screen and (max-width: 360px) {
+    font-size: $base-font-size;
+  }
+}

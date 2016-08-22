@@ -1,0 +1,34 @@
+$base-font-size: 1rem !default;
+$base-line-height: 1.5 !default;
+$heading-line-height: 1.2 !default;
+$base-spacing: 1rem !default;
+$primary-font: 'LibreFranklin', sans-serif !default;
+
+// Links
+$link-color: rgb(161, 65, 207);
+$link-hover: rgb(205, 148, 226);
+
+//Heading scale (will be multiplied by $base-font-size)
+$h1-scale: 4.50 !default;
+$h2-scale: 3.00 !default;
+$h3-scale: 2.50 !default;
+$h4-scale: 1.5 !default;
+$h5-scale: 1.125 !default;
+$h6-scale: 0.875 !default;
+$subheading-scale: 0.75 !default;
+
+// Flow Text
+$range : 1140px - 600px !default;
+$intervals: 20 !default;
+$interval-size: $range / $intervals !default;
+
+// Media Query Ranges
+$small-screen: 600px;
+$medium-screen: 960px;
+$large-screen: 1140px;
+$small-and-up: "only screen and (min-width : #{$small-screen})";
+$medium-and-up: "only screen and (min-width : #{$medium-screen})";
+$large-and-up: "only screen and (min-width : #{$large-screen})";
+
+// FontAwesome Path Override
+$fa-font-path: '~font-awesome/fonts';

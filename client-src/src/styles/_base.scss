@@ -1,0 +1,9 @@
+/*
+Application Settings Go Here
+------------------------------------
+This file acts as a bundler for all variables/mixins/themes, so they
+can easily be swapped out without `core.scss` ever having to know.
+*/
+
+@import './base/variables';
+@import './base/typography';
