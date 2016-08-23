@@ -70,25 +70,25 @@ function *watchGetAdminData() {
         console.log(error);
         // yield put(receiveDemoFailure(error));
       }
+    }
 
-      try {
-        const { token } = yield call(api.login, demoState.id, demoState.guid);
-        yield put(loginSuccess(token));
-        demoState = yield select(demoSelector);
-      }
-      catch (error) {
-        console.log(error);
-        // yield put(loginFailure(error));
-      }
+    try {
+      const { token } = yield call(api.login, demoState.id, demoState.guid);
+      yield put(loginSuccess(token));
+      demoState = yield select(demoSelector);
+    }
+    catch (error) {
+      console.log(error);
+      // yield put(loginFailure(error));
+    }
 
-      try {
-        const adminData = yield call(api.getAdminData, demoState.token);
-        yield put(adminDataReceived(adminData));
-      }
-      catch (error) {
-        console.log(error);
-        // yield put(getAdminDataFilure(error));
-      }
+    try {
+      const adminData = yield call(api.getAdminData, demoState.token);
+      yield put(adminDataReceived(adminData));
+    }
+    catch (error) {
+      console.log(error);
+      // yield put(getAdminDataFilure(error));
     }
   }
 }

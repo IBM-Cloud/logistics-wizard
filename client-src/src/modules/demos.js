@@ -1,6 +1,3 @@
-import { call, take, put, select } from 'redux-saga/effects';
-import api from 'services';
-
 // ------------------------------------
 // Constants
 // ------------------------------------
