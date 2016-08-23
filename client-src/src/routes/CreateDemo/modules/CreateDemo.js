@@ -2,7 +2,7 @@ import { call, take, put, select } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import api from 'services';
 
-import { loginSuccess, createDemoSuccess, demoSelector } from 'modules/demos';
+import { loginSuccess, receiveDemoSession, demoSelector } from 'modules/demos';
 import { adminDataReceived } from 'routes/Dashboard/modules/Dashboard';
 
 // ------------------------------------
@@ -49,9 +49,9 @@ export function *watchCreateDemo() {
     const { payload } = yield take(CREATE_DEMO);
     try {
       const demoSession = yield call(api.createDemo, payload.name, payload.email);
-      yield put(push('/dashboard'));
-      yield put(createDemoSuccess(demoSession));
+      yield put(receiveDemoSession(demoSession));
       const demoState = yield select(demoSelector);
+      yield put(push(`/dashboard/${demoState.guid}`));
       const token = yield call(api.login, demoState.id, demoState.guid);
       yield put(loginSuccess(token));
       const adminData = yield call(api.getAdminData, token.token);

@@ -1,17 +1,17 @@
-// NOTE: This will need to be hooked up to 'store/reducers' and 'store/sagas'
+import { call, take, put, select } from 'redux-saga/effects';
+import api from 'services';
 
-// import { call, take, put, select } from 'redux-saga/effects';
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const CREATE_DEMO_SUCCESS = 'demos/CREATE_DEMO_SUCCESS';
+export const RECEIVE_DEMO_SUCCESS = 'demos/RECEIVE_DEMO_SUCCESS';
 export const LOGIN_SUCCESS = 'demos/LOGIN_SUCCESS';
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-export const createDemoSuccess = (value) => ({
-  type: CREATE_DEMO_SUCCESS,
+export const receiveDemoSuccess = (value) => ({
+  type: RECEIVE_DEMO_SUCCESS,
   payload: value,
 });
 
@@ -21,7 +21,7 @@ export const loginSuccess = (value) => ({
 });
 
 export const actions = {
-  createDemoSuccess,
+  receiveDemoSuccess,
   loginSuccess,
 };
 
@@ -29,7 +29,7 @@ export const actions = {
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [CREATE_DEMO_SUCCESS]: (state, action) => ({
+  [RECEIVE_DEMO_SUCCESS]: (state, action) => ({
     ...state,
     name: action.payload.name,
     guid: action.payload.guid,
@@ -41,7 +41,7 @@ const ACTION_HANDLERS = {
   }),
   [LOGIN_SUCCESS]: (state, action) => ({
     ...state,
-    token: action.payload.token,
+    token: action.payload,
   }),
 };
 

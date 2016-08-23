@@ -2,7 +2,7 @@ import { injectReducer } from 'store/reducers';
 import { injectSagas } from 'store/sagas';
 
 export default (store) => ({
-  path: 'dashboard',
+  path: 'dashboard/:guid',
   getComponent(nextState, cb) {
     require.ensure([], (require) => {
       const Dashboard = require('./containers/DashboardContainer').default;
