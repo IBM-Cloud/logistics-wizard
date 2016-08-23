@@ -1,10 +1,12 @@
 import { configure, addDecorator } from '@kadira/storybook';
 import React from 'react';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import centered from '@kadira/react-storybook-decorator-centered';
+import muiTheme from 'styles/muiTheme';
 import '../src/styles/core.scss';
 
+injectTapEventPlugin();
 const rootStories = require.context('./stories/', true, /\.js$/);
 const srcStories = require.context('../src/', true, /\.story\.js$/);
 function loadStories() {
@@ -14,7 +16,7 @@ function loadStories() {
 
 addDecorator(centered);
 addDecorator((story) => (
-  <MuiThemeProvider muiTheme={getMuiTheme()}>
+  <MuiThemeProvider muiTheme={muiTheme}>
     {story()}
   </MuiThemeProvider>
 ));

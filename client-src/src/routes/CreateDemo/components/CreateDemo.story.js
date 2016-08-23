@@ -4,5 +4,5 @@ import CreateDemo from './CreateDemo';
 
 storiesOf('CreateDemo', module)
   .add('default state', () => (
-    <CreateDemo />
+    <CreateDemo createDemo={action('Demo Created')} />
   ));
