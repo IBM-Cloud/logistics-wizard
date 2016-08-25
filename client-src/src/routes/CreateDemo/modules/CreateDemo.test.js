@@ -1,112 +1,96 @@
 import test from 'ava';
 // import nock from 'nock';
-// import { reducerTest, actionTest } from 'redux-ava';
-// import { delay } from 'redux-saga';
-// import { call, take, select, put } from 'redux-saga/effects';
-// import {
-//   UPDATE_TITLE,
-//   GET_QUOTE,
-//   RECEIVE_QUOTE,
-//   updateTitle,
-//   getQuote,
-//   receiveQuote,
-//   createDemoReducer,
-//   createDemoSelector,
-//   fetchQuote, // This would normally come from an api caller module
-//   watchGetQuote,
-// } from './CreateDemo';
+import { reducerTest, actionTest } from 'redux-ava';
+import { call, take, select, put } from 'redux-saga/effects';
+import {
+  CREATE_DEMO,
+  CREATE_DEMO_FAILURE,
+  createDemo,
+  createDemoFailure,
+  createDemoReducer,
+  createDemoSelector,
+  watchCreateDemo,
+} from './CreateDemo';
+import { receiveDemoSuccess, demoSelector } from 'modules/demos';
+import { push } from 'react-router-redux';
+import api from 'services';
 
-test.todo('write tests for CreateDemo Duck');
+test('(Constant) CREATE_DEMO === "CreateDemo/CREATE_DEMO"', t => {
+  t.is(CREATE_DEMO, 'CreateDemo/CREATE_DEMO');
+});
 
-// test('(Constant) UPDATE_TITLE === "CreateDemo/UPDATE_TITLE"', t => {
-//   t.is(UPDATE_TITLE, 'CreateDemo/UPDATE_TITLE');
-// });
-//
-// test('(Action) updateTitle',
-//   actionTest(updateTitle, 'title text', { type: UPDATE_TITLE, payload: 'title text' }));
-//
-// test('(Reducer) initializes with title state', t => {
-//   t.deepEqual(createDemoReducer(undefined, {}), { title: 'A Title Stored in global state.' });
-// });
-//
-// const testState = () => ({ title: 'A Title', quote: 'A Quote' });
-//
-// test('(Reducer) return previous state when no action is matched', reducerTest(
-//   createDemoReducer,
-//   testState(),
-//   { type: '@@@@@@@' },
-//   testState()
-// ));
-//
-// test('(Reducer) doesnt try to handle saga', reducerTest(
-//   createDemoReducer,
-//   testState(),
-//   getQuote,
-//   testState(),
-// ));
-//
-// test('(Reducer) updates title', reducerTest(
-//   createDemoReducer,
-//   testState(),
-//   updateTitle('New Title'),
-//   { title: 'New Title', quote: 'A Quote' }
-// ));
-//
-// test('(Reducer) updates quote', reducerTest(
-//   createDemoReducer,
-//   testState(),
-//   receiveQuote('New Quote'),
-//   { title: 'A Title', quote: 'New Quote' }
-// ));
-//
-// test('(Saga) watchGetQuote: no quote received.', t => {
-//   const saga = watchGetQuote();
-//   const state = {
-//     title: 'Initial Title',
-//   };
-//   const mockQuote = 'A Very Insightful Quote.';
-//
-//   t.deepEqual(saga.next().value, take(GET_QUOTE),
-//     'listens for GET_QUOTE action.');
-//
-//   t.deepEqual(saga.next().value, select(createDemoSelector),
-//     'grabs the current state.');
-//
-//   t.deepEqual(saga.next(state).value, put(updateTitle('You dispatched an action!')),
-//     'updates title.');
-//
-//   t.deepEqual(saga.next().value, put(receiveQuote('Fetching Quote...')),
-//     'quote message updates with fetching message.');
-//
-//   t.deepEqual(saga.next().value, call(fetchQuote),
-//     'calls fetchQuote api.');
-//
-//   t.deepEqual(saga.next(mockQuote).value, call(delay, 1000),
-//     'simulates long load time by calling delay.');
-//
-//   t.deepEqual(saga.next().value, put(receiveQuote(mockQuote)),
-//     'updates quote in state with quote received from api.');
-//
-//   t.deepEqual(saga.next().value, take(GET_QUOTE),
-//     'loops back to listening for GET_QUOTE action.');
-// });
-//
-// test('(Saga) watchGetQuote: quote already received.', t => {
-//   const saga = watchGetQuote();
-//   const state = {
-//     title: 'You dispatched an action!',
-//     quote: 'Insightful quote of the day',
-//   };
-//
-//   t.deepEqual(saga.next().value, take(GET_QUOTE),
-//     'listens for GET_QUOTE action.');
-//
-//   t.deepEqual(saga.next().value, select(createDemoSelector),
-//     'grabs the current state.');
-//
-//   t.deepEqual(saga.next(state).value, put(updateTitle('You already have a quote.')),
-//     'grabs the current state.');
-//
-//   t.deepEqual(saga.next().value, take(GET_QUOTE),
-//     'loops back to listening for GET_QUOTE action.');
-// });
+test('(Constant) CREATE_DEMO_FAILURE === "CreateDemo/CREATE_DEMO_FAILURE"', t => {
+  t.is(CREATE_DEMO_FAILURE, 'CreateDemo/CREATE_DEMO_FAILURE');
+});
+
+test('(Action) createDemo',
+  actionTest(
+    createDemo,
+    { name: 'test' },
+    { type: CREATE_DEMO, payload: { name: 'test' } })
+  );
+
+test('(Action) createDemoFailure',
+  actionTest(
+    createDemoFailure,
+    { message: 'bad email' },
+    { type: CREATE_DEMO_FAILURE, payload: { message: 'bad email' } })
+  );
+
+test('(Reducer) initializes with empty state', t => {
+  t.deepEqual(createDemoReducer(undefined, {}), {});
+});
+
+const testState = () => ({ title: 'A Title', quote: 'A Quote' });
+
+test('(Reducer) return previous state when no action is matched', reducerTest(
+  createDemoReducer,
+  testState(),
+  { type: '@@@@@@@' },
+  testState()
+));
+
+test('(Reducer) doesnt try to handle saga', reducerTest(
+  createDemoReducer,
+  testState(),
+  createDemo,
+  testState(),
+));
+
+test('(Saga) watchCreateDemo - API Success', t => {
+  const saga = watchCreateDemo();
+  const payload = { name: 'test demo', email: 'name@email.com' };
+  const createDemoAction = createDemo(payload);
+  const demoSession = { mockResponse: 'blah blah' };
+  const demoState = { guid: 1234 };
+
+  t.deepEqual(saga.next().value, take(CREATE_DEMO),
+    'listens for CREATE_DEMO action.');
+  t.deepEqual(saga.next(createDemoAction).value, call(api.createDemo, payload.name, payload.email),
+    'calls api with action payload as params.');
+  t.deepEqual(saga.next(demoSession).value, put(receiveDemoSuccess(demoSession)),
+    'dispatches receiveDemoSuccess action.');
+  t.deepEqual(saga.next().value, select(demoSelector),
+    'gets the updated state.');
+  t.deepEqual(saga.next(demoState).value, put(push(`/dashboard/${demoState.guid}`)),
+    'dispatches route change to dashboard');
+  t.deepEqual(saga.next().value, take(CREATE_DEMO),
+    'saga resets, and begins listening for CREATE_DEMO again.');
+});
+
+test.todo('Build a meaningful action around api failure.');
+test('(Saga) watchCreateDemo - API Failure', t => {
+  const saga = watchCreateDemo();
+  const payload = { name: 'test demo', email: 'name@email.com' };
+  const createDemoAction = createDemo(payload);
+  const error = { message: 'bad email' };
+
+  t.deepEqual(saga.next().value, take(CREATE_DEMO),
+    'listens for CREATE_DEMO action.');
+  t.deepEqual(saga.next(createDemoAction).value, call(api.createDemo, payload.name, payload.email),
+    'calls api with action payload as params.');
+  t.deepEqual(saga.throw(error).value, put(createDemoFailure(error)),
+    'dispatches createDemoFailure if api call fails.');
+  t.deepEqual(saga.next().value, take(CREATE_DEMO),
+    'saga resets, and begins listening for CREATE_DEMO again.');
+});

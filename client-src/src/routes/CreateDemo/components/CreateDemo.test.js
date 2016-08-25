@@ -5,6 +5,9 @@ import { bindActionCreators } from 'redux';
 import { shallow } from 'enzyme';
 import { CreateDemo } from './CreateDemo';
 
+test.todo('Move hard coded colors in sass file to reference a colors theme object.');
+test.todo('Add error state/response from failed createDemo call.');
+
 const setup = (full = true) => {
   const spies = {
     createDemo: sinon.spy(),
@@ -21,7 +24,6 @@ const setup = (full = true) => {
   return { spies, props, component };
 };
 
-test.todo('Move hard coded colors in sass file to reference a colors theme object.');
 test('(Component) Renders with needed elements for interaction', t => {
   const { component } = setup();
   t.is(component.find('TextField').length, 2,

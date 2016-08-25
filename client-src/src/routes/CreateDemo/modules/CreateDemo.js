@@ -2,13 +2,13 @@ import { call, take, put, select } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import api from 'services';
 
-import { loginSuccess, receiveDemoSuccess, demoSelector } from 'modules/demos';
-import { adminDataReceived } from 'routes/Dashboard/modules/Dashboard';
+import { receiveDemoSuccess, demoSelector } from 'modules/demos';
 
 // ------------------------------------
 // Constants
 // ------------------------------------
 export const CREATE_DEMO = 'CreateDemo/CREATE_DEMO';
+export const CREATE_DEMO_FAILURE = 'CreateDemo/CREATE_DEMO_FAILURE';
 
 // ------------------------------------
 // Actions
@@ -18,20 +18,36 @@ export const createDemo = (value) => ({
   payload: value,
 });
 
+export const createDemoFailure = (value) => ({
+  type: CREATE_DEMO_FAILURE,
+  payload: value,
+});
+
 export const actions = {
   createDemo,
+  createDemoFailure,
 };
 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
+  [CREATE_DEMO_FAILURE]: (state, action) => {
+    console.log(action.payload);
+
+    return {
+      ...state,
+      error: action.payload.message,
+    };
+  },
 };
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = { };
+export const createDemoSelector = state => state.createDemo;
+
+const initialState = {};
 export const createDemoReducer = (state = initialState, action) => {
   const handler = ACTION_HANDLERS[action.type];
 
@@ -42,8 +58,6 @@ export default createDemoReducer;
 // ------------------------------------
 // Sagas
 // ------------------------------------
-export const createDemoSelector = state => state.createDemo;
-
 export function *watchCreateDemo() {
   while (true) {
     const { payload } = yield take(CREATE_DEMO);
@@ -51,14 +65,12 @@ export function *watchCreateDemo() {
     try {
       const demoSession = yield call(api.createDemo, payload.name, payload.email);
       yield put(receiveDemoSuccess(demoSession));
+      const demoState = yield select(demoSelector);
+      yield put(push(`/dashboard/${demoState.guid}`));
     }
     catch (error) {
-      console.log(error);
-      // yield put(createDemoFailure(error));
+      yield put(createDemoFailure(error));
     }
-
-    const demoState = yield select(demoSelector);
-    yield put(push(`/dashboard/${demoState.guid}`));
   }
 }
 
