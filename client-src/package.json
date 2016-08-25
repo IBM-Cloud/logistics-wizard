@@ -190,6 +190,7 @@
       "src/**/*.spec.js",
       "src/**/*.test.js",
       "src/**/*.story.js",
+      "src/routes/**/index.js",
       "src/store/*"
     ],
     "reporter": [

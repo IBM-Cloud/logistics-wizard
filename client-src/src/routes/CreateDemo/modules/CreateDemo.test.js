@@ -1,19 +1,21 @@
 import test from 'ava';
-// import nock from 'nock';
 import { reducerTest, actionTest } from 'redux-ava';
 import { call, take, select, put } from 'redux-saga/effects';
+import { receiveDemoSuccess, demoSelector } from 'modules/demos';
+import { push } from 'react-router-redux';
+import api from 'services';
 import {
   CREATE_DEMO,
   CREATE_DEMO_FAILURE,
   createDemo,
   createDemoFailure,
   createDemoReducer,
-  createDemoSelector,
   watchCreateDemo,
 } from './CreateDemo';
-import { receiveDemoSuccess, demoSelector } from 'modules/demos';
-import { push } from 'react-router-redux';
-import api from 'services';
+
+test('(Selector) returns the slice of state for createDemo.', t => {
+  t.deepEqual(demoSelector({ demoSession: { id: '123' } }), { id: '123' });
+});
 
 test('(Constant) CREATE_DEMO === "CreateDemo/CREATE_DEMO"', t => {
   t.is(CREATE_DEMO, 'CreateDemo/CREATE_DEMO');
@@ -41,20 +43,26 @@ test('(Reducer) initializes with empty state', t => {
   t.deepEqual(createDemoReducer(undefined, {}), {});
 });
 
-const testState = () => ({ title: 'A Title', quote: 'A Quote' });
-
 test('(Reducer) return previous state when no action is matched', reducerTest(
   createDemoReducer,
-  testState(),
+  { mock: 'mock' },
   { type: '@@@@@@@' },
-  testState()
+  { mock: 'mock' },
 ));
+
+test('(Reducer) adds error to the state on createDemoFailure.', reducerTest(
+  createDemoReducer,
+  {},
+  createDemoFailure({ message: 'invalid email' }),
+  { error: 'invalid email' },
+));
+
 
 test('(Reducer) doesnt try to handle saga', reducerTest(
   createDemoReducer,
-  testState(),
+  { mock: 'mock' },
   createDemo,
-  testState(),
+  { mock: 'mock' },
 ));
 
 test('(Saga) watchCreateDemo - API Success', t => {

@@ -4,9 +4,11 @@ import api from 'services';
 
 import { receiveDemoSuccess, demoSelector } from 'modules/demos';
 
+export const createDemoSelector = state => state.createDemo;
 // ------------------------------------
 // Constants
 // ------------------------------------
+
 export const CREATE_DEMO = 'CreateDemo/CREATE_DEMO';
 export const CREATE_DEMO_FAILURE = 'CreateDemo/CREATE_DEMO_FAILURE';
 
@@ -33,7 +35,7 @@ export const actions = {
 // ------------------------------------
 const ACTION_HANDLERS = {
   [CREATE_DEMO_FAILURE]: (state, action) => {
-    console.log(action.payload);
+    console.error(action.payload);
 
     return {
       ...state,
@@ -45,8 +47,6 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-export const createDemoSelector = state => state.createDemo;
-
 const initialState = {};
 export const createDemoReducer = (state = initialState, action) => {
   const handler = ACTION_HANDLERS[action.type];
