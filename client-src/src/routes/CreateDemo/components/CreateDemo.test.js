@@ -5,14 +5,16 @@ import { bindActionCreators } from 'redux';
 import { shallow } from 'enzyme';
 import { CreateDemo } from './CreateDemo';
 
-const setup = (quote) => {
+test.todo('Move hard coded colors in sass file to reference a colors theme object.');
+test.todo('Add error state/response from failed createDemo call.');
+
+const setup = (full = true) => {
   const spies = {
     createDemo: sinon.spy(),
     dispatch: sinon.spy(),
   };
   const props = {
-    containerQuery: { full: true },
-    quote,
+    containerQuery: { full },
     ...bindActionCreators({
       createDemo: spies.createDemo,
     }, spies.dispatch),
@@ -22,20 +24,43 @@ const setup = (quote) => {
   return { spies, props, component };
 };
 
-test.todo('Write tests for CreateDemo Component elements.');
-test.todo('Move hard coded colors to reference a colors style object.');
-test('(Component) Renders with expected elements', t => {
-  // const { props, component } = setup();
-  t.pass();
+test('(Component) Renders with needed elements for interaction', t => {
+  const { component } = setup();
+  t.is(component.find('TextField').length, 2,
+    'Has two inputs for name/email');
+  t.is(component.find('TextField').first().props().id, 'demoName');
+  t.is(component.find('TextField').last().props().id, 'email');
+  t.is(component.find('RaisedButton').length, 1,
+    'has a button to create a demo');
+  t.is(typeof (component.find('RaisedButton').first().prop('onClick')), 'function',
+    'uses onClick prop to call a function');
 });
 
-test('(Component) Works as expected.', t => {
+test('(Component) is responsive.', t => {
+  let { component } = setup(false);
+  t.false(component.find('div').first().hasClass('full'));
+
+  component = setup().component;
+  t.true(component.find('div').first().hasClass('full'));
+});
+
+test('(Component) Create Demo button works as expected.', t => {
   const { spies, component } = setup();
 
   t.false(spies.createDemo.calledOnce);
   t.false(spies.dispatch.calledOnce);
+
+  const nameField = component.find('TextField').first();
+  nameField.simulate('change', { target: { id: 'demoName', value: 'test text' } });
   component.find('RaisedButton').first().simulate('click');
   t.true(spies.dispatch.calledOnce);
   t.true(spies.createDemo.calledOnce,
     'calls createDemo when clicked');
+  t.deepEqual(spies.createDemo.args[0][0], { name: 'test text' },
+    'passes name value from text field to createDemo');
+
+  nameField.simulate('change', { target: { id: 'email', value: 'email@company.com' } });
+  component.find('RaisedButton').first().simulate('click');
+  t.deepEqual(spies.createDemo.args[1][0], { name: 'test text', email: 'email@company.com' },
+    'if email is entered, it is also passed');
 });
