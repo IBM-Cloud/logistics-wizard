@@ -1,5 +1,6 @@
 import React from 'react';
 import IconMenu from 'material-ui/IconMenu';
+import { Icon } from 'react-fa';
 import RoleItem from './RoleItem';
 import classNames from 'classnames';
 import classes from './GlobalNav.scss';
@@ -27,29 +28,41 @@ export const RoleSwitcher = () => (
   <IconMenu
     // anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
     iconButtonElement={
-      <span
-        className={classNames({
-          'fa-stack': true,
-          [classes.stack]: true,
-        })}
-      >
-        <i
-          className={classNames({
-            fa: true,
-            'fa-circle': true,
-            'fa-stack-2x': true,
-            [classes.circle]: true,
-          })}
+      <span className={classes.stack}>
+        <Icon
+          stack="2x"
+          name="circle"
+          className={classes.circle}
         />
-        <i
-          className={classNames({
-            fa: true,
-            'fa-user': true,
-            'fa-stack-1x': true,
-            [classes.user]: true,
-          })}
+        <Icon
+          stack="1x"
+          name="user"
+          className={classes.user}
         />
       </span>
+      // <span
+      //   className={classNames({
+      //     'fa-stack': true,
+      //     [classes.stack]: true,
+      //   })}
+      // >
+      //   <i
+      //     className={classNames({
+      //       fa: true,
+      //       'fa-circle': true,
+      //       'fa-stack-2x': true,
+      //       [classes.circle]: true,
+      //     })}
+      //   />
+      //   <i
+      //     className={classNames({
+      //       fa: true,
+      //       'fa-user': true,
+      //       'fa-stack-1x': true,
+      //       [classes.user]: true,
+      //     })}
+      //   />
+      // </span>
     }
   >
     <RoleItem label="Supply Chain Manager" icon="fa-user" />
