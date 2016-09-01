@@ -25,6 +25,7 @@ def create_app():
     from os import environ as env
     from server.exceptions import APIException
     from server.web.utils import request_wants_json
+    from server.web.rest.root import root_v1_blueprint
     from server.web.rest.demos import demos_v1_blueprint, setup_auth_from_request
     from server.web.rest.shipments import shipments_v1_blueprint
     from server.web.rest.distribution_centers import distribution_centers_v1_blueprint
@@ -41,6 +42,7 @@ def create_app():
         logistics_wizard.debug = True
 
     # Register the blueprints for each component
+    logistics_wizard.register_blueprint(root_v1_blueprint, url_prefix='/api/v1')
     logistics_wizard.register_blueprint(demos_v1_blueprint, url_prefix='/api/v1')
     logistics_wizard.register_blueprint(shipments_v1_blueprint, url_prefix='/api/v1')
     logistics_wizard.register_blueprint(distribution_centers_v1_blueprint, url_prefix='/api/v1')
