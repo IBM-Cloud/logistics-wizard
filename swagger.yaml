@@ -6,7 +6,7 @@ info:
   license:
     name: Apache 2.0
 # the domain of the service
-host: logistics-wizard.mybluemix.net
+host: logistics-wizard-controller.mybluemix.net
 # array of all schemes that your API supports
 schemes:
   - https

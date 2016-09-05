@@ -19,7 +19,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='logistics-wizard',
+    name='logistics-wizard-controller',
     version='0.1.0',
     description='Proxy app for the Logistics Wizard demo system',
     long_description=long_description,
