@@ -25,6 +25,7 @@ def create_app():
     from os import environ as env
     from server.exceptions import APIException
     from server.web.utils import request_wants_json
+    from server.web.rest.root import root_v1_blueprint
     from server.web.rest.demos import demos_v1_blueprint, setup_auth_from_request
     from server.web.rest.shipments import shipments_v1_blueprint
     from server.web.rest.distribution_centers import distribution_centers_v1_blueprint
@@ -41,6 +42,7 @@ def create_app():
         logistics_wizard.debug = True
 
     # Register the blueprints for each component
+    logistics_wizard.register_blueprint(root_v1_blueprint, url_prefix='/api/v1')
     logistics_wizard.register_blueprint(demos_v1_blueprint, url_prefix='/api/v1')
     logistics_wizard.register_blueprint(shipments_v1_blueprint, url_prefix='/api/v1')
     logistics_wizard.register_blueprint(distribution_centers_v1_blueprint, url_prefix='/api/v1')
@@ -99,15 +101,15 @@ def create_app():
     logistics_wizard.errorhandler(404)(not_found_handler)
 
     # Register app with Service Discovery and initiate heartbeat cycle if running in PROD
-    if Config.ENVIRONMENT == 'PROD' and Config.SD_STATUS == 'ON' and env.get('VCAP_APPLICATION') is not None:
+    if Config.SD_STATUS == 'ON' and env.get('VCAP_APPLICATION') is not None:
         from signal import signal, SIGINT, SIGTERM
         from sys import exit
 
         # Create service publisher and register service
         creds = json.loads(env['VCAP_SERVICES'])['service_discovery'][0]['credentials']
         publisher = ServicePublisher('lw-controller', 300, 'UP',
-                                     '%s.mybluemix.net' % json.loads(env['VCAP_APPLICATION'])['name'],
-                                     'http', tags=['logistics-wizard', 'front-end'],
+                                     json.loads(env['VCAP_APPLICATION'])['application_uris'][0],
+                                     'http', tags=['logistics-wizard', 'front-end', env['LOGISTICS_WIZARD_ENV']],
                                      url=creds['url'], auth_token=creds['auth_token'])
         publisher.register_service(True)
 
