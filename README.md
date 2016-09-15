@@ -6,6 +6,7 @@ Logistics Wizard is a reimagined supply chain optimization system for the 21st c
 
 The following projects are leveraged in the overall Logistics Wizard solution, yet are built to be extensible for other purposes:
 
+* [logistics-wizard-webui][webui_github_url]
 * [logistics-wizard-controller][controller_github_url]
 * [logistics-wizard-erp][erp_github_url]
 * [logistics-wizard-recommendation][recommendation_github_url]
@@ -43,6 +44,7 @@ Please check out our [Contributing Guidelines](.github/CONTRIBUTING.md) for deta
 See [License.txt](License.txt) for license information.
 
 <!--Links-->
+[webui_github_url]: https://github.com/IBM-Bluemix/logistics-wizard-webui
 [controller_github_url]: https://github.com/IBM-Bluemix/logistics-wizard-controller
 [erp_github_url]: https://github.com/IBM-Bluemix/logistics-wizard-erp
 [recommendation_github_url]: https://github.com/IBM-Bluemix/logistics-wizard-recommendation
