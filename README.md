@@ -12,6 +12,7 @@ The following projects are leveraged in the overall Logistics Wizard solution, y
 * [logistics-wizard-recommendation][recommendation_github_url]
 
 To deploy the full system all at once, check out the [Logistics Wizard Toolchain][toolchain_github_url]
+![Architecture Diagram](https://ibm.box.com/shared/static/lw2if5htihlbjtghoqo6jg8sgowivccz.png)
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
