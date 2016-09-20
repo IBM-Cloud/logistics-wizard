@@ -8,9 +8,19 @@
   ],
   "milestones": [
     {
+      "title": "9/8 - Sprint",
+      "state": "open",
+      "due_on": "2016-09-08T23:59:59Z"
+    },
+    {
       "title": "9/22 - Sprint",
       "state": "open",
       "due_on": "2016-09-22T23:59:59Z"
+    },
+    {
+      "title": "10/6 - Sprint",
+      "state": "open",
+      "due_on": "2016-10-06T23:59:59Z"
     }
   ]
 }]
