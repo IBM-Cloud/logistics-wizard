@@ -1,4 +1,4 @@
 language: node_js
 node_js:
   - '4.4'
-script: npm install -g github-sync-labels-milestones && github-sync-labels-milestones -c repository-config.json -t $GITHUB_TOKEN
+script: npm install -g github-sync-labels-milestones && github-sync-labels-milestones -c repository-config.json -t $GITHUB_TOKEN -v
