@@ -47,6 +47,10 @@ To deploy the full system all at once, check out the [Logistics Wizard Toolchain
   }
 )
 
+## Project Milestones
+
+The GitHub milestones for this project and its children are managed by editing the [repository config](repository-config.json) file. The syntax is described in [this project](https://github.com/Jimdo/github-sync-labels-milestones). Modify the file and commit. Travis will take care of creating/updating the milestones.
+
 ## Contribute
 Please check out our [Contributing Guidelines](.github/CONTRIBUTING.md) for detailed information on how you can lend a hand to the Logistics Wizard demo implementation effort.
 
