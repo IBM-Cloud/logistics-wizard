@@ -1,0 +1,16 @@
+[{
+  "repositories": [
+    "IBM-Bluemix/logistics-wizard",
+    "IBM-Bluemix/logistics-wizard-erp",
+    "IBM-Bluemix/logistics-wizard-webui",
+    "IBM-Bluemix/logistics-wizard-controller",
+    "IBM-Bluemix/logistics-wizard-recommendation"
+  ],
+  "milestones": [
+    {
+      "title": "9/22 - Sprint",
+      "state": "open",
+      "due_on": "2016-09-22T23:59:59Z"
+    }
+  ]
+}]
