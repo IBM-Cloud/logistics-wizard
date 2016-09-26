@@ -1,6 +1,7 @@
 [{
   "repositories": [
     "IBM-Bluemix/logistics-wizard",
+    "IBM-Bluemix/logistics-wizard-toolchain",
     "IBM-Bluemix/logistics-wizard-erp",
     "IBM-Bluemix/logistics-wizard-webui",
     "IBM-Bluemix/logistics-wizard-controller",
