@@ -49,6 +49,8 @@ To deploy the full system all at once, check out the [Logistics Wizard Toolchain
   }
 )
 
+Visit the [wiki](https://github.com/IBM-Bluemix/logistics-wizard/wiki) for a detailed breakdown of the Logistics Wizard demo architecture and deployment strategy.
+
 ## Related Blog Posts, Videos, etc
 
 - [Build a smarter supply chain with LoopBack](https://developer.ibm.com/bluemix/2016/07/11/building-smarter-supply-chain-developer-journey-loopback/)
