@@ -24,7 +24,7 @@ To deploy the full system all at once, check out the [Logistics Wizard Toolchain
 
 ## Architecture
 
-![Architecture Diagram](https://ibm.box.com/shared/static/lw2if5htihlbjtghoqo6jg8sgowivccz.png)
+![Architecture Diagram](architecture.png)
 
 ![Architecture](http://g.gravizo.com/g?
   digraph G {
