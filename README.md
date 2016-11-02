@@ -30,22 +30,17 @@ To deploy the full system all at once, check out the [Logistics Wizard Toolchain
   digraph G {
     node [fontname = "helvetica"]
     rankdir=RL
-    user -> controller [label="1 - Makes a request"]
-    recommendations -> discovery [headlabel="2 - Registers and sends heartbeat" labeldistance=12 labelangle=-16]
-    erp -> discovery [label="3 - Registers and sends heartbeat"]
-    controller -> discovery [taillabel="4 - Query for services" labeldistance=8 labelangle=-7]
-    controller -> erp [label="5 - CRUD SCM data"]
-    controller -> recommendations [label="6 - Retrieve/update recommendations" dir="back"]
+    user -> controller [label="Makes a request"]
+    controller -> erp [label="CRUD SCM data"]
+    controller -> recommendations [label="Retrieve/update recommendations" dir="back"]
     {rank=max; user}
     {rank=same; erp -> controller [style=invis]}
     {rank=same; controller -> recommendations [style=invis]}
-    {rank=min; discovery}
     /* styling */
     user [shape=diamond width=1 height=1 fixedsize=true style=filled color="black" fontcolor=white label="User"]
     erp [shape=rect style=filled color="%2324B643" fontcolor=white label="ERP"]
     controller [shape=rect label="Controller API"]
     recommendations [shape=rect style=filled color="%2324B643" fontcolor=white label="Recommendations"]
-    discovery [shape=circle width=1 fixedsize=true style=filled color="%234E96DB" fontcolor=white label="Service\\nRegistry"]
   }
 )
 
