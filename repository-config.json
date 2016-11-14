@@ -9,16 +9,6 @@
   ],
   "milestones": [
     {
-      "title": "9/8 - Sprint",
-      "state": "closed",
-      "due_on": "2016-09-08T23:59:59Z"
-    },
-    {
-      "title": "9/22 - Sprint",
-      "state": "closed",
-      "due_on": "2016-09-22T23:59:59Z"
-    },
-    {
       "title": "10/6 - Sprint",
       "state": "closed",
       "due_on": "2016-10-06T23:59:59Z"
@@ -26,7 +16,12 @@
     {
       "title": "11/17 - Sprint",
       "state": "open",
-      "due_on": "2016-11-17T23:59:59Z"      
+      "due_on": "2016-11-17T23:59:59Z"
+    },
+    {
+      "title": "12/1 - Sprint",
+      "state": "open",
+      "due_on": "2016-12-01T23:59:59Z"
     }
   ]
 }]
