@@ -2,6 +2,8 @@
 
 Logistics Wizard is a reimagined supply chain optimization system for the 21st century. It is comprised of a set of loosely-coupled, distributed services that take an existing ERP system and extend its functionality by leveraging various cloud services. The goal of this system is to showcase several common SaaS implementation patterns and provide them to our developer community. This demo exhibits hybrid cloud, microservices, and big data analytics concepts that can be reused when building enterprise-level applications on Bluemix.
 
+[![Logistics Wizard on Bluemix](http://img.youtube.com/vi/wCxXs83-eRc/0.jpg)](http://www.youtube.com/watch?v=wCxXs83-eRc "Logistics Wizard on Bluemix")
+
 The following projects are leveraged in the overall Logistics Wizard solution, yet are built to be extensible for other purposes:
 
 * [logistics-wizard-webui][webui_github_url]
