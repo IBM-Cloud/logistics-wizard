@@ -17,9 +17,13 @@ One scenario, illustrating how a supply chain can be made more agile, involves d
 
   [![Logistics Wizard on Bluemix](docs/youtube_play.png)](http://www.youtube.com/watch?v=wCxXs83-eRc "Logistics Wizard on Bluemix")
 
+## Try the Logistics Wizard sample
+
+Use [this walkthrough](WALKTHROUGH.md) to view the application in action.
+
 ## Deploy Logistics Wizard in Bluemix
 
-To deploy the full system all at once, check out the [Logistics Wizard Toolchain][toolchain_github_url]
+To deploy your own environment, check out the [Logistics Wizard Toolchain][toolchain_github_url] and get started in minutes.
 
 ## Architecture
 
