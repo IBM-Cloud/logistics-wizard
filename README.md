@@ -15,7 +15,12 @@ Logistics Wizard aims to simulate an environment running an ERP system and augme
 
 One scenario, illustrating how a supply chain can be made more agile, involves dealing with a bad weather condition. Considering a global retail company with distribution centers, retail stores and ongoing shipments, how can this company adapt its supply chain to react to changing weather conditions that could impact its shipments or become opportunities to increase revenues.
 
-  [![Logistics Wizard on Bluemix](docs/youtube_play.png)](http://www.youtube.com/watch?v=wCxXs83-eRc "Logistics Wizard on Bluemix")
+
+<p align="center">
+  <kbd>
+    <img src="docs/youtube_play.png">
+  </kbd>
+</p>
 
 ## Try the Logistics Wizard sample
 
@@ -42,6 +47,8 @@ The following projects are leveraged in the overall Logistics Wizard solution:
 Visit the [wiki](https://github.com/IBM-Bluemix/logistics-wizard/wiki) for a detailed breakdown of the Logistics Wizard demo architecture and deployment strategy.
 
 ## Related Blog Posts, Videos, etc
+
+- [Microservices on Bluemix: A multi-compute approach using Cloud Foundry and OpenWhisk](https://www.ibm.com/blogs/bluemix/2017/02/microservices-multi-compute-approach-using-cloud-foundry-openwhisk/)
 
 - [Build a smarter supply chain with LoopBack](https://developer.ibm.com/bluemix/2016/07/11/building-smarter-supply-chain-developer-journey-loopback/)
 
