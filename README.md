@@ -6,6 +6,10 @@ The video below demonstates how Acme Freight Shipping used the Logistics Wizard 
 
 [![](acme-demo.png)](https://www.youtube.com/watch?v=PPIj_dICvs8&feature=youtu.be)
 
+# Acme Freight Shipping Architecture (In Progress)
+Areas highlighted in yellow are TBD or currently changing
+![](acmefreightshipping-architecture_inprogress.001.jpeg)
+
 # About the Logistics Wizard Framework
 
 Logistics Wizard is a reimagined supply chain optimization system for the 21st century.
@@ -15,7 +19,7 @@ A number of companies use on-premises applications to run their supply chain bus
 Logistics Wizard aims to simulate an environment running an ERP system and augments this ERP system with applications to improve the visibility and agility of supply chain managers. In this case, the ERP system is a simulator implementing a very small subset of the functionalities of a real ERP system. The goal is to showcase several common SaaS implementation patterns. Logistics Wizard exhibits hybrid cloud, micro-services, and big data analytics concepts that can be reused when building enterprise-level applications on Bluemix.
 
 
-## Architecture
+## Logistics Wizard Architecture
 
 The following projects are leveraged in the overall Logistics Wizard solution:
 
