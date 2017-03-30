@@ -1,4 +1,12 @@
-# Logistics Wizard Overview
+# Acme Freight Shipping
+
+Acme Freight Shipping is a fictional shipping and logistics application, customized from the [Logistics Wizard](https://github.com/ibm-bluemix/logistics-wizard) application framework, built to reimagine the supply chain optimization system for the 21st century.
+
+The video below demonstates how Acme Freight Shipping used the Logistics Wizard framework to deliver an application allowing them to revolutionize the agility of their supply chain.
+
+[Video]
+
+# About the Logistics Wizard Framework
 
 Logistics Wizard is a reimagined supply chain optimization system for the 21st century.
 
@@ -6,22 +14,6 @@ A number of companies use on-premises applications to run their supply chain bus
 
 Logistics Wizard aims to simulate an environment running an ERP system and augments this ERP system with applications to improve the visibility and agility of supply chain managers. In this case, the ERP system is a simulator implementing a very small subset of the functionalities of a real ERP system. The goal is to showcase several common SaaS implementation patterns. Logistics Wizard exhibits hybrid cloud, micro-services, and big data analytics concepts that can be reused when building enterprise-level applications on Bluemix.
 
-One scenario, illustrating how a supply chain can be made more agile, involves dealing with a bad weather condition. Considering a global retail company with distribution centers, retail stores and ongoing shipments, how can this company adapt its supply chain to react to changing weather conditions that could impact its shipments or become opportunities to increase revenues.
-
-
-<p align="center">
-  <kbd>
-    <img src="docs/youtube_play.png">
-  </kbd>
-</p>
-
-## Try the Logistics Wizard sample
-
-Use [this walkthrough](WALKTHROUGH.md) to view the application in action.
-
-## Deploy Logistics Wizard in Bluemix
-
-To deploy your own environment, check out the [Logistics Wizard Toolchain][toolchain_github_url] and get started in minutes.
 
 ## Architecture
 
@@ -50,10 +42,6 @@ Visit the [wiki](https://github.com/IBM-Bluemix/logistics-wizard/wiki) for a det
 - [Using React and other technologies for Logistics Wizard UI](https://www.ibm.com/blogs/bluemix/2016/01/using-react/)
 
 - [Old skills, new tricks: Unit testing OpenWhisk actions in a serverless world](https://www.ibm.com/blogs/bluemix/2016/12/unit-testing-openwhisk-actions-serverless-world/)
-
-## Project Milestones
-
-The GitHub milestones for this project and its children are managed by editing the [repository config](repository-config.json) file. The syntax is described in [this project](https://github.com/Jimdo/github-sync-labels-milestones). Modify the file and commit. Travis will take care of creating/updating the milestones.
 
 ## Contribute
 Please check out our [Contributing Guidelines](.github/CONTRIBUTING.md) for detailed information on how you can lend a hand to the Logistics Wizard demo implementation effort.
