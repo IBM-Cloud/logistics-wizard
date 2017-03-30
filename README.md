@@ -1,8 +1,8 @@
 # Acme Freight Shipping
 
-Acme Freight Shipping is a fictional shipping and logistics application, customized from the [Logistics Wizard](https://github.com/ibm-bluemix/logistics-wizard) application framework, built to reimagine the supply chain optimization system for the 21st century.
+Acme Freight Shipping is a fictional shipping and logistics company using the [Logistics Wizard](https://github.com/ibm-bluemix/logistics-wizard) application framework to reimagine supply chain optimization system for the 21st century.
 
-The video below demonstates how Acme Freight Shipping used the Logistics Wizard framework to deliver an application allowing them to revolutionize the agility of their supply chain.
+The video below demonstates how Acme Freight Shipping used the Logistics Wizard framework, along with IBM API Connect, to deliver an application allowing them to revolutionize the agility of their supply chain.
 
 [![](acme-demo.png)](https://www.youtube.com/watch?v=PPIj_dICvs8&feature=youtu.be)
 
