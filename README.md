@@ -4,7 +4,7 @@ Acme Freight Shipping is a fictional shipping and logistics application, customi
 
 The video below demonstates how Acme Freight Shipping used the Logistics Wizard framework to deliver an application allowing them to revolutionize the agility of their supply chain.
 
-[Video]
+[![](acme-demo.png)](https://www.youtube.com/watch?v=PPIj_dICvs8&feature=youtu.be)
 
 # About the Logistics Wizard Framework
 
