@@ -47,6 +47,8 @@ Visit the [wiki](https://github.com/IBM-Bluemix/logistics-wizard/wiki) for a det
 
 - [Old skills, new tricks: Unit testing OpenWhisk actions in a serverless world](https://www.ibm.com/blogs/bluemix/2016/12/unit-testing-openwhisk-actions-serverless-world/)
 
+- [Deploy Logistics Wizard microservices with Kubernetes and Istio](https://www.ibm.com/blogs/bluemix/2017/07/deploy-logistics-wizard-microservices-kubernetes-istio/)
+
 ## Project Milestones
 
 The GitHub milestones for this project and its children are managed by editing the [repository config](repository-config.json) file. The syntax is described in [this project](https://github.com/Jimdo/github-sync-labels-milestones). Modify the file and commit. Travis will take care of creating/updating the milestones.
