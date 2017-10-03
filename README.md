@@ -17,7 +17,10 @@ Use [this walkthrough](WALKTHROUGH.md) to view the application in action.
 
 ## Deploy Logistics Wizard in Bluemix
 
-To deploy your own environment, check out the [Logistics Wizard Toolchain][toolchain_github_url] and get started in minutes.
+You can deploy your own environment in the following ways:
+  1. Use the [Logistics Wizard Toolchain][toolchain_github_url] to deploy the apps for you.
+  2. Follow these [instructions](https://www.ibm.com/blogs/bluemix/2017/07/deploy-logistics-wizard-microservices-kubernetes-istio/) to deploy the ERP & Controller as Cloud Foundry Docker Apps.
+  3. Learn more about deploying the ERP & Controller using Kubernetes & Istio in this [blog](https://www.ibm.com/blogs/bluemix/2017/07/deploy-logistics-wizard-microservices-kubernetes-istio/).
 
 ## Architecture
 
