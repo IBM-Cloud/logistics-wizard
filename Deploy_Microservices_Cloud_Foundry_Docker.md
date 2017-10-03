@@ -1,4 +1,6 @@
-# Instructions to Deploy
+# Instructions to Deploy Microservices as Cloud Foundry Docker Apps
+
+These are instructions to deploy Logistic Wizard to Bluemix. The Webui, ERP, and Controller can be deployed to Bluemix Cloud Foundry. The ERP and Controller services will be pushed to Bluemix CF using docker images while the Webui will be deployed as a regular CF app.
 
 ## Set up the ERP
 
