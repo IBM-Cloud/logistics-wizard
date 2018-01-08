@@ -10,7 +10,7 @@ bx cf create-service bx cf create-service elephantsql turtle logistics-wizard-er
 ```
 2. Then clone `logistics-wizard-erp` repo:
 ```
-git clone https://IBM-Bluemix/logistics-wizard-erp
+git clone https://github.com/IBM-Cloud/logistics-wizard-erp
 cd logistics-wizard-erp
 ```
 
@@ -34,7 +34,7 @@ bx cf start <erp-name>
 
 7. Clone the controller repo:
 ```
-git clone https://IBM-Bluemix/logistics-wizard-controller
+git clone https://github.com/IBM-Cloud/logistics-wizard-controller
 cd logistics-wizard-controller
 ```
 8. Build and push the image to docker hub.
@@ -75,7 +75,7 @@ bx cf service-key logistics-wizard-recommendation-db for-openwhisk
 
 3. Clone the logistics-wizard-recommendation repo:
 ```
-git clone https://IBM-Bluemix/logistics-wizard-recommendation
+git clone https://github.com/IBM-Cloud/logistics-wizard-recommendation
 cd logistics-wizard-recommendation
 ```
 4. Copy the local env template file
@@ -104,7 +104,7 @@ npm run build
 
 1. Clone the logistics-wizard-webui repo:
 ```
-git clone https://github.com/IBM-Bluemix/logistics-wizard-webui
+git clone https://github.com/IBM-Cloud/logistics-wizard-webui
 cd logistics-wizard-webui
 ```
 2. Install the dependencies

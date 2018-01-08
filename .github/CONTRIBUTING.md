@@ -20,7 +20,7 @@ The following is a set of guidelines for contributing to the Logistics Wizard ap
 
 ## Where can I contribute?
 
-Before diving in, consider that the Logistics Wizard codebase is more than just this repository. The demo is comprised of mutliple, loosely-coupled services, each reusable in its own right. Check out [the list of services in our wiki](https://github.com/IBM-Bluemix/logistics-wizard/wiki/Services) and carefully consider which one is of interest to you and how you would go about improving it.
+Before diving in, consider that the Logistics Wizard codebase is more than just this repository. The demo is comprised of mutliple, loosely-coupled services, each reusable in its own right. Check out [the list of services in our wiki](https://github.com/IBM-Cloud/logistics-wizard/wiki/Services) and carefully consider which one is of interest to you and how you would go about improving it.
 
 ## How can I contribute?
 
@@ -34,13 +34,13 @@ We use four different scopes for managing project work: bugs, enhancements, stor
 
 The easiest way to lend a hand is to let us know when you've found a bug in the demo! Here are the steps you should take once you've found a bug and would like to file a report:
 
-1. [Check the existing Issues](https://github.com/IBM-Bluemix/logistics-wizard/issues) and make sure that the bug you've found has not already been reported
+1. [Check the existing Issues](https://github.com/IBM-Cloud/logistics-wizard/issues) and make sure that the bug you've found has not already been reported
 2. Create a new issue and make sure to include the following:
 	- Clear and descriptive title
 	- Steps to reproduce the problem
 	- Expected behavior
 	- Actual behavior
-3. Apply the proper labels, using the [Labels wiki page](https://github.com/IBM-Bluemix/logistics-wizard/wiki/Labels) as a reference
+3. Apply the proper labels, using the [Labels wiki page](https://github.com/IBM-Cloud/logistics-wizard/wiki/Labels) as a reference
 
 That's it! We will do our best to fix the bug as soon as humanly possible and keep you informed on its progress.
 
@@ -76,9 +76,9 @@ That's it! We will do our best to fix the bug as soon as humanly possible and ke
 
 If you like the app and want to suggest an improvement without doing the leg work, that's alright. Just follow the steps below to file a request for enhancement:
 
-1. [Check the existing Issues](https://github.com/IBM-Bluemix/logistics-wizard/issues) and make sure that the enhancement you are requesting has not already been made.
+1. [Check the existing Issues](https://github.com/IBM-Cloud/logistics-wizard/issues) and make sure that the enhancement you are requesting has not already been made.
 2. Create a new issue which describes your enhancement request in detail
-3. Apply the proper labels, using the [Labels wiki page](https://github.com/IBM-Bluemix/logistics-wizard/wiki/Labels) as a reference
+3. Apply the proper labels, using the [Labels wiki page](https://github.com/IBM-Cloud/logistics-wizard/wiki/Labels) as a reference
 
 The Logistics Wizard delivery team will review your RFE and turn turn it into a story or epic, depending on the scope we determine. There is no guarantee that we will take on the RFE, but we will do our best
 
