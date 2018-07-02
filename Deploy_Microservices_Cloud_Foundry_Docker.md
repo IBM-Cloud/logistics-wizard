@@ -6,7 +6,7 @@ These are instructions to deploy Logistic Wizard to Bluemix. The Webui, ERP, and
 
 1. Set up the database for the ERP:
 ```
-bx cf create-service bx cf create-service elephantsql turtle logistics-wizard-erp-db
+bx cf create-service cloudantNoSQLDB Lite logistics-wizard-erp-db
 ```
 2. Then clone `logistics-wizard-erp` repo:
 ```
