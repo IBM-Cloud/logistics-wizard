@@ -24,7 +24,7 @@ Logistics Wizard consists of several microservices.
 
 ![Architecture Diagram](architecture.png)
 
-* [logistics-wizard-erp][erp_github_url] defines the API used by Logistics Wizard to simulate data accessed from an ERP system. The simulator is a Node.js application connected to a PostgreSQL database. The API manages users (supply chain managers and retail store managers), distribution centers, retail stores and shipments.
+* [logistics-wizard-erp][erp_github_url] defines the API used by Logistics Wizard to simulate data accessed from an ERP system. The simulator is a Node.js application connected to a database. The API manages users (supply chain managers and retail store managers), distribution centers, retail stores and shipments.
 
 * [logistics-wizard-webui][webui_github_url] provides a dashboard to view ongoing shipments and alerts. There is no log-in or user credentials to use the deployed applications. Instead a unique demo ID is assigned to any new user trying the application. Behind each demo ID, Logistics Wizard creates an isolated environment with a default set of business users, distribution centers, retail stores and shipments.
 
