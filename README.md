@@ -32,8 +32,6 @@ Logistics Wizard consists of several microservices.
 
 * [logistics-wizard-controller][controller_github_url] acts as the main controller for interaction between the services. It receives requests from the user interface and routes them to the ERP or the weather recommendation service.
 
-Visit the [wiki](https://github.com/IBM-Cloud/logistics-wizard/wiki) for a detailed breakdown of Logistics Wizard's architecture and deployment strategy.
-
 ## Related Blog Posts, Videos, etc
 
 - [Microservices on Bluemix: A multi-compute approach using Cloud Foundry and OpenWhisk](https://www.ibm.com/blogs/bluemix/2017/02/microservices-multi-compute-approach-using-cloud-foundry-openwhisk/)
