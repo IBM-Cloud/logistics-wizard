@@ -17,6 +17,10 @@ These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Env
 
  The services must be created within the public CF and then linked to your Cloud Foundry Enterprise Environment (CFEE).
 
+## Architecture
+
+Logistics Wizard consists of several microservices.
+
 ![CFEE](docs/cfee.png)
 
 The instructions below deploys to US South region, you can deploy to other regions available.
