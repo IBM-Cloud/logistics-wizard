@@ -46,9 +46,9 @@ The instructions below deploys to the US South region, but you can deploy to oth
    cf create-service cloudantNoSQLDB Lite logistics-wizard-erp-db
    ```
 
-3. Create the database called `logistics-wizard` in the console. ToDo: add a screenshot. 
+3. Create the database called `logistics-wizard` in the Cloudant dashboard. ![](docs/database.png)
 
-4. Then clone `logistics-wizard-erp` repo:
+4. Then clone `logistics-wizard-erp` repo.
 
    ```bash
    git clone https://github.com/IBM-Cloud/logistics-wizard-erp
@@ -57,7 +57,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
 
 5. Edit the [manifest.yml](ToDo: add url) and remove the `logistics-wizard-erp-db` service listed.
 
-   ToDo: check to this what else can be done here...![Snippets](docs/snippets.png)
+   ![Snippets](docs/snippets.png)
 
 6. Switch to CFEE API endpoint and target your CFEE org and space.
 
