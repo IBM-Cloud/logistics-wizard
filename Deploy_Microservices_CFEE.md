@@ -209,4 +209,20 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
    ./deploy.sh --install
    ```
 
-**Done**, now access the WebUI URL in the browser and explore the app running on CFEE. ![](docs/LW-pushed.png)
+9. Done, now access the WebUI URL in the browser and explore the app running on CFEE. ![](docs/LW-pushed.png)
+
+
+
+## Set up Stratos Console
+
+1. Install Stratos Console by following the install wizard, select the Kubernetes cluster option when installing.![](docs/CFEE_dashboard_view.png)
+
+2. Open the Stratos Console to 
+
+   - view logs stream,  
+
+   - view the health and usage, 
+
+   - view configurations, instances, routes, services, events and more. ![](docs/stratos.png) 
+
+     ![](docs/stratos2.png)
