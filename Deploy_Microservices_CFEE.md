@@ -1,6 +1,6 @@
 # Deploy Logistics Wizard to Cloud Foundry Enterprise Environment (CFEE)
 
-These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Environment. The application is broken down into a number of microservices. The core runtimes(Web U, ERP, and Controller) are deployed to CFEE and the services to public Cloud Foundry. 
+These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Environment. The application is broken down into a number of microservices. The core runtimes(Webui, ERP, and Controller) are deployed to CFEE and the services to public Cloud Foundry. 
 
 **CFEE**
 
@@ -15,7 +15,7 @@ These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Env
 - Cloudant used by Cloud Functions 
 - Weather Company Data used by Cloud Functions 
 
-The services must be created within the public CF and then linked to your Cloud Foundry Enterprise Environment (CFEE).
+The services must be created within the public Cloud Foundry(CF) and then linked to your Cloud Foundry Enterprise Environment (CFEE).
 
 ## Architecture
 
@@ -27,7 +27,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
 
 - (US South) public CF API endpoint: [https://api.ng.bluemix.net](https://api.ng.bluemix.net/) 
 
-- (US South) CFEE API endpoint:   https://api.`<environmen-name>`-cluster.us-south.containers.appdomain.cloud
+- (US South) CFEE API endpoint:   https://api.`<environment-name\>`-cluster.us-south.containers.appdomain.cloud
 
   You can get your CFEE API endpoint from the IBM Cloud [CFEE dashboard](https://console.bluemix.net/dashboard/cloudfoundry?filter=cf_environments). ![CFEE dashboard](docs/cfee_dashboard.png)
 
