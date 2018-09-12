@@ -27,7 +27,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
 
 - (US South) public CF API endpoint: [https://api.ng.bluemix.net](https://api.ng.bluemix.net/) 
 
-- (US South) CFEE API endpoint:   https://api.`<environment-name\>`-cluster.us-south.containers.appdomain.cloud
+- (US South) CFEE API endpoint:   https://api.<ENVIRONMENT_NAME\>-cluster.us-south.containers.appdomain.cloud
 
   You can get your CFEE API endpoint from the IBM Cloud [CFEE dashboard](https://console.bluemix.net/dashboard/cloudfoundry?filter=cf_environments). ![CFEE dashboard](docs/cfee_dashboard.png)
 
