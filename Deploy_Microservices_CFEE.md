@@ -134,11 +134,11 @@ The instructions below deploys to the US South region, but you can deploy to oth
 3. Build the static files for the WebUI using the appropriate environment variables.
 
    ```bash
-   CONTROLLER_SERVICE=<controller-service-url/> 
+   export CONTROLLER_SERVICE=<controller-service-URL> 
    npm run deploy:prod
    ```
 
-    Command example for above `CONTROLLER_SERVICE=https://logistics-wizard-controller.lw-cfee-demo-cluster.us-south.containers.appdomain.cloud/`
+    For example, `CONTROLLER_SERVICE=https://logistics-wizard-controller.lw-cfee-demo-cluster.us-south.containers.appdomain.cloud/`
 
 4. Deploy the WebUI to CFEE.
 
@@ -155,14 +155,16 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
 
    ```bash
    cf api https://api.ng.bluemix.net 
+   cf login
    ```
 
 2. Create the two services, `Cloudant` and  `Weather Company Data` service.
 
    ```bash
-   cf create-service weatherinsights Free-v2 logistics-wizard-weatherinsights
+   cf create-service weatherinsights Base-v2 logistics-wizard-weatherinsights
    cf create-service cloudantNoSQLDB Lite logistics-wizard-recommendation-db
    ```
+   **Note**: Weatherinsights is a 
 
 3. Create service keys for two services created, **take note of the URL values as it would be needed in step 6.**
 
@@ -186,13 +188,13 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
    cp template-local.env local.env
    ```
 
-6. Using the URL values from above update the local.env file to look like the following:
+6. Using the URL values from the terimal output above, update the local.env file to look like the following:
 
    ```bash
    PACKAGE_NAME=lwr
-   CONTROLLER_SERVICE=<controller-service-url>
-   WEATHER_SERVICE=<logistics-wizard-weatherinsights-url>
-   CLOUDANT_URL=<logistics-wizard-recommendation-db-url>
+   CONTROLLER_SERVICE=<controller-service-URL>
+   WEATHER_SERVICE=<logistics-wizard-weatherinsights-URL>
+   CLOUDANT_URL=<logistics-wizard-recommendation-db-URL>
    CLOUDANT_DATABASE=recommendations
    ```
 
