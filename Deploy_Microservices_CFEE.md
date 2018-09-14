@@ -1,21 +1,21 @@
 # Deploy Logistics Wizard to Cloud Foundry Enterprise Environment (CFEE)
 
-These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Environment(CFEE). The application is broken down into a number of microservices. The core runtimes(WebUI, ERP, and Controller) are deployed to CFEE and the services to public Cloud Foundry. 
+These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Environment(CFEE). The application is broken down into a number of microservices. The core runtimes(WebUI, ERP, and Controller) are deployed to CFEE and the services to public Cloud Foundry.
 
 If you don't have a CFEE instance, create one following steps 1 & 2 in this [link](https://console.bluemix.net/dashboard/cloudfoundry/quickstart)
 
 **CFEE**
 
-- Web UI runtime 
-- ERP runtime 
-- Controller runtime 
+- Web UI runtime
+- ERP runtime
+- Controller runtime
 
 **Non-CFEE**
 
 - Cloudant used by the ERP
-- Cloud Functions 
-- Cloudant used by Cloud Functions 
-- Weather Company Data used by Cloud Functions 
+- Cloud Functions
+- Cloudant used by Cloud Functions
+- Weather Company Data used by Cloud Functions
 
 The services must be created within the public Cloud Foundry(CF) and then linked to your Cloud Foundry Enterprise Environment (CFEE).
 
@@ -25,9 +25,9 @@ Logistics Wizard consists of several microservices.
 
 ![CFEE](docs/cfee.png)
 
-The instructions below deploys to the US South region, but you can deploy to other regions available depending on your requirements. 
+The instructions below deploys to the US South region, but you can deploy to other regions available depending on your requirements.
 
-- (US South) public CF API endpoint: [https://api.ng.bluemix.net](https://api.ng.bluemix.net/) 
+- (US South) public CF API endpoint: [https://api.ng.bluemix.net](https://api.ng.bluemix.net/)
 
 - (US South) CFEE API endpoint:   https://api.<ENVIRONMENT_NAME\>-cluster.us-south.containers.appdomain.cloud
 
@@ -38,7 +38,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
 1. In your terminal, point to public CF API endpoint and login targeting your org and space.
 
    ```bash
-   [sudo] cf api https://api.ng.bluemix.net 
+   [sudo] cf api https://api.ng.bluemix.net
    cf login
    ```
 
@@ -67,6 +67,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
    cf push --no-start
    ```
 6. Create the Cloudant database for the ERP. Navigate to [IBM Cloud Dashboard](https://console.bluemix.net/dashboard/apps) > Create Resource > Search for Cloudant > name it as `logistics-wizard-erp-db`.
+![](docs/cloudant-create.png)
 
 7. Create the database called `logistics-wizard` by launching the Cloudant dashboard. ![](docs/database.png)
 
@@ -98,9 +99,12 @@ The instructions below deploys to the US South region, but you can deploy to oth
    ```
 
 3. Set the environment variables for the controller to connect to the ERP. You can get the `OPENWHISK_AUTH` API key from the [IBM Cloud console](https://console.bluemix.net/openwhisk/learn/api-key). Choose the Region, Org and Space where you have rest of the services created.
+![](docs/openwhisk_key.png)
+
+On a Terminal or command prompt, run the below commands
 
    ```
-   cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-url>'
+   cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-URL>'
    cf set-env logistics-wizard-controller OPENWHISK_AUTH <openwhisk-auth>
    cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
    ```
@@ -129,7 +133,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
 3. Build the static files for the WebUI using the appropriate environment variables.
 
    ```bash
-   export CONTROLLER_SERVICE=<controller-service-URL> 
+   export CONTROLLER_SERVICE=<controller-service-URL>
    npm run deploy:prod
    ```
 
@@ -149,7 +153,7 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
 1. Switch to public Cloud Foundry.
 
    ```bash
-   cf api https://api.ng.bluemix.net 
+   cf api https://api.ng.bluemix.net
    cf login
    ```
 
@@ -177,7 +181,7 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
    cd logistics-wizard-recommendation
    ```
 
-5. Copy the local env template file. 
+5. Copy the local env template file.
 
    ```bash
    cp template-local.env local.env
@@ -193,9 +197,9 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
    CLOUDANT_DATABASE=recommendations
    ```
 
-7. Build your Cloud Functions actions. 
+7. Build your Cloud Functions actions.
 
-   Note: node version >=4.2.0 required and npm >=3.0.0 
+   Note: node version >=4.2.0 required and npm >=3.0.0
 
    ```bash
    npm install
@@ -216,12 +220,12 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
 
 1. Install Stratos Console by following the install wizard, select the Kubernetes cluster option when installing.![](docs/CFEE_dashboard_view.png)
 
-2. Open the Stratos Console to 
+2. Open the Stratos Console to
 
    - view logs stream,  
 
-   - view the health and usage, 
+   - view the health and usage,
 
-   - view configurations, instances, routes, services, events and more. ![](docs/stratos.png) 
+   - view configurations, instances, routes, services, events and more. ![](docs/stratos.png)
 
      ![](docs/stratos2.png)
