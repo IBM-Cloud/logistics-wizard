@@ -1,6 +1,8 @@
 # Deploy Logistics Wizard to Cloud Foundry Enterprise Environment (CFEE)
 
-These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Environment. The application is broken down into a number of microservices. The core runtimes(WebUI, ERP, and Controller) are deployed to CFEE and the services to public Cloud Foundry. 
+These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Environment(CFEE). The application is broken down into a number of microservices. The core runtimes(WebUI, ERP, and Controller) are deployed to CFEE and the services to public Cloud Foundry. 
+
+If you don't have a CFEE instance, create one following steps 1 & 2 in this [link](https://console.bluemix.net/dashboard/cloudfoundry/quickstart)
 
 **CFEE**
 
@@ -40,26 +42,18 @@ The instructions below deploys to the US South region, but you can deploy to oth
    cf login
    ```
 
-2. Create the Cloudant database for the ERP.
-
-   ```
-   cf create-service cloudantNoSQLDB Lite logistics-wizard-erp-db
-   ```
-
-3. Create the database called `logistics-wizard` in the Cloudant dashboard. ![](docs/database.png)
-
-4. Then clone `logistics-wizard-erp` repo.
+2. Launch Terminal or Command prompt and clone `logistics-wizard-erp` repo.
 
    ```bash
    git clone https://github.com/IBM-Cloud/logistics-wizard-erp
    cd logistics-wizard-erp
    ```
 
-5. Edit the [manifest.yml](ToDo: add url) and remove the `logistics-wizard-erp-db` service listed.
+3. Edit the `manifest.yml` file and remove the `logistics-wizard-erp-db` service listed.
 
    ![Snippets](docs/snippets.png)
 
-6. Switch to CFEE API endpoint and target your CFEE Org and Space.
+4. Switch to CFEE API endpoint and target your CFEE Org and Space.
 
    ```bash
    cf api <CFEE_API ENDPOINT>
@@ -67,11 +61,14 @@ The instructions below deploys to the US South region, but you can deploy to oth
    ```
    **Note:** For creating CFEE Org and Space, refer https://console.bluemix.net/docs/cloud-foundry/orgs-spaces.html#create_orgs
 
-7. Push the ERP to CFEE.
+5. Push the ERP to CFEE.
 
    ```bash
    cf push --no-start
    ```
+6. Create the Cloudant database for the ERP. Navigate to [IBM Cloud Dashboard](https://console.bluemix.net/dashboard/apps) > Create Resource > Search for Cloudant > name it as `logistics-wizard-erp-db`.
+
+7. Create the database called `logistics-wizard` by launching the Cloudant dashboard. ![](docs/database.png)
 
 8. On the CFEE dashboard, click on the Org you created under Organizations > Spaces > Space name > Services and then Create a service alias for the Cloudant Service `logistics-wizard-erp-db` and then bind it to the `logistics-wizard-erp` application. ![alias](docs/alias.png)
 
@@ -100,15 +97,13 @@ The instructions below deploys to the US South region, but you can deploy to oth
    cf push --no-start
    ```
 
-3. Set the environment variables for the controller to connect to the ERP.
+3. Set the environment variables for the controller to connect to the ERP. You can get the `OPENWHISK_AUTH` API key from the [IBM Cloud console](https://console.bluemix.net/openwhisk/learn/api-key). Choose the Region, Org and Space where you have rest of the services created.
 
    ```
    cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-url>'
    cf set-env logistics-wizard-controller OPENWHISK_AUTH <openwhisk-auth>
    cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
    ```
-
-   You can get the `OPENWHISK_AUTH` from the [IBM Cloud console](https://console.bluemix.net/openwhisk/learn/api-key). 
 
 4. Start the controller microservice.
 
@@ -164,7 +159,7 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
    cf create-service weatherinsights Base-v2 logistics-wizard-weatherinsights
    cf create-service cloudantNoSQLDB Lite logistics-wizard-recommendation-db
    ```
-   **Note**: Weatherinsights is a 
+   **Note**: weatherinsights Base-v2 requires a `paid` account and your account will be charged.
 
 3. Create service keys for two services created, **take note of the URL values as it would be needed in step 6.**
 
