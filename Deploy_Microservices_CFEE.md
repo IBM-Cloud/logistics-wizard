@@ -1,6 +1,6 @@
 # Deploy Logistics Wizard to Cloud Foundry Enterprise Environment (CFEE)
 
-These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Environment. The application is broken down into a number of microservices. The core runtimes(Webui, ERP, and Controller) are deployed to CFEE and the services to public Cloud Foundry. 
+These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Environment. The application is broken down into a number of microservices. The core runtimes(WebUI, ERP, and Controller) are deployed to CFEE and the services to public Cloud Foundry. 
 
 **CFEE**
 
@@ -36,7 +36,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
 1. In your terminal, point to public CF API endpoint and login targeting your org and space.
 
    ```bash
-   cf api https://api.ng.bluemix.net 
+   [sudo] cf api https://api.ng.bluemix.net 
    cf login
    ```
 
@@ -59,11 +59,13 @@ The instructions below deploys to the US South region, but you can deploy to oth
 
    ![Snippets](docs/snippets.png)
 
-6. Switch to CFEE API endpoint and target your CFEE org and space.
+6. Switch to CFEE API endpoint and target your CFEE Org and Space.
 
    ```bash
-   cf api <endpoint>
+   cf api <CFEE_API ENDPOINT>
+   cf login
    ```
+   **Note:** For creating CFEE Org and Space, refer https://console.bluemix.net/docs/cloud-foundry/orgs-spaces.html#create_orgs
 
 7. Push the ERP to CFEE.
 
@@ -71,7 +73,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
    cf push --no-start
    ```
 
-8. Create a service alias for the Cloudant database`logistics-wizard-erp-db` and then bind it to the `logistics-wizard-erp` application. ![alias](docs/alias.png)
+8. On the CFEE dashboard, click on the Org you created under Organizations > Spaces > Space name > Services and then Create a service alias for the Cloudant Service `logistics-wizard-erp-db` and then bind it to the `logistics-wizard-erp` application. ![alias](docs/alias.png)
 
 9. Start the ERP microservice.
 
