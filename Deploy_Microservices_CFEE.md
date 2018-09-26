@@ -1,8 +1,10 @@
 # Deploy Logistics Wizard to Cloud Foundry Enterprise Environment (CFEE)
 
-These are instructions to deploy Logistic Wizard to Cloud Foundry Enterprise Environment(CFEE). The application is broken down into a number of microservices. The core runtimes(WebUI, ERP, and Controller) are deployed to CFEE and the services to public Cloud Foundry.
+Step by step guide to deploy Logistic Wizard to Cloud Foundry Enterprise Environment(CFEE). The Logistic Wizard app is broken down into many microservices to function different part of the application. There are three runtimes(WebUI, ERP, and Controller) all of which deployed to CFEE while the services located in the public Cloud Foundry and been linked to the CFEE account. You may be thinking why to use CFEE at first place. 
 
-If you don't have a CFEE instance, create one following steps 1 & 2 in this [link](https://console.bluemix.net/dashboard/cloudfoundry/quickstart)
+With the IBM® Cloud Foundry Enterprise Environment (CFEE), you can instantiate multiple, isolated, enterprise-grade Cloud Foundry platforms on demand. Instances of the IBM Cloud Foundry Enterprise service run within your own account in the IBM Cloud. The environment is deployed on isolated hardware (Kubernetes clusters). You have full control over the environment, including access control, capacity management, change management, monitoring, and services.
+
+If this instruction guide, you will explore deploying Logistic Wizard to CFEE. First, you would need a CFEE instance ready to follow this guide. If you don't have a CFEE instance already, then you can create one by following the steps 1 & 2 in this [link](https://console.bluemix.net/dashboard/cloudfoundry/quickstart).
 
 **CFEE**
 
@@ -25,6 +27,8 @@ Logistics Wizard consists of several microservices.
 
 ![CFEE](docs/cfee.png)
 
+## Getting Started 
+
 The instructions below deploys to the US South region, but you can deploy to other regions available depending on your requirements.
 
 - (US South) public CF API endpoint: [https://api.ng.bluemix.net](https://api.ng.bluemix.net/)
@@ -38,7 +42,9 @@ The instructions below deploys to the US South region, but you can deploy to oth
 1. In your terminal, point to public CF API endpoint and login targeting your org and space.
 
    ```bash
-   [sudo] cf api https://api.ng.bluemix.net
+   cf api https://api.ng.bluemix.net
+   ic api https://api.ng.bluemix.net
+   ic target --cf
    cf login
    ```
 
@@ -104,9 +110,9 @@ The instructions below deploys to the US South region, but you can deploy to oth
 On a Terminal or command prompt, run the below commands
 
    ```
-   cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-URL>'
-   cf set-env logistics-wizard-controller OPENWHISK_AUTH <openwhisk-auth>
-   cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
+cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-URL>'
+cf set-env logistics-wizard-controller OPENWHISK_AUTH <openwhisk-auth>
+cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
    ```
 
 4. Start the controller microservice.
