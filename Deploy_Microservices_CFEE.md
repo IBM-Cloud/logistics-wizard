@@ -39,7 +39,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
 
 ## Set up the ERP
 
-1. In your terminal, point to public CF API endpoint and login targeting your org and space.
+1. In your terminal, point to public CF API endpoint and login targeting your Org and Space.
 
    ```bash
    cf api https://api.ng.bluemix.net
@@ -48,7 +48,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
    cf login
    ```
 
-2. Launch Terminal or Command prompt and clone `logistics-wizard-erp` repo.
+2. Then clone `logistics-wizard-erp` repo.
 
    ```bash
    git clone https://github.com/IBM-Cloud/logistics-wizard-erp
@@ -72,7 +72,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
    ```bash
    cf push --no-start
    ```
-6. Create the Cloudant database for the ERP. Navigate to [IBM Cloud Dashboard](https://console.bluemix.net/dashboard/apps) > Create Resource > Search for Cloudant > name it as `logistics-wizard-erp-db`.
+6. Create the Cloudant NoSQLDB service for the ERP. Navigate to [IBM Cloud Dashboard](https://console.bluemix.net/dashboard/apps) > Create Resource > Search for Cloudant > name it as `logistics-wizard-erp-db`.
 ![](docs/cloudant-create.png)
 
 7. Create the database called `logistics-wizard` by launching the Cloudant dashboard. ![](docs/database.png)
@@ -107,7 +107,7 @@ The instructions below deploys to the US South region, but you can deploy to oth
 3. Set the environment variables for the controller to connect to the ERP. You can get the `OPENWHISK_AUTH` API key from the [IBM Cloud console](https://console.bluemix.net/openwhisk/learn/api-key). Choose the Region, Org and Space where you have rest of the services created.
 ![](docs/openwhisk_key.png)
 
-On a Terminal or command prompt, run the below commands
+On a Terminal, run the below commands by providing appropriate values
 
    ```
 cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-URL>'
