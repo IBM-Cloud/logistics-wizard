@@ -4,8 +4,6 @@ Step by step guide to deploy Logistic Wizard to Cloud Foundry Enterprise Environ
 
 With the IBM® Cloud Foundry Enterprise Environment (CFEE), you can instantiate multiple, isolated, enterprise-grade Cloud Foundry platforms on demand. Instances of the IBM Cloud Foundry Enterprise service run within your own account in the IBM Cloud. The environment is deployed on isolated hardware (Kubernetes clusters). You have full control over the environment, including access control, capacity management, change management, monitoring, and services.
 
-If this instruction guide, you will explore deploying Logistic Wizard to CFEE. First, you would need a CFEE instance ready to follow this guide. If you don't have a CFEE instance already, then you can create one by following the steps 1 & 2 in this [link](https://console.bluemix.net/dashboard/cloudfoundry/quickstart).
-
 **CFEE**
 
 - Web UI runtime
@@ -29,13 +27,12 @@ Logistics Wizard consists of several microservices.
 
 ## Getting Started 
 
-The instructions below deploys to the US South region, but you can deploy to other regions available depending on your requirements.
+1. If this instruction guide, you will explore deploying Logistic Wizard to CFEE. First, you would need a CFEE instance created to follow this guide. If you don't have one already, then you can create one by following the steps 1 & 2 in this [link](https://console.bluemix.net/dashboard/cloudfoundry/quickstart).
 
-- (US South) public CF API endpoint: [https://api.ng.bluemix.net](https://api.ng.bluemix.net/)
-
-- (US South) CFEE API endpoint:   https://api.<ENVIRONMENT_NAME\>-cluster.us-south.containers.appdomain.cloud
-
-  You can get your CFEE API endpoint from the IBM Cloud [CFEE dashboard](https://console.bluemix.net/dashboard/cloudfoundry?filter=cf_environments). ![CFEE dashboard](docs/cfee_dashboard.png)
+2. The instructions below deploys to the US South region, but you can deploy to other regions available depending on your requirements.
+   - (US South) public CF API endpoint: [https://api.ng.bluemix.net](https://api.ng.bluemix.net/)
+   - (US South) CFEE API endpoint:   https://api.<ENVIRONMENT_NAME\>-cluster.us-south.containers.appdomain.cloud
+   - You can get your CFEE API endpoint from the IBM Cloud [CFEE dashboard](https://console.bluemix.net/dashboard/cloudfoundry?filter=cf_environments). ![CFEE dashboard](docs/cfee_dashboard.png)
 
 ## Set up the ERP
 
