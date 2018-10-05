@@ -36,27 +36,18 @@ Logistics Wizard consists of several microservices.
 
 ## Set up the ERP
 
-1. In your terminal, point to public CF API endpoint and login targeting your Org and Space.
-
-   ```bash
-   cf api https://api.ng.bluemix.net
-   ic api https://api.ng.bluemix.net
-   ic target --cf
-   cf login
-   ```
-
-2. Then clone `logistics-wizard-erp` repo.
+1. Then clone `logistics-wizard-erp` repo.
 
    ```bash
    git clone https://github.com/IBM-Cloud/logistics-wizard-erp
    cd logistics-wizard-erp
    ```
 
-3. Edit the `manifest.yml` file and remove the `logistics-wizard-erp-db` service listed.
+2. Edit the `manifest.yml` file and remove the `logistics-wizard-erp-db` service listed.
 
    ![Snippets](docs/snippets.png)
 
-4. Switch to CFEE API endpoint and target your CFEE Org and Space.
+3. Switch to CFEE API endpoint and target your CFEE Org and Space.
 
    ```bash
    cf api <CFEE_API ENDPOINT>
@@ -64,27 +55,27 @@ Logistics Wizard consists of several microservices.
    ```
    **Note:** For creating CFEE Org and Space, refer https://console.bluemix.net/docs/cloud-foundry/orgs-spaces.html#create_orgs
 
-5. Push the ERP to CFEE.
+4. Push the ERP to CFEE.
 
    ```bash
    cf push --no-start
    ```
-6. Create the Cloudant NoSQLDB service for the ERP. Navigate to [IBM Cloud Dashboard](https://console.bluemix.net/dashboard/apps) > Create Resource > Search for Cloudant > name it as `logistics-wizard-erp-db`.
-![](docs/cloudant-create.png)
+5. Create the Cloudant NoSQLDB service for the ERP. Navigate to [IBM Cloud Dashboard](https://console.bluemix.net/dashboard/apps) > Create Resource > Search for Cloudant > name it as `logistics-wizard-erp-db`.
+  ![](docs/cloudant-create.png)
 
-7. Create the database called `logistics-wizard` by launching the Cloudant dashboard. ![](docs/database.png)
+6. Create the database called `logistics-wizard` by launching the Cloudant dashboard. ![](docs/database.png)
 
-8. On the CFEE dashboard, click on the Org you created under Organizations > Spaces > Space name > Services and then Create a service alias for the Cloudant Service `logistics-wizard-erp-db` and then bind it to the `logistics-wizard-erp` application. ![alias](docs/alias.png)
+7. On the CFEE dashboard, click on the Org you created under Organizations > Spaces > Space name > Services and then Create a service alias for the Cloudant Service `logistics-wizard-erp-db` and then bind it to the `logistics-wizard-erp` application. ![alias](docs/alias.png)
 
-9. Start the ERP microservice.
+8. Start the ERP microservice.
 
    ```bash
    cf start logistics-wizard-erp
    ```
 
-10. After starting the ERP microservice, you can verify it is running.
+9. After starting the ERP microservice, you can verify it is running.
 
-   ![Deployed](docs/deployed.png)
+  ![Deployed](docs/deployed.png)
 
 ## Set up the Controller Service
 
@@ -102,15 +93,13 @@ Logistics Wizard consists of several microservices.
    ```
 
 3. Set the environment variables for the controller to connect to the ERP. You can get the `OPENWHISK_AUTH` API key from the [IBM Cloud console](https://console.bluemix.net/openwhisk/learn/api-key). Choose the Region, Org and Space where you have rest of the services created.
-![](docs/openwhisk_key.png)
+  ![](docs/openwhisk_key.png)On a Terminal, run the below commands by providing appropriate values
 
-On a Terminal, run the below commands by providing appropriate values
-
-   ```
-cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-URL>'
-cf set-env logistics-wizard-controller OPENWHISK_AUTH <openwhisk-auth>
-cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
-   ```
+  ```bash
+  cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-URL>'
+  cf set-env logistics-wizard-controller OPENWHISK_AUTH <openwhisk-auth>
+  cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
+  ```
 
 4. Start the controller microservice.
 
@@ -140,7 +129,7 @@ cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
    npm run deploy:prod
    ```
 
-    For example, `CONTROLLER_SERVICE=https://logistics-wizard-controller.lw-cfee-demo-cluster.us-south.containers.appdomain.cloud/`
+    For example, `CONTROLLER_SERVICE=https://logistics-wizard-controller.lw-cfee-demo-cluster.us-south.containers.appdomain.cloud`
 
 4. Deploy the WebUI to CFEE.
 
@@ -157,6 +146,7 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
 
    ```bash
    cf api https://api.ng.bluemix.net
+   ic target --cf
    cf login
    ```
 
@@ -209,13 +199,21 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
    npm run build
    ```
 
-8. Deploy your Cloud Functions actions:
+8. Verify your setup, Here, we perform a blocking (synchronous) invocation of `echo`, passing it "hello" as an argument.
+
+   ```bash
+   bx wsk action invoke /whisk.system/utils/echo -p message hello --result
+   ```
+
+   Output should be something like `{ "message": "hello" }`.
+
+9. Deploy your Cloud Functions actions:
 
    ```bash
    ./deploy.sh --install
    ```
 
-9. Done, now access the WebUI URL in the browser and explore the app running on CFEE. ![](docs/LW-pushed.png)
+10. Done, now access the WebUI URL in the browser and explore the app running on CFEE. ![](docs/LW-pushed.png)
 
 
 
