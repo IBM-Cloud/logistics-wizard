@@ -6,7 +6,7 @@ These are instructions to deploy Logistic Wizard to Bluemix. The Webui, ERP, and
 
 1. Set up the database for the ERP:
 ```
-bx cf create-service cloudantNoSQLDB Lite logistics-wizard-erp-db
+ibmcloud cf create-service cloudantNoSQLDB Lite logistics-wizard-erp-db
 ```
 2. Then clone `logistics-wizard-erp` repo:
 ```
@@ -21,12 +21,12 @@ docker push <username>/logistics-wizard-erp:latest
 ```
 4. Create the ERP microservice in bluemix without starting it using the docker image you created above
 ```
-bx cf push <erp-name> --docker-image=<username>/logistics-wizard-erp:latest --no-start
-bx cf bind-service <erp-name> logistics-wizard-erp-db
+ibmcloud cf push <erp-name> --docker-image=<username>/logistics-wizard-erp:latest --no-start
+ibmcloud cf bind-service <erp-name> logistics-wizard-erp-db
 ```
 5. Start the ERP microservice
 ```
-bx cf start <erp-name>
+ibmcloud cf start <erp-name>
 ```
 6. After starting the ERP microservice, you can verify it is running by hitting `https://<erp-name>.mybluemix.net/explorer`
 
@@ -44,33 +44,33 @@ docker push <username>/logistics-wizard-controller:latest
 ```
 9. Create the controller microservice in bluemix without starting it using the docker image you created above
 ```
-bx cf push <controller-name> --docker-image=<username>/logistics-wizard-controller:latest --no-start
+ibmcloud cf push <controller-name> --docker-image=<username>/logistics-wizard-controller:latest --no-start
 ```
 10. Set the environment variables for the controller to connect to the ERP and use OpenWhisk actions
 ```
-bx cf set-env <controller-name> ERP_SERVICE 'https://lw-erp-cf-docker.mybluemix.net/explorer'
-bx cf set-env <controller-name> OPENWHISK_AUTH <openwhisk-auth>
-bx cf set-env <controller-name> OPENWHISK_PACKAGE lwr
+ibmcloud cf set-env <controller-name> ERP_SERVICE 'https://lw-erp-cf-docker.mybluemix.net/explorer'
+ibmcloud cf set-env <controller-name> OPENWHISK_AUTH <openwhisk-auth>
+ibmcloud cf set-env <controller-name> OPENWHISK_PACKAGE lwr
 ```
 11. Start the controller microservice
 ```
-bx cf start <controller-name>
+ibmcloud cf start <controller-name>
 ```
 
 ## Set up the OpenWhisk Actions
 
 1. Create the services needed for OpenWhisk
 ```
-bx cf create-service weatherinsights Free-v2 logistics-wizard-weatherinsights
-bx cf create-service cloudantNoSQLDB Lite logistics-wizard-recommendation-db
+ibmcloud cf create-service weatherinsights Free-v2 logistics-wizard-weatherinsights
+ibmcloud cf create-service cloudantNoSQLDB Lite logistics-wizard-recommendation-db
 ```
 
 2. Create service keys for both services and take note of the URL values:
 ```
-bx cf create-service-key logistics-wizard-weatherinsights for-openwhisk
-bx cf create-service-key logistics-wizard-recommendation-db for-openwhisk
-bx cf service-key logistics-wizard-weatherinsights for-openwhisk
-bx cf service-key logistics-wizard-recommendation-db for-openwhisk
+ibmcloud cf create-service-key logistics-wizard-weatherinsights for-openwhisk
+ibmcloud cf create-service-key logistics-wizard-recommendation-db for-openwhisk
+ibmcloud cf service-key logistics-wizard-weatherinsights for-openwhisk
+ibmcloud cf service-key logistics-wizard-recommendation-db for-openwhisk
 ```
 
 3. Clone the logistics-wizard-recommendation repo:
@@ -118,5 +118,5 @@ CONTROLLER_SERIVCE='<controller-service-url>' GOOGLE_MAPS_KEY='<google-maps-api-
 4. Deploy the app to bluemix
 ```
 cd dist
-bx cf push <webui-name> -b staticfile_buildpack
+ibmcloud cf push <webui-name> -b staticfile_buildpack
 ```
