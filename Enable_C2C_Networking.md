@@ -72,5 +72,5 @@ While the Controller is now communicating container-to-container with the ERP se
 
 ## Additional Material
 
-[Cloud Foundry Understanding Container-to-Container Networking](https://docs.cloudfoundry.org/concepts/understand-cf-networking.html)
-[Cloud Foundry C2C Sample](https://github.com/cloudfoundry/cf-networking-examples/blob/master/docs/c2c-no-service-discovery.md)
+* [Cloud Foundry Understanding Container-to-Container Networking](https://docs.cloudfoundry.org/concepts/understand-cf-networking.html)
+* [Cloud Foundry C2C Sample](https://github.com/cloudfoundry/cf-networking-examples/blob/master/docs/c2c-no-service-discovery.md)
