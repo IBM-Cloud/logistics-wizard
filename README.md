@@ -17,7 +17,8 @@ Use the [walkthrough](WALKTHROUGH.md) to view and understand the features of Log
 You can deploy your own Logistics Wizard in the following ways:
   * Use the [Logistics Wizard Toolchain][toolchain_github_url] to automatically deploy the application as Cloud Foundry microservices. (Recommended)
   * Follow [instructions](Deploy_Microservices_Cloud_Foundry_Docker.md) to manually deploy the ERP & Controller as Cloud Foundry Docker Apps.
-  * Follow [instructions](https://github.com/IBM-Cloud/logistics-wizard/blob/master/Deploy_Microservices_CFEE.md) to manually deploy the LW to Cloud Foundry Enterprise Environment (CFEE). 
+  * Enable [container-to-container](Enable_C2C_Networking.md) networking to keep communication private.
+  * Follow [instructions](Deploy_Microservices_CFEE.md) to manually deploy the LW to Cloud Foundry Enterprise Environment (CFEE).
 
 ## Architecture
 
