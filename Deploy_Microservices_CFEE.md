@@ -27,206 +27,155 @@ Logistics Wizard consists of several microservices.
 
 ## Getting Started 
 
-1. If this instruction guide, you will explore deploying Logistic Wizard to CFEE. First, you would need a CFEE instance created to follow this guide. If you don't have one already, then you can create one by following the steps 1 & 2 in this [link](https://console.bluemix.net/dashboard/cloudfoundry/quickstart).
+1. In this instruction guide, you will explore deploying Logistic Wizard to CFEE. First, you would need a CFEE instance created. If you don't have one already, [follow these steps first](https://cloud.ibm.com/cfadmin/create).
 
 2. The instructions below deploys to the US South region, but you can deploy to other regions available depending on your requirements.
    - (US South) public CF API endpoint: [https://api.ng.bluemix.net](https://api.ng.bluemix.net/)
-   - (US South) CFEE API endpoint:   https://api.<ENVIRONMENT_NAME\>-cluster.us-south.containers.appdomain.cloud
-   - You can get your CFEE API endpoint from the IBM Cloud [CFEE dashboard](https://console.bluemix.net/dashboard/cloudfoundry?filter=cf_environments). ![CFEE dashboard](docs/cfee_dashboard.png)
+   - (US South) CFEE API endpoint: https://api.<ENVIRONMENT_NAME\>.us-south.containers.appdomain.cloud
+   - You can get your CFEE API endpoint from your CFEE instance dashboard.
 
 ## Set up the ERP
 
 1. Then clone `logistics-wizard-erp` repo.
-
    ```bash
    git clone https://github.com/IBM-Cloud/logistics-wizard-erp
    cd logistics-wizard-erp
    ```
-
 2. Edit the `manifest.yml` file and remove the `logistics-wizard-erp-db` service listed.
 
    ![Snippets](docs/snippets.png)
-
-3. Switch to CFEE API endpoint and target your CFEE Org and Space.
-
+3. Switch the Cloud Foundry endpoint to your private CFEE instance, org and space.
    ```bash
-   cf api <CFEE_API ENDPOINT>
-   cf login
+   ibmcloud target --cf
    ```
-   **Note:** For creating CFEE Org and Space, refer https://console.bluemix.net/docs/cloud-foundry/orgs-spaces.html#create_orgs
-
+   **Note:** For creating CFEE Org and Space, refer to https://cloud.ibm.com/docs/cloud-foundry?topic=cloud-foundry-create_orgs#create_orgs
 4. Push the ERP to CFEE.
-
    ```bash
-   cf push --no-start
+   ibmcloud cf push --no-start
    ```
 5. Create the Cloudant NoSQLDB service for the ERP. Navigate to [IBM Cloud Dashboard](https://console.bluemix.net/dashboard/apps) > Create Resource > Search for Cloudant > name it as `logistics-wizard-erp-db`.
   ![](docs/cloudant-create.png)
-
 6. Create the database called `logistics-wizard` by launching the Cloudant dashboard. ![](docs/database.png)
-
-7. On the CFEE dashboard, click on the Org you created under Organizations > Spaces > Space name > Services and then Create a service alias for the Cloudant Service `logistics-wizard-erp-db` and then bind it to the `logistics-wizard-erp` application. ![alias](docs/alias.png)
-
+7. On the CFEE dashboard, click on the Org you created under Organizations > Spaces > Space name > Services.
+1. Create a service alias for the Cloudant Service `logistics-wizard-erp-db`.
+1. Bind the alias to the `logistics-wizard-erp` application. ![alias](docs/alias.png). Select `Manager` as the service access role when prompted.
 8. Start the ERP microservice.
-
    ```bash
-   cf start logistics-wizard-erp
+   ibmcloud cf start logistics-wizard-erp
    ```
-
 9. After starting the ERP microservice, you can verify it is running.
-
   ![Deployed](docs/deployed.png)
 
 ## Set up the Controller Service
 
 1. Clone the controller repo.
-
    ```bash
    git clone https://github.com/IBM-Cloud/logistics-wizard-controller
    cd logistics-wizard-controller
    ```
-
 2. Push the controller microservice without starting.
-
    ```bash
-   cf push --no-start
+   ibmcloud cf push --no-start
    ```
-
-3. Set the environment variables for the controller to connect to the ERP. You can get the `OPENWHISK_AUTH` API key from the [IBM Cloud console](https://console.bluemix.net/openwhisk/learn/api-key). Choose the Region, Org and Space where you have rest of the services created.
-  ![](docs/openwhisk_key.png)On a Terminal, run the below commands by providing appropriate values
-
-  ```bash
-  cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-URL>'
-  cf set-env logistics-wizard-controller OPENWHISK_AUTH <openwhisk-auth>
-  cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
-  ```
-
-4. Start the controller microservice.
-
-   ```bash
-   cf start logistics-wizard-controller
-   ```
+3. Make note of the Controler route in the command output (such as `logistics-wizard-controller.<environment>.us-south.containers.appdomain.cloud`).
 
 ## Set up the WebUI
 
 1. Clone the logistics-wizard-webui repo.
-
    ```bash
    git clone https://github.com/IBM-Cloud/logistics-wizard-webui
    cd logistics-wizard-webui
    ```
-
 2. Install the dependencies.
-
    ```bash
    npm install
    ```
-
 3. Build the static files for the WebUI using the appropriate environment variables.
-
    ```bash
-   export CONTROLLER_SERVICE=<controller-service-URL>
+   export CONTROLLER_SERVICE=https://<controller-service-URL>
    npm run deploy:prod
    ```
 
-    For example, `CONTROLLER_SERVICE=https://logistics-wizard-controller.lw-cfee-demo-cluster.us-south.containers.appdomain.cloud`
-
+   For example, `CONTROLLER_SERVICE=https://logistics-wizard-controller.lw-cfee-demo-cluster.us-south.containers.appdomain.cloud`
 4. Deploy the WebUI to CFEE.
-
    ```bash
    cd dist
-   cf push logistics-wizard
+   ibmcloud cf push logistics-wizard
    ```
 
 ## Set up the Cloud Functions Actions
 
 Cloud Functions is outside CFEE, so you would need to switch to the public CF to complete below section.
 
-1. Switch to public Cloud Foundry.
-
-   ```bash
-   cf api https://api.ng.bluemix.net
-   ic target --cf
-   cf login
-   ```
-
-2. Create the two services, `Cloudant` and  `Weather Company Data` service.
-
-   ```bash
-   cf create-service weatherinsights Base-v2 logistics-wizard-weatherinsights
-   cf create-service cloudantNoSQLDB Lite logistics-wizard-recommendation-db
-   ```
-   **Note**: weatherinsights Base-v2 requires a `paid` account and your account will be charged.
-
-3. Create service keys for two services created, **take note of the URL values as it would be needed in step 6.**
-
-   ```bash
-   cf create-service-key logistics-wizard-weatherinsights for-openwhisk
-   cf create-service-key logistics-wizard-recommendation-db for-openwhisk
-   cf service-key logistics-wizard-weatherinsights for-openwhisk
-   cf service-key logistics-wizard-recommendation-db for-openwhisk
-   ```
-
 4. Clone the logistics-wizard-recommendation repo.
-
    ```bash
    git clone https://github.com/IBM-Cloud/logistics-wizard-recommendation
    cd logistics-wizard-recommendation
    ```
-
+1. Switch to public Cloud Foundry.
+   ```bash
+   ibmcloud target --cf
+   ```
+2. Create a `Cloudant` instance.
+   ```bash
+   ibmcloud cf create-service cloudantNoSQLDB Standard logistics-wizard-recommendation-db
+3. Create a service key, **take note of the URL values as it would be needed in step 6.**
+   ```bash
+   ibmcloud cf create-service-key logistics-wizard-recommendation-db for-openwhisk
+   ```
+1. Retrieve the Cloudant credentials
+   ```bash
+   ibmcloud cf service-key logistics-wizard-recommendation-db for-openwhisk
+   ```
 5. Copy the local env template file.
-
    ```bash
    cp template-local.env local.env
    ```
-
 6. Using the URL values from the terimal output above, update the local.env file to look like the following:
-
-   ```bash
-   PACKAGE_NAME=lwr
-   CONTROLLER_SERVICE=<controller-service-URL>
-   WEATHER_SERVICE=<logistics-wizard-weatherinsights-URL>
-   CLOUDANT_URL=<logistics-wizard-recommendation-db-URL>
-   CLOUDANT_DATABASE=recommendations
-   ```
-
 7. Build your Cloud Functions actions.
-
-   Note: node version >=4.2.0 required and npm >=3.0.0
+   Note: node version >=6.9.1 required and npm >=3.10.8
 
    ```bash
    npm install
    npm run build
    ```
-
 8. Verify your setup, Here, we perform a blocking (synchronous) invocation of `echo`, passing it "hello" as an argument.
-
    ```bash
-   bx wsk action invoke /whisk.system/utils/echo -p message hello --result
+   ibmcloud fn action invoke /whisk.system/utils/echo -p message hello --result
    ```
 
    Output should be something like `{ "message": "hello" }`.
-
 9. Deploy your Cloud Functions actions:
-
    ```bash
    ./deploy.sh --install
    ```
+1. Make note of the URL to call functions.
 
-10. Done, now access the WebUI URL in the browser and explore the app running on CFEE. ![](docs/LW-pushed.png)
+## Start the controller app
 
+1. Log in again in your CFEE environment
+   ```bash
+   ibmcloud target --cf
+   ```
+1. Set the environment variables for the controller to connect to the ERP and to the Recommendation service. Run the below commands by providing appropriate values:
 
+  ```bash
+  ibmcloud cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-URL>'
+  ibmcloud cf set-env logistics-wizard-controller FUNCTIONS_NAMESPACE_URL <url-to-call-functions>
+  ibmcloud cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
+  ```
+1. Start the controller microservice.
+   ```bash
+   ibmcloud cf start logistics-wizard-controller
+   ```
+1. Done, now access the WebUI URL in the browser and explore the app running on CFEE. ![](docs/LW-pushed.png)
 
 ## Set up Stratos Console
 
 1. Install Stratos Console by following the install wizard, select the Kubernetes cluster option when installing.![](docs/CFEE_dashboard_view.png)
 
 2. Open the Stratos Console to
-
    - view logs stream,  
-
    - view the health and usage,
-
    - view configurations, instances, routes, services, events and more. ![](docs/stratos.png)
-
      ![](docs/stratos2.png)
