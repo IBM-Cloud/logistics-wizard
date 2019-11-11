@@ -1,122 +1,126 @@
 # Instructions to Deploy Microservices as Cloud Foundry Docker Apps
 
-These are instructions to deploy Logistic Wizard to Bluemix. The Webui, ERP, and Controller can be deployed to Bluemix Cloud Foundry. The ERP and Controller services will be pushed to Bluemix CF using docker images while the Webui will be deployed as a regular CF app.
+These are instructions to deploy Logistic Wizard to IBM Cloud. The Webui, ERP, and Controller can be deployed to IBM Cloud Cloud Foundry. The ERP and Controller services will be pushed to IBM Cloud CF using docker images while the Webui will be deployed as a regular CF app.
 
 ## Set up the ERP
 
 1. Set up the database for the ERP:
-```
-ibmcloud cf create-service cloudantNoSQLDB Lite logistics-wizard-erp-db
-```
+   ```bash
+   ibmcloud cf create-service cloudantNoSQLDB Standard logistics-wizard-erp-db
+   ```
+1. Open the Cloudant dashboard and create a database named `logistics-wizard`.
 2. Then clone `logistics-wizard-erp` repo:
-```
-git clone https://github.com/IBM-Cloud/logistics-wizard-erp
-cd logistics-wizard-erp
-```
-
+   ```sh
+   git clone https://github.com/IBM-Cloud/logistics-wizard-erp
+   cd logistics-wizard-erp
+   ```
 3. Build and push the image to docker hub.
-```
-docker build -t <username>/logistics-wizard-erp:latest .
-docker push <username>/logistics-wizard-erp:latest
-```
-4. Create the ERP microservice in bluemix without starting it using the docker image you created above
-```
-ibmcloud cf push <erp-name> --docker-image=<username>/logistics-wizard-erp:latest --no-start
-ibmcloud cf bind-service <erp-name> logistics-wizard-erp-db
-```
-5. Start the ERP microservice
-```
-ibmcloud cf start <erp-name>
-```
+   ```sh
+   docker build -t <username>/logistics-wizard-erp:latest .
+   docker push <username>/logistics-wizard-erp:latest
+   ```
+4. Create the ERP microservice in IBM Cloud without starting it using the docker image you created above
+   ```sh
+   ibmcloud cf push <erp-name> --docker-image=<username>/logistics-wizard-erp:latest --no-start
+   ibmcloud cf bind-service <erp-name> logistics-wizard-erp-db --no-manifest
+   ```
+5. Start the ERP microservice:
+   ```sh
+   ibmcloud cf start <erp-name>
+   ```
 6. After starting the ERP microservice, you can verify it is running by hitting `https://<erp-name>.mybluemix.net/explorer`
 
 ## Set up the Controller Service
 
 7. Clone the controller repo:
-```
-git clone https://github.com/IBM-Cloud/logistics-wizard-controller
-cd logistics-wizard-controller
-```
+   ```
+   git clone https://github.com/IBM-Cloud/logistics-wizard-controller
+   cd logistics-wizard-controller
+   ```
 8. Build and push the image to docker hub.
-```
-docker build -t <username>/logistics-wizard-controller:latest .
-docker push <username>/logistics-wizard-controller:latest
-```
+   ```
+   docker build -t <username>/logistics-wizard-controller:latest .
+   docker push <username>/logistics-wizard-controller:latest
+   ```
 9. Create the controller microservice in bluemix without starting it using the docker image you created above
-```
-ibmcloud cf push <controller-name> --docker-image=<username>/logistics-wizard-controller:latest --no-start
-```
-10. Set the environment variables for the controller to connect to the ERP and use OpenWhisk actions
-```
-ibmcloud cf set-env <controller-name> ERP_SERVICE 'https://lw-erp-cf-docker.mybluemix.net/explorer'
-ibmcloud cf set-env <controller-name> OPENWHISK_AUTH <openwhisk-auth>
-ibmcloud cf set-env <controller-name> OPENWHISK_PACKAGE lwr
-```
-11. Start the controller microservice
-```
-ibmcloud cf start <controller-name>
-```
-
-## Set up the OpenWhisk Actions
-
-1. Create the services needed for OpenWhisk
-```
-ibmcloud cf create-service weatherinsights Free-v2 logistics-wizard-weatherinsights
-ibmcloud cf create-service cloudantNoSQLDB Lite logistics-wizard-recommendation-db
-```
-
-2. Create service keys for both services and take note of the URL values:
-```
-ibmcloud cf create-service-key logistics-wizard-weatherinsights for-openwhisk
-ibmcloud cf create-service-key logistics-wizard-recommendation-db for-openwhisk
-ibmcloud cf service-key logistics-wizard-weatherinsights for-openwhisk
-ibmcloud cf service-key logistics-wizard-recommendation-db for-openwhisk
-```
-
-3. Clone the logistics-wizard-recommendation repo:
-```
-git clone https://github.com/IBM-Cloud/logistics-wizard-recommendation
-cd logistics-wizard-recommendation
-```
-4. Copy the local env template file
-```
-cp template-local.env local.env
-```
-5. Using the URL values from above update the `local.env` file to look like the following:
-```
-PACKAGE_NAME=lwr
-CONTROLLER_SERVICE=<controller-service-url>
-WEATHER_SERVICE=<logistics-wizard-weatherinsights-url>
-CLOUDANT_URL=<logistics-wizard-recommendation-db-url>
-CLOUDANT_DATABASE=recommendations
-```
-6. Build your openwhisk actions:
-```
-npm install
-npm run build
-```
-7. Deploy your OpenWhisk actions:
-```
-./deploy.sh --install
-```
+   ```
+   ibmcloud cf push <controller-name> --docker-image=<username>/logistics-wizard-controller:latest --no-start --no-manifest
+   ```
 
 ## Set up the WebUI
 
 1. Clone the logistics-wizard-webui repo:
-```
-git clone https://github.com/IBM-Cloud/logistics-wizard-webui
-cd logistics-wizard-webui
-```
+   ```sh
+   git clone https://github.com/IBM-Cloud/logistics-wizard-webui
+   cd logistics-wizard-webui
+   ```
 2. Install the dependencies
-```
-npm install
-```
+   ```sh
+   npm install
+   ```
 3. Build the static files for the UI using the appropriate environment variables
-```
-CONTROLLER_SERIVCE='<controller-service-url>' GOOGLE_MAPS_KEY='<google-maps-api-key>' npm run deploy:prod
-```
+   ```
+   CONTROLLER_SERIVCE='<controller-service-url>' npm run deploy:prod
+   ```
 4. Deploy the app to bluemix
-```
-cd dist
-ibmcloud cf push <webui-name> -b staticfile_buildpack
-```
+   ```
+   cd dist
+   ibmcloud cf push <webui-name> -b staticfile_buildpack --no-manifest
+   ```
+
+## Set up the Cloud Functions Actions
+
+4. Clone the logistics-wizard-recommendation repo.
+   ```bash
+   git clone https://github.com/IBM-Cloud/logistics-wizard-recommendation
+   cd logistics-wizard-recommendation
+   ```
+2. Create a `Cloudant` instance.
+   ```bash
+   ibmcloud cf create-service cloudantNoSQLDB Standard logistics-wizard-recommendation-db
+3. Create a service key, **take note of the URL values as it would be needed in a later step.**
+   ```bash
+   ibmcloud cf create-service-key logistics-wizard-recommendation-db for-openwhisk
+   ```
+1. Retrieve the Cloudant credentials
+   ```bash
+   ibmcloud cf service-key logistics-wizard-recommendation-db for-openwhisk
+   ```
+5. Copy the local env template file.
+   ```bash
+   cp template-local.env local.env
+   ```
+6. Using the URL values from the terimal output above, update the local.env file to look like the following:
+7. Build your Cloud Functions actions.
+   Note: node version >=6.9.1 required and npm >=3.10.8
+
+   ```bash
+   npm install
+   npm run build
+   ```
+8. Verify your setup, Here, we perform a blocking (synchronous) invocation of `echo`, passing it "hello" as an argument.
+   ```bash
+   ibmcloud fn action invoke /whisk.system/utils/echo -p message hello --result
+   ```
+
+   Output should be something like `{ "message": "hello" }`.
+9. Deploy your Cloud Functions actions:
+   ```bash
+   ./deploy.sh --install
+   ```
+1. Make note of the URL to call functions.
+
+## Start the controller app
+
+1. Set the environment variables for the controller to connect to the ERP and to the Recommendation service. Run the below commands by providing appropriate values:
+
+  ```bash
+  ibmcloud cf set-env <controller-name> ERP_SERVICE 'https://<erp-URL>'
+  ibmcloud cf set-env <controller-name> FUNCTIONS_NAMESPACE_URL <url-to-call-functions>
+  ```
+1. Start the controller microservice.
+   ```bash
+   ibmcloud cf start <controller-name>
+   ```
+1. Done, now access the WebUI URL in the browser and explore the app running on Docker in Cloud Foundry.
+   ![](docs/LW-pushed.png)

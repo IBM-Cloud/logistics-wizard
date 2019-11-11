@@ -77,7 +77,7 @@ Logistics Wizard consists of several microservices.
    ```bash
    ibmcloud cf push --no-start
    ```
-3. Make note of the Controler route in the command output (such as `logistics-wizard-controller.<environment>.us-south.containers.appdomain.cloud`).
+3. Make note of the Controller route in the command output (such as `logistics-wizard-controller.<environment>.us-south.containers.appdomain.cloud`).
 
 ## Set up the WebUI
 
@@ -119,7 +119,7 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
 2. Create a `Cloudant` instance.
    ```bash
    ibmcloud cf create-service cloudantNoSQLDB Standard logistics-wizard-recommendation-db
-3. Create a service key, **take note of the URL values as it would be needed in step 6.**
+3. Create a service key, **take note of the URL values as it would be needed in a later step.**
    ```bash
    ibmcloud cf create-service-key logistics-wizard-recommendation-db for-openwhisk
    ```
@@ -162,7 +162,6 @@ Cloud Functions is outside CFEE, so you would need to switch to the public CF to
   ```bash
   ibmcloud cf set-env logistics-wizard-controller ERP_SERVICE 'https://<erp-URL>'
   ibmcloud cf set-env logistics-wizard-controller FUNCTIONS_NAMESPACE_URL <url-to-call-functions>
-  ibmcloud cf set-env logistics-wizard-controller OPENWHISK_PACKAGE lwr
   ```
 1. Start the controller microservice.
    ```bash
